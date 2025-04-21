@@ -1,59 +1,34 @@
 /* eslint-disable no-unused-vars */
 import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
 import { useState } from "react";
-
 import { Modal } from "antd";
-import { FaCheck, FaEye, FaUser } from "react-icons/fa";
-
+import { FaEye } from "react-icons/fa";
 import { SearchOutlined } from "@ant-design/icons";
-import { MdBlock } from "react-icons/md";
-import user from "../../assets/image/user.png";
-const StaffDetails = () => {
+import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
+import { AiOutlineEdit } from "react-icons/ai";
+import { AllImages } from "../../assets/image/AllImages";
+const ManageClass = () => {
   const userData = [
     {
       employee_id: "#1239",
-      name: "Mr. Mahmud",
-      profileImage: user,
-      email: "mr101@mail.ru",
-      total_booking: 20,
-      contact: "(+33) 7 00 55 59 27",
+      name: "The Buzz Spot",
+      subName: "Non-Scheduled",
+      classImg: AllImages.image1,
       location: "Corona, Michigan",
-      address: "76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris",
-      dob: "17 Dec, 2024",
-      gender: "Male",
-      action: "↗",
-      status: "true",
-      designation: "Project Manager",
     },
     {
-      employee_id: "#1238",
-      name: "Lily",
-      email: "xterris@gmail.com",
-      profileImage: user,
-      total_booking: 20,
-      contact: "(+33) 7 00 55 59 27",
-      location: "Great Falls, Maryland",
-      address: "123 Rue des Lilas, Paris, 75008",
-      dob: "15 Jan, 2022",
-      gender: "Female",
-      action: "↗",
-      status: "true",
-      designation: "Software Engineer",
+      employee_id: "#1239",
+      name: "Club Pulse",
+      subName: "Non-Scheduled",
+      classImg: AllImages.image2,
+      location: "Corona, Michigan",
     },
     {
-      employee_id: "#1237",
-      name: "Kathry",
-      profileImage: user,
-      email: "irnabela@gmail.com",
-      total_booking: 20,
-      contact: "(+33) 7 00 55 59 27",
-      location: "Syracuse, Connecticut",
-      address: "45 Avenue des Champs, Paris, 75001",
-      dob: "11 Jul, 2021",
-      gender: "Female",
-      action: "↗",
-      status: "false",
-      designation: "Data Analyst",
+      employee_id: "#1239",
+      name: "Vibe Loungge",
+      subName: "Scheduled",
+      classImg: AllImages.image3,
+      location: "Corona, Michigan",
     },
   ];
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,61 +59,35 @@ const StaffDetails = () => {
   const handleSession = (record) => {
     console.log(record);
   };
-
+  const handleEdit = (record) => {
+    // console.log(record);
+  };
+  const hnadleAddClass = (values) => {
+    console.log(values);
+  };
   const columns = [
     {
-      title: "#",
+      title: "Sl No.",
       dataIndex: "slno",
       key: "slno",
       render: (text, record, index) => index + 1,
     },
     {
-      title: "Name",
+      title: "Class Name",
       key: "name",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <Avatar size={40} className="shadow-md" src={record?.profileImage} />
+          <img src={record.classImg} alt="" />
           <span>{record.name}</span>
         </div>
       ),
     },
     {
-      title: "Employee ID",
-      dataIndex: "employee_id",
-      key: "employee_id",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Contact No",
-      key: "contact",
-      render: (_, record) => {
-        const contact = record.contact || "N/A";
-        return <p>{contact}</p>;
-      },
-    },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      key: "designation",
+      title: "Location",
+      dataIndex: "location",
+      key: "location",
     },
 
-    {
-      title: "Status",
-      key: "status",
-      render: (_, record) => (
-        <p className="flex items-center gap-2">
-          {record.status === "true" ? (
-            <FaCheck className="text-green-500 text-2xl" />
-          ) : (
-            <MdBlock className="text-red-500 text-2xl" />
-          )}
-        </p>
-      ),
-    },
     {
       title: "View",
       key: "view",
@@ -158,6 +107,9 @@ const StaffDetails = () => {
             <button onClick={() => showModal(record)}>
               <FaEye className="text-2xl"></FaEye>
             </button>
+            <button onClick={() => handleEdit(record)}>
+              <AiOutlineEdit className="text-2xl" />
+            </button>
           </Space>
         </ConfigProvider>
       ),
@@ -167,11 +119,9 @@ const StaffDetails = () => {
   return (
     <div className="">
       <div className="flex flex-col md:flex-row justify-between md:items-center mb-10">
-        <h3 className="text-xl md:text-2xl font-semibold text-textColor px-2 md:px-0">
-          All Staff
-        </h3>
+        <GoBackButton text="Manage Class" />
         <div className="mt-4 md:mt-0 flex justify-between items-center gap-2">
-          <div>
+          <div className="flex items-center justify-center gap-2">
             <ConfigProvider
               theme={{
                 components: {
@@ -185,7 +135,7 @@ const StaffDetails = () => {
             >
               <div className="flex gap-2 items-center relative">
                 <Input
-                  placeholder="Search by email"
+                  placeholder="Search Class"
                   allowClear
                   size="large"
                   value={email}
@@ -207,6 +157,12 @@ const StaffDetails = () => {
                 </button>
               </div>
             </ConfigProvider>
+            <button
+              onClick={hnadleAddClass}
+              className="bg-primary text-white py-2 px-4 rounded-md"
+            >
+              Add New Class
+            </button>
           </div>
         </div>
       </div>
@@ -214,13 +170,13 @@ const StaffDetails = () => {
         <ConfigProvider
           theme={{
             components: {
-              Table: {
-                headerBg: "#d51920",
-                colorText: "rgb(0,0,0)",
-                colorTextHeading: "rgb(255,255,255)",
-                headerSortActiveBg: "#d51920",
-                headerFilterHoverBg: "#d51920",
-              },
+              // Table: {
+              //   headerBg: "#d51920",
+              //   colorText: "rgb(0,0,0)",
+              //   colorTextHeading: "rgb(255,255,255)",
+              //   headerSortActiveBg: "#d51920",
+              //   headerFilterHoverBg: "#d51920",
+              // },
             },
           }}
         >
@@ -291,4 +247,4 @@ const StaffDetails = () => {
   );
 };
 
-export default StaffDetails;
+export default ManageClass;

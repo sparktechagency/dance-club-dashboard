@@ -16,8 +16,8 @@ import TermsCondition from "../Pages/Settings/TermsCondition/TermsCondition";
 import Banner from "../Pages/Settings/Banner/Banner";
 import AdminProfile from "../Pages/AdminProfile/AdminProfile";
 import Notifications from "../Pages/Notification/Notification";
-import StaffDetails from "../Pages/StaffDetails/StaffDetails";
 import AddClients from "../Pages/AddClients/AddClients";
+import ManageClass from "../Pages/ManageCLass/ManageClass";
 
 
 export const router = createBrowserRouter([
@@ -52,8 +52,8 @@ export const router = createBrowserRouter([
                 element: <Analytics />
             },
             {
-                path: "/staff-details",
-                element: <StaffDetails/>
+                path: "/manage-class",
+                element: <ManageClass/>
             },
             {
                 path: "/add-client",

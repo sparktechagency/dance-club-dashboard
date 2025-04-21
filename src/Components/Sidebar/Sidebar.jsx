@@ -8,12 +8,10 @@ import { Link } from "react-router-dom";
 import {
   MdDashboard,
   MdMenuBook,
-  MdPolicy,
   MdPrivacyTip,
 } from "react-icons/md";
 import { LuCircleDollarSign } from "react-icons/lu";
 import { FaMoneyCheckAlt } from "react-icons/fa";
-import { FaEdit } from "react-icons/fa";
 import { RiTerminalWindowLine } from "react-icons/ri";
 const Sidebar = ({ closeDrawer }) => {
   const [active, setActive] = useState("Dashboard");
@@ -47,55 +45,51 @@ const Sidebar = ({ closeDrawer }) => {
 
     {
       icon: <BsGraphUp className="h-5 w-5" />,
-      label: "Staff Details",
-      Link: "/staff-details",
+      label: "Manage Class",
+      Link: "/manage-class",
     },
     {
       icon: <LuCircleDollarSign className="h-5 w-5" />,
-      label: "Add Client",
-      Link: "/add-client",
+      label: "Manage Product ",
+      Link: "/manage-product",
     },
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
-      label: "Expenses",
-      Link: "/expenses",
+      label: "Manage Order ",
+      Link: "/manage-order",
     },
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
-      label: "Daily Report",
-      Link: "/daily-report",
+      label: "Manage Membership ",
+      Link: "/manage-membership",
     },
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
-      label: "Create Staff",
-      Link: "/create-staff",
+      label: "Manage Banner",
+      Link: "/manage-banner",
     },
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
-      label: "Office Time & Notice",
-      Link: "/office-time",
+      label: "Feedback",
+      Link: "/feedback",
     },
-    {
-      icon: <FaMoneyCheckAlt className="h-5 w-5" />,
-      label: "Remiinder",
-      Link: "/reminder",
-    },
-
+   
+ 
     {
       icon: <AiOutlineSetting className="h-5 w-5" />,
       label: "Settings",
       isDropdown: true,
       subItems: [
-        {
-          icon: <FaEdit className="h-5 w-5" />,
-          label: "About Us",
-          Link: "/settings/about-us",
-        },
-        {
-          icon: <MdPolicy className="h-5 w-5" />,
-          label: "Contact Us",
-          Link: "/settings/contact-us",
-        },
+        // {
+        //   icon: <FaEdit className="h-5 w-5" />,
+        //   label: "About Us",
+        //   Link: "/settings/about-us",
+        // },
+        // {
+        //   icon: <MdPolicy className="h-5 w-5" />,
+        //   label: "Contact Us",
+        //   Link: "/settings/contact-us",
+        // },
         {
           icon: <MdPrivacyTip className="h-5 w-5" />,
           label: "Privacy Policy",
@@ -108,15 +102,15 @@ const Sidebar = ({ closeDrawer }) => {
         },
         {
           icon: <MdMenuBook className="h-5 w-5" />,
-          label: "Banner",
-          Link: "/settings/banner",
+          label: "profile",
+          Link: "/settings/profile",
         },
       ],
     },
   ];
 
   return (
-    <div className="bg-white h-full md:ml-16">
+    <div className="bg-[#eeeeee] h-full ">
       <div className="flex flex-col md:h-full">
         <div className="flex flex-col gap-2 md:my-5 mb-10">
           {menuItems.map((item) => (
@@ -143,7 +137,7 @@ const Sidebar = ({ closeDrawer }) => {
                 >
                   <Link to={item.Link}>
                     <div className="flex items-center gap-3">
-                      {item.icon}
+                      {/* {item.icon} */}
                       <p>{item.label}</p>
                       {item.isDropdown && (
                         <BiChevronDown
@@ -163,15 +157,21 @@ const Sidebar = ({ closeDrawer }) => {
                   {item.subItems.map((subItem) => (
                     <Link to={subItem.Link} key={subItem.label}>
                       <div
-                        className={`py-2 px-5 cursor-pointer  ${
+                        className={`py-2 px-5 cursor-pointer  ml-6 mt-2 ${
                           active === subItem.label
                             ? "text-white bg-primary font-bold"
-                            : "text-black "
+                            : "text-white bg-secondary"
                         }`}
                         onClick={() => handleSubItemClick(subItem.label)}
                       >
-                        <p className="flex items-center gap-2 ml-10">
-                          {subItem.icon}
+                        <p
+                        // className={`w-full  px-5 py-2 cursor-pointer   ${
+                        //   active === item.label
+                        //     ? " text-white font-semibold bg-primary"
+                        //     : "bg-secondary text-white font-semibold"
+                        // }`}
+                        >
+                          {/* {subItem.icon} */}
                           {subItem.label}
                         </p>
                       </div>
