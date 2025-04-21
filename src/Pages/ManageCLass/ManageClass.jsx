@@ -2,7 +2,7 @@
 import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
-import {  FaEye} from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -30,7 +30,6 @@ const ManageClass = () => {
       classImg: AllImages.image3,
       location: "Corona, Michigan",
     },
-  
   ];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -63,6 +62,9 @@ const ManageClass = () => {
   const handleEdit = (record) => {
     // console.log(record);
   };
+  const hnadleAddClass = (values) => {
+    console.log(values);
+  };
   const columns = [
     {
       title: "Sl No.",
@@ -75,7 +77,7 @@ const ManageClass = () => {
       key: "name",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-         <img src={record.classImg} alt="" />
+          <img src={record.classImg} alt="" />
           <span>{record.name}</span>
         </div>
       ),
@@ -119,7 +121,7 @@ const ManageClass = () => {
       <div className="flex flex-col md:flex-row justify-between md:items-center mb-10">
         <GoBackButton text="Manage Class" />
         <div className="mt-4 md:mt-0 flex justify-between items-center gap-2">
-          <div>
+          <div className="flex items-center justify-center gap-2">
             <ConfigProvider
               theme={{
                 components: {
@@ -155,6 +157,12 @@ const ManageClass = () => {
                 </button>
               </div>
             </ConfigProvider>
+            <button
+              onClick={hnadleAddClass}
+              className="bg-primary text-white py-2 px-4 rounded-md"
+            >
+              Add New Class
+            </button>
           </div>
         </div>
       </div>
