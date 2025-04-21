@@ -19,6 +19,10 @@ import Notifications from "../Pages/Notification/Notification";
 import ManageClass from "../Pages/ManageCLass/ManageClass";
 import ManageProducts from "../Pages/ManageProducts/ManageProducts";
 import AddProduct from "../Components/ProductManagement/AddProduct";
+import MAnageOrder from "../Pages/ManageOrder/MAnageOrder";
+import ManageMenbership from "../Pages/ManageMembership/ManageMenbership";
+import AddNewMembership from "../Components/MemberShipManagement/AddNewMembership";
+import EditMembership from "../Components/MemberShipManagement/EditMembership";
 
 
 export const router = createBrowserRouter([
@@ -63,6 +67,22 @@ export const router = createBrowserRouter([
             {
                 path: "/add-product",
                 element: <AddProduct/>
+            },
+            {
+                path: "/manage-order",
+                element: <MAnageOrder/>
+            },
+            {
+                path: "/manage-membership",
+                element: <ManageMenbership/>
+            },
+            {
+                path: "/add-new-membership",
+                element: <AddNewMembership/>
+            },
+            {
+                path: "/edit-membership",
+                element: <EditMembership/>
             },
            
 

@@ -1,6 +1,6 @@
 import { Form, Input, InputNumber, Upload } from "antd";
 import GoBackButton from "../Shared/GobackButton/GoBackButton";
-import { FaCamera, FaImage } from "react-icons/fa";
+import {  FaImage } from "react-icons/fa";
 
 const AddProduct = () => {
   const onFinish = (values) => {
