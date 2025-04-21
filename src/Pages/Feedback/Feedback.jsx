@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 import { Avatar, ConfigProvider, Form, Input, Pagination, Table } from "antd";
 import { useState } from "react";
@@ -161,7 +162,7 @@ const Feedback = () => {
                 <Form.Item>
                   <button
                     onClick={handleOk}
-                    className="px-5 py-3 bg-primary text-white  rounded-xl"
+                    className="px-5 py-3 bg-green-500 text-white  rounded-lg"
                     type="submit"
                   >
               Save
