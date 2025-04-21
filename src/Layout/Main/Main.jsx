@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import { ConfigProvider, Drawer } from "antd";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaX } from "react-icons/fa6";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
-import brandlogo from "../../assets/image/logo.png";
 import user from "../../assets/image/user.png";
 const MainLayout = () => {
     const [drawer, setDrawer] = useState(false);
