@@ -23,6 +23,7 @@ import MAnageOrder from "../Pages/ManageOrder/MAnageOrder";
 import ManageMenbership from "../Pages/ManageMembership/ManageMenbership";
 import AddNewMembership from "../Components/MemberShipManagement/AddNewMembership";
 import EditMembership from "../Components/MemberShipManagement/EditMembership";
+import ManageBanner from "../Pages/ManageBanner/ManageBanner";
 
 
 export const router = createBrowserRouter([
@@ -83,6 +84,10 @@ export const router = createBrowserRouter([
             {
                 path: "/edit-membership",
                 element: <EditMembership/>
+            },
+            {
+                path: "/manage-banner",
+                element: <ManageBanner/>
             },
            
 

@@ -5,7 +5,8 @@ import image3 from "../image/image3.png"
 import p1 from "../image/p1.png"
 import p2 from "../image/p2.png"
 import p3 from "../image/p3.png"
-
+import banner from "../image/b1.png"
+import banner2 from "../image/b2.png"
 
 
 
@@ -16,6 +17,8 @@ export const AllImages = {
     image3,
     p1,
     p2,
-    p3
+    p3,
+    banner,
+    banner2
     
 }
