@@ -24,6 +24,7 @@ import ManageMenbership from "../Pages/ManageMembership/ManageMenbership";
 import AddNewMembership from "../Components/MemberShipManagement/AddNewMembership";
 import EditMembership from "../Components/MemberShipManagement/EditMembership";
 import ManageBanner from "../Pages/ManageBanner/ManageBanner";
+import Feedback from "../Pages/Feedback/Feedback";
 
 
 export const router = createBrowserRouter([
@@ -88,6 +89,10 @@ export const router = createBrowserRouter([
             {
                 path: "/manage-banner",
                 element: <ManageBanner/>
+            },
+            {
+                path: "/feedback",
+                element: <Feedback/>
             },
            
 

@@ -4,7 +4,12 @@ import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 const ManageBanner = () => {
   return (
     <div>
-      <GoBackButton text={"Banner Managements"} />
+      <div>
+        <GoBackButton text={"Banner Managements"} />
+        <button className=" px-4 py-1 rounded-md bg-primary text-white">
+          Add Banner
+        </button>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="bg-neutral-200 p-5 rounded-xl flex flex-col gap-5">
           <div className="bg-[#37474f] text-white  rounded-xl">
@@ -21,7 +26,9 @@ const ManageBanner = () => {
               <img src={AllImages.banner2} alt="" className="w-52 h-40 " />
             </div>
           </div>
-        <button className="text-xl font-bold px-4 py-1 rounded-md">Edit</button>
+          <button className="text-xl font-bold px-4 py-1 rounded-md">
+            Edit
+          </button>
         </div>
         <div className="bg-neutral-200 p-5 rounded-xl flex flex-col gap-5">
           <div className="bg-[#f2e2cd] text-neutral-500  rounded-xl">
@@ -38,7 +45,9 @@ const ManageBanner = () => {
               <img src={AllImages.banner} alt="" className="w-52 h-40 p-3" />
             </div>
           </div>
-        <button className="text-xl font-bold px-4 py-1 rounded-md">Edit</button>
+          <button className="text-xl font-bold px-4 py-1 rounded-md">
+            Edit
+          </button>
         </div>
         <div className="bg-neutral-200 p-5 rounded-xl flex flex-col gap-5">
           <div className="bg-[#968a33] text-white  rounded-xl">
@@ -55,7 +64,9 @@ const ManageBanner = () => {
               <img src={AllImages.banner2} alt="" className="w-52 h-40" />
             </div>
           </div>
-        <button className="text-xl font-bold px-4 py-1 rounded-md">Edit</button>
+          <button className="text-xl font-bold px-4 py-1 rounded-md">
+            Edit
+          </button>
         </div>
       </div>
     </div>
