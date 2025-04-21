@@ -16,8 +16,9 @@ import TermsCondition from "../Pages/Settings/TermsCondition/TermsCondition";
 import Banner from "../Pages/Settings/Banner/Banner";
 import AdminProfile from "../Pages/AdminProfile/AdminProfile";
 import Notifications from "../Pages/Notification/Notification";
-import AddClients from "../Pages/AddClients/AddClients";
 import ManageClass from "../Pages/ManageCLass/ManageClass";
+import ManageProducts from "../Pages/ManageProducts/ManageProducts";
+import AddProduct from "../Components/ProductManagement/AddProduct";
 
 
 export const router = createBrowserRouter([
@@ -56,8 +57,12 @@ export const router = createBrowserRouter([
                 element: <ManageClass/>
             },
             {
-                path: "/add-client",
-                element: <AddClients/>
+                path: "/manage-product",
+                element: <ManageProducts/>
+            },
+            {
+                path: "/add-product",
+                element: <AddProduct/>
             },
            
 
