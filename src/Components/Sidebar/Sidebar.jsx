@@ -143,7 +143,7 @@ const Sidebar = ({ closeDrawer }) => {
                 >
                   <Link to={item.Link}>
                     <div className="flex items-center gap-3">
-                      {item.icon}
+                      {/* {item.icon} */}
                       <p>{item.label}</p>
                       {item.isDropdown && (
                         <BiChevronDown
@@ -163,15 +163,21 @@ const Sidebar = ({ closeDrawer }) => {
                   {item.subItems.map((subItem) => (
                     <Link to={subItem.Link} key={subItem.label}>
                       <div
-                        className={`py-2 px-5 cursor-pointer  ${
+                        className={`py-2 px-5 cursor-pointer  ml-6 mt-2 ${
                           active === subItem.label
                             ? "text-white bg-primary font-bold"
-                            : "text-black "
+                            : "text-white bg-secondary"
                         }`}
                         onClick={() => handleSubItemClick(subItem.label)}
                       >
-                        <p className="flex items-center gap-2 ml-10">
-                          {subItem.icon}
+                        <p
+                        // className={`w-full  px-5 py-2 cursor-pointer   ${
+                        //   active === item.label
+                        //     ? " text-white font-semibold bg-primary"
+                        //     : "bg-secondary text-white font-semibold"
+                        // }`}
+                        >
+                          {/* {subItem.icon} */}
                           {subItem.label}
                         </p>
                       </div>
@@ -188,7 +194,7 @@ const Sidebar = ({ closeDrawer }) => {
               onClick={() => console.log("Logged out")}
             >
               <FiLogOut className="text-xl" />
-              <p className="ml-2">Log out</p> 
+              <p className="ml-2">Log out</p>
             </div>
           </Link>
         </div>
