@@ -44,7 +44,7 @@ const SubscriptionGrowth = () => {
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <h1 className="text-lg md:text-xl font-medium">
-                        Subscription Growth
+                    Membership Growth
                     </h1>
                     <DatePicker
                         onChange={onChange}
@@ -67,22 +67,17 @@ const SubscriptionGrowth = () => {
                                 bottom: 0,
                             }}
                         >
-                            <defs>
-                                <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#d4af37" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#d4af37" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
+                         
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
-                            <YAxis tickFormatter={(value) => `${value}%`} />
+                            <YAxis tickFormatter={(value) => `${value}`} />
                             <Tooltip />
                             <Area
                                 type="monotone"
                                 dataKey="earnings"
-                                stroke="#d4af37"
+                                stroke="#f4660e"
                                 fillOpacity={1}
-                                fill="url(#colorEarnings)"
+                                fill="#f4660e"
                             />
                         </AreaChart>
                     </ResponsiveContainer>
