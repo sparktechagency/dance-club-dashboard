@@ -67,6 +67,9 @@ const ManageProducts = () => {
   const handleAddProduct = () => {
     navigate("/add-product");
   };
+  const handleEditProduct = () => {
+    navigate("/edit-product");
+  };
   const columns = [
     {
       title: "Sl No.",
@@ -109,7 +112,7 @@ const ManageProducts = () => {
             <button onClick={() => showModal(record)}>
               <FaEye className="text-2xl"></FaEye>
             </button>
-            <button onClick={() => handleEdit(record)}>
+            <button onClick={() => handleEditProduct(record)}>
               <AiOutlineEdit className="text-2xl" />
             </button>
           </Space>
