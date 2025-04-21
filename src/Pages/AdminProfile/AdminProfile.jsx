@@ -5,6 +5,7 @@ import { IoIosLock } from "react-icons/io";
 import user from "../../assets/image/user.png";
 import { FaUserEdit } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
+import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 
 const AdminProfile = () => {
     const [profilePic, setProfilePic] = useState(user);
@@ -49,9 +50,9 @@ const AdminProfile = () => {
 
     return (
         <div className="mx-2">
-            {/* Profile Header */}
+           <GoBackButton text={"Admin Profile"}/>
             <div className="flex flex-col justify-center items-center py-5">
-                <div className="flex flex-col items-center text-center mb-10 py-6 bg-primary w-full">
+                <div className="flex flex-col items-center text-center mb-10 py-6 bg-white w-full">
                     <div className="relative">
                         <Avatar
                             size={140}

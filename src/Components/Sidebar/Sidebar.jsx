@@ -73,6 +73,11 @@ const Sidebar = ({ closeDrawer }) => {
       label: "Feedback",
       Link: "/feedback",
     },
+    {
+      icon: <FaMoneyCheckAlt className="h-5 w-5" />,
+      label: "Manage Coupon",
+      Link: "/manage-coupon",
+    },
    
  
     {
@@ -80,16 +85,7 @@ const Sidebar = ({ closeDrawer }) => {
       label: "Settings",
       isDropdown: true,
       subItems: [
-        // {
-        //   icon: <FaEdit className="h-5 w-5" />,
-        //   label: "About Us",
-        //   Link: "/settings/about-us",
-        // },
-        // {
-        //   icon: <MdPolicy className="h-5 w-5" />,
-        //   label: "Contact Us",
-        //   Link: "/settings/contact-us",
-        // },
+    
         {
           icon: <MdPrivacyTip className="h-5 w-5" />,
           label: "Privacy Policy",
@@ -103,7 +99,7 @@ const Sidebar = ({ closeDrawer }) => {
         {
           icon: <MdMenuBook className="h-5 w-5" />,
           label: "profile",
-          Link: "/settings/profile",
+          Link: "/admin-profile",
         },
       ],
     },

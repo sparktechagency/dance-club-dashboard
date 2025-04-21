@@ -16,8 +16,16 @@ import TermsCondition from "../Pages/Settings/TermsCondition/TermsCondition";
 import Banner from "../Pages/Settings/Banner/Banner";
 import AdminProfile from "../Pages/AdminProfile/AdminProfile";
 import Notifications from "../Pages/Notification/Notification";
-import AddClients from "../Pages/AddClients/AddClients";
 import ManageClass from "../Pages/ManageCLass/ManageClass";
+import ManageProducts from "../Pages/ManageProducts/ManageProducts";
+import AddProduct from "../Components/ProductManagement/AddProduct";
+import MAnageOrder from "../Pages/ManageOrder/MAnageOrder";
+import ManageMenbership from "../Pages/ManageMembership/ManageMenbership";
+import AddNewMembership from "../Components/MemberShipManagement/AddNewMembership";
+import EditMembership from "../Components/MemberShipManagement/EditMembership";
+import ManageBanner from "../Pages/ManageBanner/ManageBanner";
+import Feedback from "../Pages/Feedback/Feedback";
+import ManageCoupon from "../Pages/ManageCoupon/ManageCoupon";
 
 
 export const router = createBrowserRouter([
@@ -56,8 +64,44 @@ export const router = createBrowserRouter([
                 element: <ManageClass/>
             },
             {
-                path: "/add-client",
-                element: <AddClients/>
+                path: "/manage-product",
+                element: <ManageProducts/>
+            },
+            {
+                path: "/add-product",
+                element: <AddProduct/>
+            },
+            {
+                path: "/edit-product",
+                element: <AddProduct/>
+            },
+            {
+                path: "/manage-order",
+                element: <MAnageOrder/>
+            },
+            {
+                path: "/manage-membership",
+                element: <ManageMenbership/>
+            },
+            {
+                path: "/add-new-membership",
+                element: <AddNewMembership/>
+            },
+            {
+                path: "/edit-membership",
+                element: <EditMembership/>
+            },
+            {
+                path: "/manage-banner",
+                element: <ManageBanner/>
+            },
+            {
+                path: "/feedback",
+                element: <Feedback/>
+            },
+            {
+                path: "/manage-coupon",
+                element: <ManageCoupon/>
             },
            
 
