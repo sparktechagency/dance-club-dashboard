@@ -116,7 +116,7 @@ const Sidebar = ({ closeDrawer }) => {
   ];
 
   return (
-    <div className="bg-white h-full md:ml-16">
+    <div className="bg-[#eeeeee] h-full ">
       <div className="flex flex-col md:h-full">
         <div className="flex flex-col gap-2 md:my-5 mb-10">
           {menuItems.map((item) => (
@@ -188,7 +188,7 @@ const Sidebar = ({ closeDrawer }) => {
               onClick={() => console.log("Logged out")}
             >
               <FiLogOut className="text-xl" />
-              <p className="ml-2">Log out</p>
+              <p className="ml-2">Log out</p> 
             </div>
           </Link>
         </div>
