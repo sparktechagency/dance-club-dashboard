@@ -1,59 +1,44 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
+import { Avatar, ConfigProvider, Select, Table } from "antd";
 import { useState } from "react";
 
 import { Modal } from "antd";
-import { FaCheck, FaEye, FaUser } from "react-icons/fa";
-
-import { SearchOutlined } from "@ant-design/icons";
-import { MdBlock } from "react-icons/md";
-import user from "../../../assets/image/user.png";
+import user from "../../../assets/image/p1.png";
+import { Link } from "react-router-dom";
 const AnalyticsTable = () => {
   const userData = [
     {
       employee_id: "#1239",
-      name: "Mr. Mahmud",
+      name: "Product 1",
       profileImage: user,
       email: "mr101@mail.ru",
       total_booking: 20,
       contact: "(+33) 7 00 55 59 27",
       location: "Corona, Michigan",
-      address: "76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris",
-      dob: "17 Dec, 2024",
-      gender: "Male",
-      action: "↗",
-      status: "true",
-      designation: "Project Manager",
+      delivary_location: "76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris",
+      price: "$1000",
     },
     {
       employee_id: "#1238",
-      name: "Lily",
+      name: "Product 2",
       email: "xterris@gmail.com",
       profileImage: user,
       total_booking: 20,
       contact: "(+33) 7 00 55 59 27",
       location: "Great Falls, Maryland",
-      address: "123 Rue des Lilas, Paris, 75008",
-      dob: "15 Jan, 2022",
-      gender: "Female",
-      action: "↗",
-      status: "true",
-      designation: "Software Engineer",
+      delivary_location: "123 Rue des Lilas, Paris, 75008",
+      price: "$1000",
     },
     {
       employee_id: "#1237",
-      name: "Kathry",
+      name: "Product 3",
       profileImage: user,
       email: "irnabela@gmail.com",
       total_booking: 20,
       contact: "(+33) 7 00 55 59 27",
       location: "Syracuse, Connecticut",
-      address: "45 Avenue des Champs, Paris, 75001",
-      dob: "11 Jul, 2021",
-      gender: "Female",
-      action: "↗",
-      status: "false",
-      designation: "Data Analyst",
+      delivary_location: "45 Avenue des Champs, Paris, 75001",
+      price: "$1000",
     },
   ];
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,6 +70,10 @@ const AnalyticsTable = () => {
     console.log(record);
   };
 
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+  };
+
   const columns = [
     {
       title: "#",
@@ -102,15 +91,11 @@ const AnalyticsTable = () => {
         </div>
       ),
     },
+
     {
-      title: "Employee ID",
-      dataIndex: "employee_id",
-      key: "employee_id",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
     },
     {
       title: "Contact No",
@@ -121,45 +106,39 @@ const AnalyticsTable = () => {
       },
     },
     {
-      title: "Designation",
-      dataIndex: "designation",
-      key: "designation",
+      title: "Delivary_location",
+      dataIndex: "delivary_location",
+      key: "delivary_location",
     },
 
     {
       title: "Status",
       key: "status",
       render: (_, record) => (
-        <p className="flex items-center gap-2">
-          {record.status === "true" ? (
-            <FaCheck className="text-green-500 text-2xl" />
-          ) : (
-            <MdBlock className="text-red-500 text-2xl" />
-          )}
-        </p>
-      ),
-    },
-    {
-      title: "View",
-      key: "view",
-      render: (_, record) => (
-        <ConfigProvider
-          theme={{
-            components: {
-              Button: {
-                defaultHoverBorderColor: "rgb(47,84,235)",
-                defaultHoverColor: "rgb(47,84,235)",
-                defaultBorderColor: "rgb(47,84,235)",
-              },
+        <Select
+          defaultValue="Pending"
+          style={{ width: 120 }}
+          onChange={handleChange}
+          className={`px-2 py-1 rounded-md ${
+            record?.status === "Pending" && "text-red-500"
+          } ${record?.status === "Shipping" && "text-yellow-500"} ${
+            record?.status === "Complete" && "text-green-500"
+          }`}
+          options={[
+            {
+              value: "Pending",
+              label: "Pending",
             },
-          }}
-        >
-          <Space size="middle">
-            <button onClick={() => showModal(record)}>
-              <FaEye className="text-2xl"></FaEye>
-            </button>
-          </Space>
-        </ConfigProvider>
+            {
+              value: "Shipping",
+              label: "Shipping",
+            },
+            {
+              value: "Complete",
+              label: "Complete",
+            },
+          ]}
+        />
       ),
     },
   ];
@@ -169,47 +148,13 @@ const AnalyticsTable = () => {
       <div className="flex flex-col md:flex-row justify-between md:items-center mb-10">
         {/* ?TODO */}
         <h3 className="text-xl  font-semibold text-textColor px-2 md:px-0">
-          Analytics Table
+          New Order
         </h3>
-        {/* <div className="mt-4 md:mt-0 flex justify-between items-center gap-2">
-          <div>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Input: {
-                    borderRadius: 0,
-                    hoverBorderColor: "none",
-                    activeBorderColor: "none",
-                  },
-                },
-              }}
-            >
-              <div className="flex gap-2 items-center relative">
-                <Input
-                  placeholder="Search by email"
-                  allowClear
-                  size="large"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onPressEnter={handleSearch}
-                  prefix={
-                    <SearchOutlined
-                      style={{ cursor: "pointer" }}
-                      onClick={handleSearch}
-                    />
-                  }
-                />
-
-                <button
-                  onClick={handleSearch}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
-                >
-                  search
-                </button>
-              </div>
-            </ConfigProvider>
-          </div>
-        </div> */}
+        <div className="mt-4 md:mt-0 flex justify-between items-center gap-2">
+          <Link to="/manage-order">
+            <p className="text-sm text-primary underline">View All</p>
+          </Link>
+        </div>
       </div>
       <div className=" overflow-x-auto">
         <ConfigProvider

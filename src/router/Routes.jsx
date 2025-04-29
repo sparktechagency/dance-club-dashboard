@@ -9,11 +9,8 @@ import Newpass from "../Pages/Auth/NewPass/Newpass";
 import VerifyPass from "../Pages/Auth/VerifyPass/VerifyPass";
 import ContinuePage from "../Pages/Auth/ContinuePage/ContinuePage";
 
-import AboutUs from "../Pages/Settings/AboutUS/AboutUs";
-import ContactUS from "../Pages/Settings/ContactUS/COntactUS";
 import PrivacyPolicy from "../Pages/Settings/PrivacyPolicy/PrivacyPolicy";
 import TermsCondition from "../Pages/Settings/TermsCondition/TermsCondition";
-import Banner from "../Pages/Settings/Banner/Banner";
 import AdminProfile from "../Pages/AdminProfile/AdminProfile";
 import Notifications from "../Pages/Notification/Notification";
 import ManageClass from "../Pages/ManageCLass/ManageClass";
@@ -106,14 +103,7 @@ export const router = createBrowserRouter([
            
 
             // setting:
-            {
-                path: "/settings/about-us",
-                element: <AboutUs />
-            },
-            {
-                path: "/settings/contact-us",
-                element: <ContactUS />
-            },
+           
 
 
             {
@@ -124,10 +114,7 @@ export const router = createBrowserRouter([
                 path: "/settings/terms-condition",
                 element: <TermsCondition />
             },
-            {
-                path: "/settings/banner",
-                element: <Banner />
-            },
+        
 
             // Admin profile:
             {
