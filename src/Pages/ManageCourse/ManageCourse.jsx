@@ -1,10 +1,246 @@
-
+/* eslint-disable no-unused-vars */
+import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
+import { useState } from "react";
+import { Modal } from "antd";
+import { FaEye, FaTrashAlt } from "react-icons/fa";
+import { SearchOutlined } from "@ant-design/icons";
+import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
+import { AiOutlineEdit } from "react-icons/ai";
+import { AllImages } from "../../assets/image/AllImages";
 const ManageCourse = () => {
-    return (
-        <div>
-            
+  const userData = [
+    {
+      employee_id: "#1239",
+      name: "The Buzz Spot",
+      subName: "Non-Scheduled",
+      classImg: AllImages.image1,
+      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
+      price: "$1000",
+    },
+    {
+      employee_id: "#1239",
+      name: "Club Pulse",
+      subName: "Non-Scheduled",
+      classImg: AllImages.image2,
+      location: "Corona, Michigan",
+      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
+      price: "$1000",
+    },
+    {
+      employee_id: "#1239",
+      name: "Vibe Loungge",
+      subName: "Scheduled",
+      classImg: AllImages.image3,
+      location: "Corona, Michigan",
+      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
+      price: "$1000",
+    },
+  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [email, setEmail] = useState("");
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(userData.length);
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
+
+  const showModal = (record) => {
+    setSelectedUser(record);
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleSearch = () => {
+    // refetc();
+  };
+
+  const handleSession = (record) => {
+    console.log(record);
+  };
+  const handleEdit = (record) => {
+    // console.log(record);
+  };
+  const hnadleAddClass = (values) => {
+    console.log(values);
+  };
+  const columns = [
+    {
+      title: "Sl No.",
+      dataIndex: "slno",
+      key: "slno",
+      render: (text, record, index) => index + 1,
+    },
+    {
+      title: "Course Name",
+      key: "name",
+      render: (_, record) => (
+        <div className="flex items-center gap-2">
+          <img src={record.classImg} alt="" />
+          <span>{record.name}</span>
         </div>
-    );
+      ),
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <ConfigProvider
+          theme={{
+            components: {
+              Button: {
+                defaultHoverBorderColor: "rgb(47,84,235)",
+                defaultHoverColor: "rgb(47,84,235)",
+                defaultBorderColor: "rgb(47,84,235)",
+              },
+            },
+          }}
+        >
+          <Space size="middle">
+            <button onClick={() => handleEdit(record)}>
+              <AiOutlineEdit className="text-2xl" />
+            </button>
+            <button onClick={() => showModal(record)}>
+              <FaTrashAlt className="text-2xl"></FaTrashAlt>
+            </button>
+          </Space>
+        </ConfigProvider>
+      ),
+    },
+  ];
+
+  return (
+    <div className="">
+      <div className="flex flex-col md:flex-row justify-between md:items-center mb-10">
+        <GoBackButton text="Manage Course" />
+        <div className="mt-4 md:mt-0 flex justify-between items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
+            <ConfigProvider
+              theme={{
+                components: {
+                  Input: {
+                    borderRadius: 0,
+                    hoverBorderColor: "none",
+                    activeBorderColor: "none",
+                  },
+                },
+              }}
+            >
+              <div className="flex gap-2 items-center relative">
+                <Input
+                  placeholder="Search course"
+                  allowClear
+                  size="large"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onPressEnter={handleSearch}
+                  prefix={
+                    <SearchOutlined
+                      style={{ cursor: "pointer" }}
+                      onClick={handleSearch}
+                    />
+                  }
+                />
+
+                <button
+                  onClick={handleSearch}
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
+                >
+                  search
+                </button>
+              </div>
+            </ConfigProvider>
+            <button
+              onClick={hnadleAddClass}
+              className="bg-primary text-white py-2 px-4 rounded-md"
+            >
+              Add new course
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className=" overflow-x-auto">
+        <Table
+          columns={columns}
+          dataSource={userData || []}
+          pagination={false}
+          rowKey="id"
+        />
+      </div>
+
+      <div className="mt-10 flex justify-center items-center">
+        <Pagination onChange={handlePageChange}>
+          Showing {(currentPage - 1) * pageSize + 1} to{" "}
+          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
+        </Pagination>
+      </div>
+
+      <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
+        {selectedUser && (
+          <div className="">
+            <div className="bg-red-100  text-center relative h-[100px] w-full flex flex-col justify-center items-center">
+              <Avatar
+                className="shadow-md h-32 w-32 absolute top-[20px] left-[50%] translate-x-[-50%]"
+                src={selectedUser?.profileImage}
+              />
+            </div>
+
+            <div className="mt-16">
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Name :</p>
+                <p>{selectedUser.name}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Employee Id :</p>
+                <p>{selectedUser.employee_id}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Designation:</p>
+                <p>{selectedUser?.designation || "N/A"}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Email :</p>
+                <p>{selectedUser.email}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Contact No :</p>
+                <p>{selectedUser?.contact || "N/A"}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Member Since :</p>
+                <p>{selectedUser?.member_since || "N/A"}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Address :</p>
+                <p>{selectedUser.address || "N/A"}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Qualification :</p>
+                <p>{selectedUser.qualification || "N/A"}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
+    </div>
+  );
 };
 
 export default ManageCourse;

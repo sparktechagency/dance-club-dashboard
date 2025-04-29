@@ -22,7 +22,7 @@ import ManageBanner from "../Pages/ManageBanner/ManageBanner";
 import Feedback from "../Pages/Feedback/Feedback";
 import ManageCoupon from "../Pages/ManageCoupon/ManageCoupon";
 import ManagePackage from "../Pages/ManagePackage/ManagePackage";
-import ManageCOurse from "../Pages/ManageCourse/ManageCOurse";
+import ManageCourse from "../Pages/ManageCourse/ManageCOurse";
 
 export const router = createBrowserRouter([
   {
@@ -85,7 +85,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/manage-course",
-        element: <ManageCOurse />,
+        element: <ManageCourse />,
       },
       {
         path: "/add-new-membership",
