@@ -1,8 +1,20 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
+import {
+  Avatar,
+  ConfigProvider,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Pagination,
+  Space,
+  Table,
+  Upload,
+} from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
-import { FaEye, FaTrashAlt } from "react-icons/fa";
+import { FaEye, FaImage, FaTrashAlt } from "react-icons/fa";
 import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -36,8 +48,8 @@ const ManageCourse = () => {
       price: "$1000",
     },
   ];
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,29 +59,37 @@ const ManageCourse = () => {
     setPageSize(pageSize);
   };
 
-  const showModal = (record) => {
-    setSelectedUser(record);
-    setIsModalOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    setSelectedUser(null);
-  };
-
   const handleSearch = () => {
     // refetc();
   };
 
-  const handleSession = (record) => {
-    console.log(record);
+  const showModal = () => {
+    setIsAddModalOpen(true);
   };
-  const handleEdit = (record) => {
-    // console.log(record);
+  const handleAddModalClose = () => {
+    setIsAddModalOpen(false);
   };
-  const hnadleAddClass = (values) => {
-    console.log(values);
+  const handleOk = () => {
+    setIsAddModalOpen(false);
   };
+  const handleEdit = () => {
+    setIsEditModalOpen(true);
+  };
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false);
+  };
+  const handlEditeOk = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const handleDelete = () => {
+    message.success("Deleted Successfully");
+  };
+
+  const handleProfilePicUpload = () => {};
+
+  const onFinish = () => {};
+  const onEditFInish = () => {};
   const columns = [
     {
       title: "Sl No.",
@@ -117,7 +137,7 @@ const ManageCourse = () => {
             <button onClick={() => handleEdit(record)}>
               <AiOutlineEdit className="text-2xl" />
             </button>
-            <button onClick={() => showModal(record)}>
+            <button onClick={handleDelete}>
               <FaTrashAlt className="text-2xl"></FaTrashAlt>
             </button>
           </Space>
@@ -168,7 +188,7 @@ const ManageCourse = () => {
               </div>
             </ConfigProvider>
             <button
-              onClick={hnadleAddClass}
+              onClick={showModal}
               className="bg-primary text-white py-2 px-4 rounded-md"
             >
               Add new course
@@ -192,52 +212,152 @@ const ManageCourse = () => {
         </Pagination>
       </div>
 
-      <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
-        {selectedUser && (
-          <div className="">
-            <div className="bg-red-100  text-center relative h-[100px] w-full flex flex-col justify-center items-center">
-              <Avatar
-                className="shadow-md h-32 w-32 absolute top-[20px] left-[50%] translate-x-[-50%]"
-                src={selectedUser?.profileImage}
-              />
-            </div>
-
-            <div className="mt-16">
-              <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Name :</p>
-                <p>{selectedUser.name}</p>
+      <Modal
+        title="Add New Course"
+        open={isAddModalOpen}
+        onOk={handleOk}
+        onCancel={handleAddModalClose}
+        footer={false}
+      >
+        <Form
+          onFinish={onFinish}
+          name="add-token"
+          initialValues={{ remember: false }}
+          layout="vertical"
+        >
+          <div className="w-full">
+            <Form.Item
+              name="title"
+              label={<p className=" text-md">Add Product image</p>}
+            >
+              <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
+                <Upload
+                  showUploadList={false}
+                  onChange={handleProfilePicUpload}
+                  className=" "
+                >
+                  <FaImage className="text-secondary h-10 w-10" />
+                  <p className="text-secondary">Upload Image</p>
+                </Upload>
               </div>
-              <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Employee Id :</p>
-                <p>{selectedUser.employee_id}</p>
-              </div>
-              <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Designation:</p>
-                <p>{selectedUser?.designation || "N/A"}</p>
-              </div>
-              <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Email :</p>
-                <p>{selectedUser.email}</p>
-              </div>
-              <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Contact No :</p>
-                <p>{selectedUser?.contact || "N/A"}</p>
-              </div>
-              <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Member Since :</p>
-                <p>{selectedUser?.member_since || "N/A"}</p>
-              </div>
-              <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Address :</p>
-                <p>{selectedUser.address || "N/A"}</p>
-              </div>
-              <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Qualification :</p>
-                <p>{selectedUser.qualification || "N/A"}</p>
-              </div>
-            </div>
+            </Form.Item>
           </div>
-        )}
+          <Form.Item
+            name="course_name"
+            label={<p className=" text-md">Course Name</p>}
+          >
+            <Input className=" text-md" placeholder="Type Course Name"></Input>
+          </Form.Item>
+          <Form.Item
+            name="duration"
+            label={<p className=" text-md">Duration</p>}
+          >
+            <Input className=" text-md" placeholder="Type  duration"></Input>
+          </Form.Item>
+          <Form.Item
+            name="expiry"
+            label={<p className=" text-md">Start Date</p>}
+          >
+            <DatePicker style={{ width: "100%" }}></DatePicker>
+          </Form.Item>
+          <Form.Item name="price" label={<p className=" text-md">Price</p>}>
+            <InputNumber
+              min={0}
+              placeholder="Type Price"
+              style={{ width: "100%" }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label={<p className=" text-md">Description</p>}
+          >
+            <Input.TextArea rows={4}></Input.TextArea>
+          </Form.Item>
+          <Form.Item type="submit">
+            <div className="flex justify-center items-center gap-2">
+              <button className="px-6 py-2 rounded-md bg-primary text-white">
+                Save
+              </button>
+              <button className="px-6 py-2 rounded-md border border-primary text-primary">
+                cancel
+              </button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
+      {/* Edit Modal */}
+      <Modal
+        title="Edit Course"
+        open={isEditModalOpen}
+        onOk={handlEditeOk}
+        onCancel={handleEditModalClose}
+        footer={false}
+      >
+        <Form
+          onFinish={onEditFInish}
+          name="add-token"
+          initialValues={{ remember: false }}
+          layout="vertical"
+        >
+          <div className="w-full">
+            <Form.Item
+              name="title"
+              label={<p className=" text-md">Add Product image</p>}
+            >
+              <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
+                <Upload
+                  showUploadList={false}
+                  onChange={handleProfilePicUpload}
+                  className=" "
+                >
+                  <FaImage className="text-secondary h-10 w-10" />
+                  <p className="text-secondary">Upload Image</p>
+                </Upload>
+              </div>
+            </Form.Item>
+          </div>
+          <Form.Item
+            name="course_name"
+            label={<p className=" text-md">Course Name</p>}
+          >
+            <Input className=" text-md" placeholder="Type Course Name"></Input>
+          </Form.Item>
+          <Form.Item
+            name="duration"
+            label={<p className=" text-md">Duration</p>}
+          >
+            <Input className=" text-md" placeholder="Type  duration"></Input>
+          </Form.Item>
+          <Form.Item
+            name="expiry"
+            label={<p className=" text-md">Start Date</p>}
+          >
+            <DatePicker style={{ width: "100%" }}></DatePicker>
+          </Form.Item>
+          <Form.Item name="price" label={<p className=" text-md">Price</p>}>
+            <InputNumber
+              min={0}
+              placeholder="Type Price"
+              style={{ width: "100%" }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label={<p className=" text-md">Description</p>}
+          >
+            <Input.TextArea rows={4}></Input.TextArea>
+          </Form.Item>
+          <Form.Item type="submit">
+            <div className="flex justify-center items-center gap-2">
+              <button className="px-6 py-2 rounded-md bg-primary text-white">
+                Save
+              </button>
+              <button className="px-6 py-2 rounded-md border border-primary text-primary">
+                cancel
+              </button>
+            </div>
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
   );
