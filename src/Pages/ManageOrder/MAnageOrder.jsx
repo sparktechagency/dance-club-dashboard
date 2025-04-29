@@ -1,33 +1,52 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
+import { Avatar, ConfigProvider, Input, Pagination, Select, Table } from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { useNavigate } from "react-router-dom";
+import user from "../../assets/image/p1.png";
 const MAnageOrder = () => {
   const navigate = useNavigate();
   const userData = [
     {
       employee_id: "#1239",
+      name: "Product 1",
+      profileImage: user,
       email: "mr101@mail.ru",
-      total_items: "10",
+      total_booking: 20,
+      contact: "(+33) 7 00 55 59 27",
+      location: "Corona, Michigan",
+      delivary_location: "76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris",
       price: "$1000",
-      status: "Delevered",
+      totalItems: 2,
+      delevaryDate: "2023-08-15",
     },
     {
-      employee_id: "#1239",
-      email: "mr101@mail.ru",
-      total_items: "10",
+      employee_id: "#1238",
+      name: "Product 2",
+      email: "xterris@gmail.com",
+      profileImage: user,
+      total_booking: 20,
+      contact: "(+33) 7 00 55 59 27",
+      location: "Great Falls, Maryland",
+      delivary_location: "123 Rue des Lilas, Paris, 75008",
       price: "$1000",
-      status: "Delevered",
+      totalItems: 2,
+      delevaryDate: "2023-08-15",
     },
     {
-      employee_id: "#1239",
-      email: "mr101@mail.ru",
-      total_items: "10",
+      employee_id: "#1237",
+      name: "Product 3",
+      profileImage: user,
+      email: "irnabela@gmail.com",
+      total_booking: 20,
+      contact: "(+33) 7 00 55 59 27",
+      location: "Syracuse, Connecticut",
+      delivary_location: "45 Avenue des Champs, Paris, 75001",
       price: "$1000",
-      status: "Delevered",
+      totalItems: 2,
+      delevaryDate: "2023-08-15",
     },
   ];
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,6 +83,7 @@ const MAnageOrder = () => {
   const handleAddProduct = () => {
     navigate("/add-product");
   };
+  const handleChange = () => {};
   const columns = [
     {
       title: "Order No.",
@@ -79,8 +99,8 @@ const MAnageOrder = () => {
     },
     {
       title: "Total Items",
-      dataIndex: "total_items",
-      key: "total_items",
+      dataIndex: "totalItems",
+      key: "totalItems",
     },
     {
       title: "Price",
@@ -89,14 +109,37 @@ const MAnageOrder = () => {
     },
     {
       title: "Delevary Time",
-      dataIndex: "dlevary_time",
-      key: "dlevary_time",
+      dataIndex: "delevaryDate",
+      key: "delevaryDate",
     },
     {
       title: "Status",
-      dataIndex: "status",
+      key: "status",
       render: (_, record) => (
-        <p className=" text-green-500 ">{record.status}</p>
+        <Select
+          defaultValue="Pending"
+          style={{ width: 120 }}
+          onChange={handleChange}
+          className={`px-2 py-1 rounded-md ${
+            record?.status === "Pending" && "text-red-500"
+          } ${record?.status === "Shipping" && "text-yellow-500"} ${
+            record?.status === "Complete" && "text-green-500"
+          }`}
+          options={[
+            {
+              value: "Pending",
+              label: "Pending",
+            },
+            {
+              value: "Shipping",
+              label: "Shipping",
+            },
+            {
+              value: "Complete",
+              label: "Complete",
+            },
+          ]}
+        />
       ),
     },
   ];

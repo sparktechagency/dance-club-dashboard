@@ -60,8 +60,19 @@ const Sidebar = ({ closeDrawer }) => {
     },
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
-      label: "Manage Membership ",
-      Link: "/manage-membership",
+      label: "Manage Token ",
+      Link: "/manage-package",
+    },
+    // {
+    //   icon: <FaMoneyCheckAlt className="h-5 w-5" />,
+    //   label: "Manage Membership ",
+    //   Link: "/manage-membership",
+    // },
+
+    {
+      icon: <FaMoneyCheckAlt className="h-5 w-5" />,
+      label: "Manage Course",
+      Link: "/manage-course",
     },
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,

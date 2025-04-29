@@ -8,6 +8,7 @@ import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 
 import { useNavigate } from "react-router-dom";
 import { IoArrowUndoSharp } from "react-icons/io5";
+import { FaTrashAlt } from "react-icons/fa";
 const Feedback = () => {
   const navigate = useNavigate();
   const userData = [
@@ -79,7 +80,8 @@ const Feedback = () => {
       title: "Status",
       dataIndex: "status",
       render: (text, record) => (
-        <p
+       <div className="flex gap-5 justify-start items-center">
+         <p
           onClick={showModal}
           className={`flex items-center justify-center gap-2 border rounded-md px-3 py-1  ${
             record.status === "Pending" ? "text-red-500" : "text-green-500"
@@ -88,6 +90,8 @@ const Feedback = () => {
           <IoArrowUndoSharp />
           {record.status}
         </p>
+        <FaTrashAlt className="text-red-500 text-xl"/>
+       </div>
       ),
     },
   ];
