@@ -22,7 +22,7 @@ import ManageBanner from "../Pages/ManageBanner/ManageBanner";
 import Feedback from "../Pages/Feedback/Feedback";
 import ManageCoupon from "../Pages/ManageCoupon/ManageCoupon";
 import ManagePackage from "../Pages/ManagePackage/ManagePackage";
-import ManageCourse from "../Pages/ManageCourse/ManageCOurse";
+import ManageCourse from "../Pages/ManageCourse/ManageCourse";
 import ClassManagement from "../Components/ClassManagement/ClassManagement";
 
 export const router = createBrowserRouter([
