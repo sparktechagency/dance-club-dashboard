@@ -7,7 +7,10 @@ import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AllImages } from "../../assets/image/AllImages";
+import { useNavigate } from "react-router-dom";
 const ManageClass = () => {
+const navigate = useNavigate();
+
   const userData = [
     {
       employee_id: "#1239",
@@ -62,8 +65,8 @@ const ManageClass = () => {
   const handleEdit = (record) => {
     // console.log(record);
   };
-  const hnadleAddClass = (values) => {
-    console.log(values);
+  const hnadleAddClass = () => {
+    navigate("/add-class");
   };
   const columns = [
     {

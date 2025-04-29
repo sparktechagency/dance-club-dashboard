@@ -23,6 +23,7 @@ import Feedback from "../Pages/Feedback/Feedback";
 import ManageCoupon from "../Pages/ManageCoupon/ManageCoupon";
 import ManagePackage from "../Pages/ManagePackage/ManagePackage";
 import ManageCourse from "../Pages/ManageCourse/ManageCOurse";
+import ClassManagement from "../Components/ClassManagement/ClassManagement";
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,11 @@ export const router = createBrowserRouter([
         path: "/manage-class",
         element: <ManageClass />,
       },
+      {
+        path: "/add-class",
+        element: <ClassManagement />,
+      },
+
       {
         path: "/manage-product",
         element: <ManageProducts />,
