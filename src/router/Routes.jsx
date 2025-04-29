@@ -1,6 +1,4 @@
-import {
-    createBrowserRouter,
-} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../Layout/Main/Main";
 import Analytics from "../Pages/Analytics/Analytics";
 import SignIn from "../Pages/Auth/SignIn/SignIn";
@@ -23,109 +21,113 @@ import EditMembership from "../Components/MemberShipManagement/EditMembership";
 import ManageBanner from "../Pages/ManageBanner/ManageBanner";
 import Feedback from "../Pages/Feedback/Feedback";
 import ManageCoupon from "../Pages/ManageCoupon/ManageCoupon";
-
+import ManagePackage from "../Pages/ManagePackage/ManagePackage";
+import ManageCOurse from "../Pages/ManageCourse/ManageCOurse";
 
 export const router = createBrowserRouter([
-    {
-        path: "/sign-in",
-        element: <SignIn></SignIn>
-    },
+  {
+    path: "/sign-in",
+    element: <SignIn></SignIn>,
+  },
 
-    {
-        path: "/forgate-password",
-        element: <ForgatePassword></ForgatePassword>
-    },
-    {
-        path: "/varification",
-        element: <VerifyPass></VerifyPass>
-    },
+  {
+    path: "/forgate-password",
+    element: <ForgatePassword></ForgatePassword>,
+  },
+  {
+    path: "/varification",
+    element: <VerifyPass></VerifyPass>,
+  },
 
-    {
-        path: "/new-password",
-        element: <Newpass></Newpass>
-    },
-    {
-        path: "/continue-page",
-        element: <ContinuePage />
-    },
-    {
+  {
+    path: "/new-password",
+    element: <Newpass></Newpass>,
+  },
+  {
+    path: "/continue-page",
+    element: <ContinuePage />,
+  },
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
         path: "/",
-        element: <MainLayout />,
-        children: [
-            {
-                path: "/",
-                element: <Analytics />
-            },
-            {
-                path: "/manage-class",
-                element: <ManageClass/>
-            },
-            {
-                path: "/manage-product",
-                element: <ManageProducts/>
-            },
-            {
-                path: "/add-product",
-                element: <AddProduct/>
-            },
-            {
-                path: "/edit-product",
-                element: <AddProduct/>
-            },
-            {
-                path: "/manage-order",
-                element: <MAnageOrder/>
-            },
-            {
-                path: "/manage-membership",
-                element: <ManageMenbership/>
-            },
-            {
-                path: "/add-new-membership",
-                element: <AddNewMembership/>
-            },
-            {
-                path: "/edit-membership",
-                element: <EditMembership/>
-            },
-            {
-                path: "/manage-banner",
-                element: <ManageBanner/>
-            },
-            {
-                path: "/feedback",
-                element: <Feedback/>
-            },
-            {
-                path: "/manage-coupon",
-                element: <ManageCoupon/>
-            },
-           
+        element: <Analytics />,
+      },
+      {
+        path: "/manage-class",
+        element: <ManageClass />,
+      },
+      {
+        path: "/manage-product",
+        element: <ManageProducts />,
+      },
+      {
+        path: "/add-product",
+        element: <AddProduct />,
+      },
+      {
+        path: "/edit-product",
+        element: <AddProduct />,
+      },
+      {
+        path: "/manage-order",
+        element: <MAnageOrder />,
+      },
+      {
+        path: "/manage-membership",
+        element: <ManageMenbership />,
+      },
+      {
+        path: "/manage-package",
+        element: <ManagePackage />,
+      },
+      {
+        path: "/manage-course",
+        element: <ManageCOurse />,
+      },
+      {
+        path: "/add-new-membership",
+        element: <AddNewMembership />,
+      },
+      {
+        path: "/edit-membership",
+        element: <EditMembership />,
+      },
+      {
+        path: "/manage-banner",
+        element: <ManageBanner />,
+      },
+      {
+        path: "/feedback",
+        element: <Feedback />,
+      },
+      {
+        path: "/manage-coupon",
+        element: <ManageCoupon />,
+      },
 
-            // setting:
-           
+      // setting:
 
+      {
+        path: "/settings/privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/settings/terms-condition",
+        element: <TermsCondition />,
+      },
 
-            {
-                path: "/settings/privacy-policy",
-                element: <PrivacyPolicy />
-            },
-            {
-                path: "/settings/terms-condition",
-                element: <TermsCondition />
-            },
-        
-
-            // Admin profile:
-            {
-                path: '/admin-profile',
-                element: <AdminProfile />
-            },
-            {
-                path: '/notification',
-                element: <Notifications />
-            }
-
-        ]
-    },
+      // Admin profile:
+      {
+        path: "/admin-profile",
+        element: <AdminProfile />,
+      },
+      {
+        path: "/notification",
+        element: <Notifications />,
+      },
+    ],
+  },
 ]);
