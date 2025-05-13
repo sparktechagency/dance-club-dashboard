@@ -1,7 +1,9 @@
 import { Col } from "antd";
-
+import { useGetAnalyticsQuery } from "../../../redux/api/features/dashboard/dashboardApi";
 
 const AnalyticsInfo = () => {
+  const { data: analyticsData } = useGetAnalyticsQuery();
+  console.log("analyticsData", analyticsData);
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
@@ -16,9 +18,7 @@ const AnalyticsInfo = () => {
         <Col>
           <div className="flex flex-col  border-r-2 p-4 bg-white rounded-md gap-5  h-auto md:h-28">
             <p className=" text-xl font-bold">18.6K</p>
-            <p className="text-base md:text-lg ">
-              Total Membership User
-            </p>
+            <p className="text-base md:text-lg ">Total Membership User</p>
           </div>
         </Col>
         {/* patient */}
