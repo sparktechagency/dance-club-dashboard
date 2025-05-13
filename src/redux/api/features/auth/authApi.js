@@ -1,6 +1,6 @@
-import { baseAPi } from "../../baseApi";
+import { baseApi } from "../../baseApi";
 
-const AuthApi = baseAPi.injectEndpoints({
+const AuthApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({

@@ -16,29 +16,39 @@ const SignIn = () => {
   };
 
   const [login] = useLoginMutation();
-const onFinish = async (values) => {
-  try {
-    const data = {
-      email: values.email,
-      password: values.password,
+  const onFinish = async (values) => {
+        const userInfo = {
+            email: values.email,
+            password: values.password
+        }
+        // console.log("Received values of form: ", userInfo);
+        try {
+
+            const response = await login(userInfo).unwrap();
+            if (response?.data?.accessToken) {
+                const user = verifyToken(response?.data?.accessToken);
+                localStorage.setItem("user", JSON.stringify(user));
+                console.log("user", user);
+                const fullData = {
+                    user,
+                    _id: response?.data?._id,
+                    token: response?.data?.accessToken,
+                    refreshToken: response?.data?.refreshToken
+                }
+                console.log("fullData", fullData);
+                localStorage.setItem('_id', response?.data?._id);
+                localStorage.setItem('token', response?.data?.accessToken);
+                dispatch(
+                    setUser(fullData)
+                );
+                navigate('/');
+            }
+            message.success("Login Successfully!");
+        } catch (error) {
+            console.log(error);
+        }
+
     };
-
-    const res = await login(data).unwrap();
-
-    if (res?.data?.accessToken) {
-      localStorage.setItem("token", res.data.accessToken);
-      localStorage.setItem("user", JSON.stringify(res.data.user || {}));
-      message.success("Login successful!");
-      navigate("/");
-    }
-  } catch (error) {
-    console.error("Login error:", error);
-    message.error(
-      error?.data?.message || "Something went wrong during login"
-    );
-  }
-};
-
 
   return (
     <div className="bg-white">
