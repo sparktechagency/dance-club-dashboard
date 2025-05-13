@@ -9,7 +9,42 @@ const AuthApi = baseApi.injectEndpoints({
         body: credentials,
       }),
     }),
+    forgatePassword: builder.mutation({
+      query: (credentials) => ({
+        url: "/auth/forget-password",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    verifyPassword: builder.mutation({
+      query: (credentials) => ({
+        url: "/auth/verify-reset-otp",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    resendOtp: builder.mutation({
+      query: (credentials) => ({
+        url: "/auth/resend-reset-code",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (credentials) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = AuthApi;
+export const {
+  useLoginMutation,
+  useForgatePasswordMutation,
+  useVerifyPasswordMutation,
+  useResendOtpMutation,
+
+  useResetPasswordMutation
+} = AuthApi;

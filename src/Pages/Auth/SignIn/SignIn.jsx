@@ -28,14 +28,14 @@ const SignIn = () => {
             if (response?.data?.accessToken) {
                 const user = verifyToken(response?.data?.accessToken);
                 localStorage.setItem("user", JSON.stringify(user));
-                console.log("user", user);
+                // console.log("user", user);
                 const fullData = {
                     user,
                     _id: response?.data?._id,
                     token: response?.data?.accessToken,
                     refreshToken: response?.data?.refreshToken
                 }
-                console.log("fullData", fullData);
+                // console.log("fullData", fullData);
                 localStorage.setItem('_id', response?.data?._id);
                 localStorage.setItem('token', response?.data?.accessToken);
                 dispatch(
