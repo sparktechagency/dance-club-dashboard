@@ -10,25 +10,33 @@ import {
 } from "recharts";
 import dayjs from "dayjs";
 import { useState } from "react";
+import { useGetUserChartDataQuery } from "../../../redux/api/features/dashboard/dashboardApi";
 
 const SubscriptionGrowth = () => {
   const [selectedYear, setSelectedYear] = useState(dayjs().year());
+  console.log("selectedYear", selectedYear);
+  const { data: userStatisticsData } = useGetUserChartDataQuery({
+    params: { selectedYear },
+  });
+  console.log("userStatisticsData", userStatisticsData?.data?.chartData);
+
+  const mockData = userStatisticsData?.data?.chartData;
 
   // Mock data
-  const mockData = [
-    { name: "Jan", earnings: 10 },
-    { name: "Feb", earnings: 20 },
-    { name: "Mar", earnings: 30 },
-    { name: "Apr", earnings: 70 },
-    { name: "May", earnings: 65 },
-    { name: "Jun", earnings: 40 },
-    { name: "Jul", earnings: 30 },
-    { name: "Aug", earnings: 45 },
-    { name: "Sep", earnings: 40 },
-    { name: "Oct", earnings: 60 },
-    { name: "Nov", earnings: 80 },
-    { name: "Dec", earnings: 90 },
-  ];
+  // const mockData = [
+  //   { name: "Jan", earnings: 10 },
+  //   { name: "Feb", earnings: 20 },
+  //   { name: "Mar", earnings: 30 },
+  //   { name: "Apr", earnings: 70 },
+  //   { name: "May", earnings: 65 },
+  //   { name: "Jun", earnings: 40 },
+  //   { name: "Jul", earnings: 30 },
+  //   { name: "Aug", earnings: 45 },
+  //   { name: "Sep", earnings: 40 },
+  //   { name: "Oct", earnings: 60 },
+  //   { name: "Nov", earnings: 80 },
+  //   { name: "Dec", earnings: 90 },
+  // ];
 
   const onChange = (date, dateString) => {
     setSelectedYear(dateString);
@@ -67,7 +75,7 @@ const SubscriptionGrowth = () => {
               <Tooltip />
               <Area
                 type="monotone"
-                dataKey="earnings"
+                dataKey="totalUser"
                 stroke="#f4660e"
                 fillOpacity={1}
                 fill="#f4660e"

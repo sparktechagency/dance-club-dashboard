@@ -10,7 +10,15 @@ const dashboardApi = baseApi.injectEndpoints({
       }),
       providesTags: TAGS.ANALYTICS_TAG,
     }),
+
+    getUserChartData: builder.query({
+      query: ({params}) => ({
+        url: "/meta/user-chart-data",
+        method: "GET",
+        params
+      }),
+    }),
   }),
 });
 
-export const { useGetAnalyticsQuery } = dashboardApi;
+export const { useGetAnalyticsQuery,useGetUserChartDataQuery } = dashboardApi;
