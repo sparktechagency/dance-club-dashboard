@@ -3,7 +3,7 @@ import { useGetAnalyticsQuery } from "../../../redux/api/features/dashboard/dash
 
 const AnalyticsInfo = () => {
   const { data: analyticsData } = useGetAnalyticsQuery();
-  console.log("analyticsData", analyticsData?.data);
+  // console.log("analyticsData", analyticsData?.data);
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">

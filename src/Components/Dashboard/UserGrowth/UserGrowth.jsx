@@ -19,7 +19,7 @@ const UserGrowth = () => {
   const [selectedMonth, setselectedMonth] = useState(dayjs().month() + 1);
 
   const { data: EarningData } = useGetErnaningsQuery(selectedYear);
-  console.log("EarningData", EarningData?.data?.chartData);
+  // console.log("EarningData", EarningData?.data?.chartData);
   // Mock data
   const mockData = EarningData?.data?.chartData;
 

@@ -24,6 +24,7 @@ import ManageCoupon from "../Pages/ManageCoupon/ManageCoupon";
 import ManagePackage from "../Pages/ManagePackage/ManagePackage";
 import ManageCourse from "../Pages/ManageCourse/ManageCourse";
 import ClassManagement from "../Components/ClassManagement/ClassManagement";
+import OrderDetails from "../Pages/ManageOrder/OrderDetails";
 
 export const router = createBrowserRouter([
   {
@@ -80,6 +81,10 @@ export const router = createBrowserRouter([
       {
         path: "/manage-order",
         element: <MAnageOrder />,
+      },
+      {
+        path: "/order-details/:id",
+        element: <OrderDetails />,
       },
       {
         path: "/manage-membership",
