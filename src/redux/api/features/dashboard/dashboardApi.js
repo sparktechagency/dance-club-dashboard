@@ -12,13 +12,21 @@ const dashboardApi = baseApi.injectEndpoints({
     }),
 
     getUserChartData: builder.query({
-      query: ({params}) => ({
-        url: "/meta/user-chart-data",
+      query: (params) => ({
+        url: `/meta/user-chart-data?year=${params}`,
         method: "GET",
-        params
+        params,
+      }),
+    }),
+
+    getErnanings: builder.query({
+      query: (params) => ({
+        url: `/meta/earning-chart-data?year=${params}`,
+        method: "GET",
+        params,
       }),
     }),
   }),
 });
 
-export const { useGetAnalyticsQuery,useGetUserChartDataQuery } = dashboardApi;
+export const { useGetAnalyticsQuery, useGetUserChartDataQuery,useGetErnaningsQuery } = dashboardApi;

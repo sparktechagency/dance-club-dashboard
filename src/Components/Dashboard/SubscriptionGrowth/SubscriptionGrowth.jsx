@@ -14,32 +14,15 @@ import { useGetUserChartDataQuery } from "../../../redux/api/features/dashboard/
 
 const SubscriptionGrowth = () => {
   const [selectedYear, setSelectedYear] = useState(dayjs().year());
-  console.log("selectedYear", selectedYear);
-  const { data: userStatisticsData } = useGetUserChartDataQuery({
-    params: { selectedYear },
-  });
-  console.log("userStatisticsData", userStatisticsData?.data?.chartData);
+  // console.log("selectedYear", selectedYear);
+  const { data: userStatisticsData } = useGetUserChartDataQuery(selectedYear);
 
   const mockData = userStatisticsData?.data?.chartData;
 
-  // Mock data
-  // const mockData = [
-  //   { name: "Jan", earnings: 10 },
-  //   { name: "Feb", earnings: 20 },
-  //   { name: "Mar", earnings: 30 },
-  //   { name: "Apr", earnings: 70 },
-  //   { name: "May", earnings: 65 },
-  //   { name: "Jun", earnings: 40 },
-  //   { name: "Jul", earnings: 30 },
-  //   { name: "Aug", earnings: 45 },
-  //   { name: "Sep", earnings: 40 },
-  //   { name: "Oct", earnings: 60 },
-  //   { name: "Nov", earnings: 80 },
-  //   { name: "Dec", earnings: 90 },
-  // ];
-
-  const onChange = (date, dateString) => {
-    setSelectedYear(dateString);
+  const onChange = (date) => {
+    if (date) {
+      setSelectedYear(dayjs(date).year());
+    }
   };
 
   return (
@@ -50,7 +33,7 @@ const SubscriptionGrowth = () => {
           <h1 className="text-lg md:text-xl font-medium">Membership Growth</h1>
           <DatePicker
             onChange={onChange}
-            defaultValue={dayjs(selectedYear, "YYYY")}
+            defaultValue={dayjs()}
             format={"YYYY"}
             picker="year"
             className="w-full md:w-auto"
