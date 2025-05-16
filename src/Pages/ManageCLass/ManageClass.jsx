@@ -23,7 +23,7 @@ const ManageClass = () => {
   });
   console.log("allClassesData", allClassesData?.data?.result);
   const classData = allClassesData?.data?.result;
-  const [totalItems, setTotalItems] = useState(classData.length);
+  const [totalItems, setTotalItems] = useState(classData?.length);
 
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
