@@ -23,6 +23,7 @@ import {
   useGetCouponQuery,
 } from "../../redux/api/features/couponApi/couponApi";
 const ManageCoupon = () => {
+  const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addCouponModal, setAddCouponModal] = useState(false);
 
@@ -63,7 +64,6 @@ const ManageCoupon = () => {
   };
 
   const handleAddCoupon = async (values) => {
-    // console.log("Success:", values);
     const data = {
       code: Number(values.code),
       startDate: values.startDate,
@@ -73,7 +73,8 @@ const ManageCoupon = () => {
     try {
       await createCoupon(data).unwrap();
       message.success("Coupon created successfully!");
-      setIsModalOpen(false);
+      setAddCouponModal(false);
+      form.resetFields();
     } catch (error) {
       console.log(error);
     }
