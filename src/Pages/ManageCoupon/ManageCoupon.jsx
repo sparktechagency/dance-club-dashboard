@@ -5,6 +5,7 @@ import {
   DatePicker,
   Form,
   Input,
+  message,
   Pagination,
   Space,
   Table,
@@ -17,28 +18,11 @@ import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AllImages } from "../../assets/image/AllImages";
 import { useNavigate } from "react-router-dom";
+import {
+  useCreateCouponMutation,
+  useGetCouponQuery,
+} from "../../redux/api/features/couponApi/couponApi";
 const ManageCoupon = () => {
-  const navigate = useNavigate();
-  const userData = [
-    {
-      coupon_code: "1234",
-      discount: "10%",
-      startDate: "2023-06-05",
-      endDate: "2023-06-05",
-    },
-    {
-      coupon_code: "1234",
-      discount: "10%",
-      startDate: "2023-06-05",
-      endDate: "2023-06-05",
-    },
-    {
-      coupon_code: "1234",
-      discount: "10%",
-      startDate: "2023-06-05",
-      endDate: "2023-06-05",
-    },
-  ];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addCouponModal, setAddCouponModal] = useState(false);
 
@@ -46,7 +30,14 @@ const ManageCoupon = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(userData.length);
+  const { data: couponData } = useGetCouponQuery({
+    page: currentPage,
+    limit: pageSize,
+  });
+  const [createCoupon] = useCreateCouponMutation();
+  // console.log(couponData);
+  const userData = couponData?.data?.result;
+  const [totalItems, setTotalItems] = useState(userData?.length);
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -71,8 +62,21 @@ const ManageCoupon = () => {
     setAddCouponModal(false);
   };
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const handleAddCoupon = async (values) => {
+    // console.log("Success:", values);
+    const data = {
+      code: Number(values.code),
+      startDate: values.startDate,
+      endDate: values.endDate,
+      discountPercentage: Number(values.discountPercentage),
+    };
+    try {
+      await createCoupon(data).unwrap();
+      message.success("Coupon created successfully!");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const onEditFinish = (values) => {
     console.log("Success:", values);
@@ -86,7 +90,6 @@ const ManageCoupon = () => {
   const handleDelete = (record) => {
     // console.log(record);
   };
- 
 
   const columns = [
     {
@@ -97,13 +100,13 @@ const ManageCoupon = () => {
     },
     {
       title: "Coupon Code",
-      dataIndex: "coupon_code",
-      key: "coupon_code",
+      dataIndex: "code",
+      key: "code",
     },
     {
-      title: "Discount",
-      dataIndex: "discount",
-      key: "discount",
+      title: "Discount %",
+      dataIndex: "discountPercentage",
+      key: "discountPercentage",
     },
     {
       title: "Validity Date",
@@ -191,11 +194,11 @@ const ManageCoupon = () => {
             <Form
               name="add-coupon"
               initialValues={{ remember: false }}
-              onFinish={onFinish}
+              onFinish={handleAddCoupon}
               layout="vertical"
             >
               <Form.Item
-                name="coupon_code"
+                name="code"
                 label={<p className=" text-md">Coupon Code</p>}
                 style={{}}
               >
@@ -207,7 +210,7 @@ const ManageCoupon = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="discount"
+                name="discountPercentage"
                 label={<p className=" text-md">Discount </p>}
                 style={{}}
               >
@@ -219,8 +222,20 @@ const ManageCoupon = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="validity_date"
-                label={<p className=" text-md">Validity Date</p>}
+                name="startDate"
+                label={<p className=" text-md">Start Date</p>}
+                style={{}}
+              >
+                <DatePicker
+                  required
+                  style={{ padding: "6px", width: "100%" }}
+                  className=" text-md"
+                  placeholder=""
+                />
+              </Form.Item>
+              <Form.Item
+                name="endDate"
+                label={<p className=" text-md">End Date</p>}
                 style={{}}
               >
                 <DatePicker
