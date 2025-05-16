@@ -16,10 +16,9 @@ const MAnageOrder = () => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  console.log("selectedOrderId", selectedOrderId);
   const { data: newOrderData } = useNewOrderOnDashboardQuery({
     page: currentPage,
-    limit: 3,
+    limit: pageSize,
   });
   const userData = newOrderData?.data?.result;
   const [totalItems, setTotalItems] = useState(userData?.length);

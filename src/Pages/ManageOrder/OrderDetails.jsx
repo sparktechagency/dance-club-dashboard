@@ -10,10 +10,10 @@ const OrderDetails = () => {
   const selectedOrderId = location.state?._id;
 
   const { _id } = useParams();
-  console.log("_id", _id);
+  // console.log("_id", _id);
 
   const { data: singleOderData, isLoading } = useGetSingleOrderQuery(_id);
-  console.log("newOrderData", singleOderData?.data);
+  // console.log("newOrderData", singleOderData?.data);
   const data = singleOderData?.data;
 
   return (
