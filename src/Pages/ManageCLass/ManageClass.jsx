@@ -8,38 +8,23 @@ import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AllImages } from "../../assets/image/AllImages";
 import { useNavigate } from "react-router-dom";
+import { useGetAllClassesQuery } from "../../redux/api/features/classApi/classApi";
 const ManageClass = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const userData = [
-    {
-      employee_id: "#1239",
-      name: "The Buzz Spot",
-      subName: "Non-Scheduled",
-      classImg: AllImages.image1,
-      location: "Corona, Michigan",
-    },
-    {
-      employee_id: "#1239",
-      name: "Club Pulse",
-      subName: "Non-Scheduled",
-      classImg: AllImages.image2,
-      location: "Corona, Michigan",
-    },
-    {
-      employee_id: "#1239",
-      name: "Vibe Loungge",
-      subName: "Scheduled",
-      classImg: AllImages.image3,
-      location: "Corona, Michigan",
-    },
-  ];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(userData.length);
+  const { data: allClassesData, isLoading } = useGetAllClassesQuery({
+    page: currentPage,
+    limit: pageSize,
+  });
+  console.log("allClassesData", allClassesData?.data?.result);
+  const classData = allClassesData?.data?.result;
+  const [totalItems, setTotalItems] = useState(classData?.length);
+
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -80,15 +65,29 @@ const navigate = useNavigate();
       key: "name",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <img src={record.classImg} alt="" />
-          <span>{record.name}</span>
+          <img
+            src={record?.class_banner}
+            alt=""
+            className="w-14 h-14 rounded-md "
+          />
+          <span>{record.title}</span>
         </div>
       ),
     },
     {
-      title: "Location",
-      dataIndex: "location",
-      key: "location",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Class Type",
+      dataIndex: "classType",
+      key: "classType",
+    },
+    {
+      title: "Total Seat",
+      dataIndex: "totalSeat",
+      key: "totalSeat",
     },
 
     {
@@ -185,7 +184,7 @@ const navigate = useNavigate();
         >
           <Table
             columns={columns}
-            dataSource={userData || []}
+            dataSource={classData || []}
             pagination={false}
             rowKey="id"
           />
@@ -205,42 +204,58 @@ const navigate = useNavigate();
             <div className="bg-red-100  text-center relative h-[100px] w-full flex flex-col justify-center items-center">
               <Avatar
                 className="shadow-md h-32 w-32 absolute top-[20px] left-[50%] translate-x-[-50%]"
-                src={selectedUser?.profileImage}
+                src={selectedUser?.class_banner}
               />
             </div>
 
             <div className="mt-16">
               <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Name :</p>
-                <p>{selectedUser.name}</p>
+                <p>{selectedUser.title}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Employee Id :</p>
-                <p>{selectedUser.employee_id}</p>
+                <p className=" font-bold">Description</p>
+                <p>{selectedUser.description}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Designation:</p>
-                <p>{selectedUser?.designation || "N/A"}</p>
+                <p className=" font-bold">Class Type :</p>
+                <p>{selectedUser?.classType || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Email :</p>
-                <p>{selectedUser.email}</p>
+                <p className=" font-bold">Total Seat:</p>
+                <p>{selectedUser?.totalSeat || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Contact No :</p>
-                <p>{selectedUser?.contact || "N/A"}</p>
+                <p className=" font-bold">Token Need For Booking:</p>
+                <p>{selectedUser.tokenNeedForBook}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Member Since :</p>
-                <p>{selectedUser?.member_since || "N/A"}</p>
+                <p className=" font-bold">Is Scheduled :</p>
+                <p
+                  className={selectedUser?.isScheduled ? "text-green-600" : ""}
+                >
+                  {selectedUser?.isScheduled ? "Yes" : "No"}
+                </p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Address :</p>
-                <p>{selectedUser.address || "N/A"}</p>
+                <p className=" font-bold">Is Available :</p>
+                <p
+                  className={selectedUser?.isAvailable ? "text-green-600" : ""}
+                >
+                  {selectedUser?.isAvailable ? "Yes" : "No"}
+                </p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Qualification :</p>
-                <p>{selectedUser.qualification || "N/A"}</p>
+                <p className=" font-bold">class Schedule :</p>
+                <div>
+                  {selectedUser?.classSchedule?.map((data) => (
+                    <div key={data._id} className="mb-2 border-b p-2">
+                      <p>Day: {data.day}</p>
+                      <p>Time: {data.time}</p>
+                      <p>Duration: {data.durationInMinutes} Minutes</p>
+                    </div>
+                  )) || "N/A"}
+                </div>
               </div>
             </div>
           </div>

@@ -13,7 +13,7 @@ const AnalyticsTable = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const { data: newOrderData } = useNewOrderOnDashboardQuery({
     page: currentPage,
     limit: 3,
@@ -21,7 +21,7 @@ const AnalyticsTable = () => {
   const userData = newOrderData?.data?.result;
   // const [totalItems, setTotalItems] = useState(userData.length);
 
-  console.log("newOrderData", userData);
+  console.log("selectedOrderId", selectedOrderId);
 
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
