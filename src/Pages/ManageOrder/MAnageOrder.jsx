@@ -6,55 +6,23 @@ import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { useNavigate } from "react-router-dom";
 import user from "../../assets/image/p1.png";
+import { useNewOrderOnDashboardQuery } from "../../redux/api/features/orderApi/orderApi";
 const MAnageOrder = () => {
   const navigate = useNavigate();
-  const userData = [
-    {
-      employee_id: "#1239",
-      name: "Product 1",
-      profileImage: user,
-      email: "mr101@mail.ru",
-      total_booking: 20,
-      contact: "(+33) 7 00 55 59 27",
-      location: "Corona, Michigan",
-      delivary_location: "76/4 R no. 60/1 Rue des Saints-Paris, 75005 Paris",
-      price: "$1000",
-      totalItems: 2,
-      delevaryDate: "2023-08-15",
-    },
-    {
-      employee_id: "#1238",
-      name: "Product 2",
-      email: "xterris@gmail.com",
-      profileImage: user,
-      total_booking: 20,
-      contact: "(+33) 7 00 55 59 27",
-      location: "Great Falls, Maryland",
-      delivary_location: "123 Rue des Lilas, Paris, 75008",
-      price: "$1000",
-      totalItems: 2,
-      delevaryDate: "2023-08-15",
-    },
-    {
-      employee_id: "#1237",
-      name: "Product 3",
-      profileImage: user,
-      email: "irnabela@gmail.com",
-      total_booking: 20,
-      contact: "(+33) 7 00 55 59 27",
-      location: "Syracuse, Connecticut",
-      delivary_location: "45 Avenue des Champs, Paris, 75001",
-      price: "$1000",
-      totalItems: 2,
-      delevaryDate: "2023-08-15",
-    },
-  ];
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(userData.length);
+
+  const { data: newOrderData } = useNewOrderOnDashboardQuery({
+    page: currentPage,
+    limit: 3,
+  });
+  const userData = newOrderData?.data?.result;
+  const [totalItems, setTotalItems] = useState(userData?.length);
+
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -77,69 +45,77 @@ const MAnageOrder = () => {
   const handleSession = (record) => {
     console.log(record);
   };
-  const handleEdit = (record) => {
-    // console.log(record);
-  };
-  const handleAddProduct = () => {
-    navigate("/add-product");
-  };
+
+  const handleDetails=(_id)=>{
+    console.log(_id);
+    navigate(`/order-details/${_id}`);
+  }
+
+
   const handleChange = () => {};
   const columns = [
     {
-      title: "Order No.",
+      title: "#",
       dataIndex: "slno",
       key: "slno",
       render: (text, record, index) => index + 1,
     },
+    {
+      title: "Name",
+      key: "name",
+      render: (_, record) => (
+        <div className="flex items-center gap-2">
+          <Avatar
+            size={40}
+            className="shadow-md"
+            src={record?.items?.[0]?.product?.images?.[0]}
+          />
+          <span>{record?.items?.map((item) => item?.product?.name)}</span>
+        </div>
+      ),
+    },
 
     {
-      title: "User Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Total Items",
-      dataIndex: "totalItems",
-      key: "totalItems",
-    },
-    {
       title: "Price",
-      dataIndex: "price",
       key: "price",
+      render: (_, record) => {
+        const price = record?.items?.map((item) => item?.product?.price);
+        return <p>$ {price}</p>;
+      },
     },
     {
-      title: "Delevary Time",
-      dataIndex: "delevaryDate",
-      key: "delevaryDate",
+      title: "Quantity",
+      key: "quantity",
+      render: (_, record) => {
+        const quantity = record?.items?.map((item) => item?.quantity);
+        return <p>{quantity}</p>;
+      },
+    },
+    {
+      title: "Email",
+      key: "email",
+      render: (_, record) => {
+        const contact = record?.user?.email;
+        return <p>{contact}</p>;
+      },
     },
     {
       title: "Status",
       key: "status",
+      dataIndex: "status",
+    },
+    {
+      title: "Action",
+      key: "action",
       render: (_, record) => (
-        <Select
-          defaultValue="Pending"
-          style={{ width: 120 }}
-          onChange={handleChange}
-          className={`px-2 py-1 rounded-md ${
-            record?.status === "Pending" && "text-red-500"
-          } ${record?.status === "Shipping" && "text-yellow-500"} ${
-            record?.status === "Complete" && "text-green-500"
-          }`}
-          options={[
-            {
-              value: "Pending",
-              label: "Pending",
-            },
-            {
-              value: "Shipping",
-              label: "Shipping",
-            },
-            {
-              value: "Complete",
-              label: "Complete",
-            },
-          ]}
-        />
+        <div className="flex items-center gap-2">
+          <span
+            className="text-primary cursor-pointer"
+            onClick={() => handleDetails(record?._id)}
+          >
+            View
+          </span>
+        </div>
       ),
     },
   ];

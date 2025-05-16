@@ -2,6 +2,7 @@
 import { useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { useNewOrderOnDashboardQuery } from "../../redux/api/features/orderApi/orderApi";
+import { AllImages } from "../../assets/image/AllImages";
 
 const OrderDetails = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,19 +16,15 @@ const OrderDetails = () => {
   return (
     <div>
       <GoBackButton text="" />
-      {newOrderData?.data?.result?.map((item) => (
-        <div
-          key={item._id}
-          className="mt-10  grid grid-cols-1 md:grid-cols-2 gap-5"
-        >
-          <div>
-            <img src="product image" alt="" />
-          </div>
-          <div>
-            <h1>prodict name</h1>
-          </div>
+      <div key="" className="mt-10  grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <img src={AllImages.banner1} alt="" />
         </div>
-      ))}
+        <div>
+          <h1>prodict name</h1>
+          
+        </div>
+      </div>
     </div>
   );
 };
