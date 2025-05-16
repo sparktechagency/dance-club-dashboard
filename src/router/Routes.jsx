@@ -83,7 +83,7 @@ export const router = createBrowserRouter([
         element: <MAnageOrder />,
       },
       {
-        path: "/order-details/:id",
+        path: "/order-details/:_id",
         element: <OrderDetails />,
       },
       {

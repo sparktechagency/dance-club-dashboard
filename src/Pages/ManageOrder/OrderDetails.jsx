@@ -1,18 +1,20 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
-import { useNewOrderOnDashboardQuery } from "../../redux/api/features/orderApi/orderApi";
+import { useGetSingleOrderQuery } from "../../redux/api/features/orderApi/orderApi";
 import { AllImages } from "../../assets/image/AllImages";
+import { useLocation, useParams } from "react-router-dom";
 
 const OrderDetails = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const { data: newOrderData } = useNewOrderOnDashboardQuery({
-    page: currentPage,
-    limit: pageSize,
-  });
+  const location = useLocation();
+  const selectedOrderId = location.state?._id;
 
-  console.log("newOrderData", newOrderData?.data?.result);
+  const { _id } = useParams();
+  console.log("_id", _id);
+
+  const { data: singleOderData } = useGetSingleOrderQuery(_id);
+  console.log("newOrderData", singleOderData?.data);
+
   return (
     <div>
       <GoBackButton text="" />
@@ -22,7 +24,6 @@ const OrderDetails = () => {
         </div>
         <div>
           <h1>prodict name</h1>
-          
         </div>
       </div>
     </div>

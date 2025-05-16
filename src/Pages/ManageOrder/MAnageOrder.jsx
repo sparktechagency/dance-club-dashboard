@@ -15,7 +15,8 @@ const MAnageOrder = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  console.log("selectedOrderId", selectedOrderId);
   const { data: newOrderData } = useNewOrderOnDashboardQuery({
     page: currentPage,
     limit: 3,
@@ -46,11 +47,11 @@ const MAnageOrder = () => {
     console.log(record);
   };
 
-  const handleDetails=(_id)=>{
-    console.log(_id);
-    navigate(`/order-details/${_id}`);
-  }
-
+  const handleDetails = (_id) => {
+    setSelectedOrderId(_id);
+    console.log("_id", _id);
+    navigate(`/order-details/${_id}`, { state: { selectedOrderId: _id } });
+  };
 
   const handleChange = () => {};
   const columns = [

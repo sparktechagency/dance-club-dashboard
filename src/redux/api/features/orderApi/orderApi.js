@@ -1,3 +1,4 @@
+import { TAGS } from "../../../tag.type";
 import { baseApi } from "../../baseApi";
 
 const OrderApi = baseApi.injectEndpoints({
@@ -7,8 +8,17 @@ const OrderApi = baseApi.injectEndpoints({
         url: `/order/all-orders?page=${page}&limit=${limit}`,
         method: "GET",
       }),
+      providesTags: TAGS.ORDER_TAG,
+    }),
+
+    getSingleOrder: builder.query({
+      query: (_id) => ({
+        url: `/order/single-order/${_id}`,
+        method: "GET",
+      }),
+      providesTags: TAGS.ORDER_TAG,
     }),
   }),
 });
 
-export const { useNewOrderOnDashboardQuery } = OrderApi;
+export const { useNewOrderOnDashboardQuery, useGetSingleOrderQuery } = OrderApi;
