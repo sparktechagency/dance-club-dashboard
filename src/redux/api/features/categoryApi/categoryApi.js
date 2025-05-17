@@ -9,6 +9,13 @@ const CategoryApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Category"],
     }),
+    getCategoryForProduct: builder.query({
+      query: () => ({
+        url: `/category/all-categories`,
+        method: "GET",
+      }),
+      providesTags: ["Category"],
+    }),
 
     createCategory: builder.mutation({
       query: (data) => ({
@@ -38,6 +45,7 @@ const CategoryApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllCategoryQuery,
+  useGetCategoryForProductQuery,
   useCreateCategoryMutation,
   useDeleteCategoryMutation,
   useUpdateCategoryMutation,

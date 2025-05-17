@@ -1,11 +1,19 @@
 /* eslint-disable no-unused-vars */
-import { Form, Input, InputNumber, Select, Upload, Space } from "antd";
+import { Form, Input, InputNumber, Select, Upload, Space, message } from "antd";
 import GoBackButton from "../Shared/GobackButton/GoBackButton";
 import { FaImage } from "react-icons/fa";
 import { useCreateProductMutation } from "../../redux/api/features/productApi/productApi";
+import { useGetCategoryForProductQuery } from "../../redux/api/features/categoryApi/categoryApi";
+import { useState } from "react";
 
 const AddProduct = () => {
+  const [form] = Form.useForm();
+  const [profilePic, setProfilePic] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [fileList, setFileList] = useState([]);
   const [createProduct] = useCreateProductMutation();
+  const { data: getAllCategory } = useGetCategoryForProductQuery();
+  console.log(getAllCategory?.data?.result);
   const options = [
     {
       label: "XS",
@@ -38,7 +46,11 @@ const AddProduct = () => {
       desc: "XXL (Xtra Xtra Large)",
     },
   ];
-  const onFinish = (values) => {
+
+  const formData = new FormData();
+
+  const onFinish = async (values) => {
+  try {
     const data = {
       name: values.title,
       price: values.price,
@@ -46,11 +58,38 @@ const AddProduct = () => {
       stock: values.stock,
       description: values.description,
       size: values.size,
-      color: [values.color],
+      color: values.color ? values.color.split(",").map(c => c.trim()) : [],
     };
 
-    const images = [values.image];
-    // console.log("data:", data , images);
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
+
+    fileList.forEach((file) => {
+      formData.append("product_image", file); // If backend expects multiple images under same field
+    });
+
+    await createProduct(formData).unwrap();
+    message.success("Product added successfully!");
+    form.resetFields();
+    setFileList([]);
+  } catch (error) {
+    message.error("Failed to add product.");
+  }
+};
+
+
+
+  
+  const categoryOptions = getAllCategory?.data?.result.map((item) => ({
+    label: item.name,
+    value: item._id,
+  }));
+
+  const handleBeforeUpload = (file) => {
+    form.setFieldValue("images", file);
+    setProfilePic(file);
+    setPreviewImage(URL.createObjectURL(file));
+    return false;
   };
 
   const handleOk = () => {};
@@ -78,6 +117,7 @@ const AddProduct = () => {
                   <Upload
                     showUploadList={false}
                     onChange={handleProfilePicUpload}
+                    beforeUpload={handleBeforeUpload}
                     className=" "
                   >
                     <FaImage className="text-secondary h-10 w-10" />
@@ -99,19 +139,12 @@ const AddProduct = () => {
                   placeholder=""
                 />
               </Form.Item>
-
               <Form.Item
-                name="description"
-                label={<p className=" text-md">Description</p>}
+                name="category"
+                label={<p className=" text-md">Product Category</p>}
                 style={{}}
               >
-                <Input.TextArea
-                  rows={2}
-                  required
-                  style={{ padding: "6px" }}
-                  className=" text-md"
-                  placeholder=""
-                />
+                <Select options={categoryOptions}></Select>
               </Form.Item>
             </div>
           </div>
@@ -176,7 +209,19 @@ const AddProduct = () => {
               </Form.Item>
             </div>
           </div>
-
+          <Form.Item
+            name="description"
+            label={<p className=" text-md">Description</p>}
+            style={{}}
+          >
+            <Input.TextArea
+              rows={4}
+              required
+              style={{ padding: "6px" }}
+              className=" text-md"
+              placeholder=""
+            />
+          </Form.Item>
           <div className="flex justify-center ">
             <Form.Item>
               <button

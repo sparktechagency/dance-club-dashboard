@@ -37,10 +37,11 @@ const ManageCategory = () => {
   //   console.log("profilePic", profilePic);
 
   const handleDelete = async (_id) => {
+    console.log(_id);
     setCategoryId(_id);
     try {
       if (window.confirm("Are you sure you want to delete this category?")) {
-        await deleteCategory(_id).unwrap();
+        await deleteCategory({_id:categoryId}).unwrap();
         message.success("Category deleted successfully!");
       }
     } catch (error) {
