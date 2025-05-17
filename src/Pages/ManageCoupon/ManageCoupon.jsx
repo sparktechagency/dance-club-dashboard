@@ -12,14 +12,12 @@ import {
 } from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
-import { FaEye, FaTrash } from "react-icons/fa";
-import { SearchOutlined } from "@ant-design/icons";
+import { FaTrash } from "react-icons/fa";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
-import { AllImages } from "../../assets/image/AllImages";
-import { useNavigate } from "react-router-dom";
 import {
   useCreateCouponMutation,
+  useEditCouponMutation,
   useGetCouponQuery,
 } from "../../redux/api/features/couponApi/couponApi";
 const ManageCoupon = () => {
@@ -28,7 +26,6 @@ const ManageCoupon = () => {
   const [addCouponModal, setAddCouponModal] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState(null);
-  const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const { data: couponData } = useGetCouponQuery({
@@ -36,6 +33,8 @@ const ManageCoupon = () => {
     limit: pageSize,
   });
   const [createCoupon] = useCreateCouponMutation();
+  const [editCoupon] = useEditCouponMutation();
+
   // console.log(couponData);
   const userData = couponData?.data?.result;
   const [totalItems, setTotalItems] = useState(userData?.length);
@@ -79,17 +78,30 @@ const ManageCoupon = () => {
       console.log(error);
     }
   };
-  const onEditFinish = (values) => {
+  const onEditFinish = async (values) => {
     console.log("Success:", values);
+    const data = {
+      code: Number(values.code),
+      startDate: values.startDate,
+      endDate: values.endDate,
+      discountPercentage: Number(values.discountPercentage),
+    };
+    try {
+      await editCoupon(data).unwrap();
+      message.success("Coupon created successfully!");
+      setAddCouponModal(false);
+      form.resetFields();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleOk = () => {};
-
-  const handleEdit = (record) => {
-    // console.log(record);
+  const handleOk = () => {
+    setIsModalOpen(false);
   };
-  const handleDelete = (record) => {
-    // console.log(record);
+
+  const handleEdit = () => {
+    setAddCouponModal(false);
   };
 
   const columns = [
@@ -271,13 +283,13 @@ const ManageCoupon = () => {
         {selectedUser && (
           <div className="">
             <Form
-              name="add-coupon"
+              name="edit-coupon"
               initialValues={{ remember: false }}
               onFinish={onEditFinish}
               layout="vertical"
             >
               <Form.Item
-                name="coupon_code"
+                name="code"
                 label={<p className=" text-md">Coupon Code</p>}
                 style={{}}
               >
@@ -289,7 +301,7 @@ const ManageCoupon = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="discount"
+                name="discountPercentage"
                 label={<p className=" text-md">Discount </p>}
                 style={{}}
               >
@@ -301,8 +313,20 @@ const ManageCoupon = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="validity_date"
-                label={<p className=" text-md">Validity Date</p>}
+                name="startDate"
+                label={<p className=" text-md">Start Date</p>}
+                style={{}}
+              >
+                <DatePicker
+                  required
+                  style={{ padding: "6px", width: "100%" }}
+                  className=" text-md"
+                  placeholder=""
+                />
+              </Form.Item>
+              <Form.Item
+                name="endDate"
+                label={<p className=" text-md">End Date</p>}
                 style={{}}
               >
                 <DatePicker

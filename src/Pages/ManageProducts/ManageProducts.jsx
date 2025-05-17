@@ -6,39 +6,29 @@ import { FaEye } from "react-icons/fa";
 import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
-import { AllImages } from "../../assets/image/AllImages";
 import { useNavigate } from "react-router-dom";
+import { useGetAllProductQuery } from "../../redux/api/features/productApi/productApi";
 const ManageProducts = () => {
   const navigate = useNavigate();
-  const userData = [
-    {
-      employee_id: "#1239",
-      name: "The Buzz Spot",
-      subName: "Non-Scheduled",
-      productImg: AllImages.p1,
-      location: "Corona, Michigan",
-    },
-    {
-      employee_id: "#1239",
-      name: "Club Pulse",
-      subName: "Non-Scheduled",
-      productImg: AllImages.p2,
-      location: "Corona, Michigan",
-    },
-    {
-      employee_id: "#1239",
-      name: "Vibe Loungge",
-      subName: "Scheduled",
-      productImg: AllImages.p3,
-      location: "Corona, Michigan",
-    },
-  ];
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isAvailable, setIsAvailable] = useState(true);
+  const [category, setCategory] = useState("681832ec69fcb6bc2e271f8c");
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(userData.length);
+  const { data: productData } = useGetAllProductQuery({
+    page: currentPage,
+    limit: pageSize,
+    isAvailable,
+    category,
+    searchTerm,
+  });
+  console.log(productData?.data?.result);
+  const allProducstData = productData?.data?.result;
+  const [totalItems, setTotalItems] = useState(allProducstData?.length);
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -82,15 +72,44 @@ const ManageProducts = () => {
       key: "name",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <img src={record.productImg} alt="" />
+          <img src={record.images[0]} alt="" className="w-10 h-10"/>
           <span>{record.name}</span>
         </div>
       ),
     },
     {
-      title: "Location",
-      dataIndex: "location",
-      key: "location",
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+    },
+    {
+      title: "Category",
+      key: "category",
+      render: (_, record) => (
+        <div className="flex items-center gap-2">
+          <span>{record.category?.name}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Quantity",
+      key: "stock",
+      render: (_, record) => (
+        <div className="flex items-center gap-2">
+          <span>{record.stock}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Available",
+      key: "isAvailable",
+      render: (_, record) => (
+        <div className="flex items-center gap-2">
+          <span className={record?.isAvailable ? "text-green-500" : "text-red-500"}>
+            {record?.isAvailable ? "Available" : "Not Available"}
+          </span>
+        </div>
+      ),
     },
 
     {
@@ -187,7 +206,7 @@ const ManageProducts = () => {
         >
           <Table
             columns={columns}
-            dataSource={userData || []}
+            dataSource={allProducstData || []}
             pagination={false}
             rowKey="id"
           />
