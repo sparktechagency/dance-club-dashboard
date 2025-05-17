@@ -18,7 +18,16 @@ const CouponApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Coupon"],
     }),
+
+    editCoupon: builder.mutation({
+      query: (data) => ({
+        url: `/coupon/update-coupon/${data._id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Coupon"],
+    }),
   }),
 });
 
-export const { useGetCouponQuery , useCreateCouponMutation} = CouponApi;
+export const { useGetCouponQuery , useCreateCouponMutation, useEditCouponMutation} = CouponApi;

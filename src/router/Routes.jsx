@@ -25,6 +25,7 @@ import ManagePackage from "../Pages/ManagePackage/ManagePackage";
 import ManageCourse from "../Pages/ManageCourse/ManageCourse";
 import ClassManagement from "../Components/ClassManagement/ClassManagement";
 import OrderDetails from "../Pages/ManageOrder/OrderDetails";
+import ManageCategory from "../Pages/ManageCategory/ManageCategory";
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
       {
         path: "/add-class",
         element: <ClassManagement />,
+      },
+      {
+        path: "manage-category",
+        element: <ManageCategory />,
       },
 
       {
