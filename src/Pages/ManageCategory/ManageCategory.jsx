@@ -3,6 +3,7 @@ import { useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import {
   useCreateCategoryMutation,
+  useDeleteCategoryMutation,
   useGetAllCategoryQuery,
 } from "../../redux/api/features/categoryApi/categoryApi";
 import { Form, Input, message, Modal, Table, Upload } from "antd";
@@ -10,27 +11,38 @@ import { FaImage, FaPen, FaTrash } from "react-icons/fa";
 import { use } from "react";
 
 const ManageCategory = () => {
-      const [form] = Form.useForm();
+  const [form] = Form.useForm();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [categoryId, setCategoryId] = useState(null);
 
   const [createCategory] = useCreateCategoryMutation();
+  const [deleteCategory] = useDeleteCategoryMutation({ categoryId });
 
   const handleBeforeUpload = (file) => {
     form.setFieldsValue({ category_image: [file] });
     setProfilePic(file);
     setPreviewImage(URL.createObjectURL(file));
-    return false; 
+    return false;
   };
 
+  //   console.log("profilePic", profilePic);
 
-
-  console.log("profilePic", profilePic);
-
+  const handleDelete = async (_id) => {
+    setCategoryId(_id);
+    try {
+      if (window.confirm("Are you sure you want to delete this category?")) {
+        await deleteCategory(_id).unwrap();
+        message.success("Category deleted successfully!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const showModal = () => {
     setIsAddModalOpen(true);
   };
@@ -85,7 +97,10 @@ const ManageCategory = () => {
               <FaPen className="text-primary"></FaPen>
             </button>
             <button className="btn btn-primary">
-              <FaTrash className="text-red-500"></FaTrash>
+              <FaTrash
+                onClick={() => handleDelete(record._id)}
+                className="text-red-500"
+              ></FaTrash>
             </button>
           </div>
         );
@@ -106,7 +121,7 @@ const ManageCategory = () => {
     }
   };
 
- const handleProfilePicUpload = (e) => {
+  const handleProfilePicUpload = (e) => {
     const file = e.file.originFileObj;
     // setProfilePic(file);
   };
@@ -136,7 +151,12 @@ const ManageCategory = () => {
         title="Add Category"
         footer={null}
       >
-        <Form form={form} onFinish={onFinish} name="add-category" layout="vertical">
+        <Form
+          form={form}
+          onFinish={onFinish}
+          name="add-category"
+          layout="vertical"
+        >
           <Form.Item name="category_image">
             <div className="flex flex-col">
               <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
@@ -144,8 +164,8 @@ const ManageCategory = () => {
                   showUploadList={false}
                   maxCount={1}
                   beforeUpload={handleBeforeUpload}
-                //   onChange={handleProfilePicUpload}
-                //   setFileList={setProfilePic}
+                  //   onChange={handleProfilePicUpload}
+                  //   setFileList={setProfilePic}
                 >
                   {!previewImage ? (
                     <>
