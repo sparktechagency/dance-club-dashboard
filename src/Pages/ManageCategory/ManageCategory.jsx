@@ -10,6 +10,7 @@ import { FaImage, FaPen, FaTrash } from "react-icons/fa";
 import { use } from "react";
 
 const ManageCategory = () => {
+      const [form] = Form.useForm();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -20,13 +21,13 @@ const ManageCategory = () => {
   const [createCategory] = useCreateCategoryMutation();
 
   const handleBeforeUpload = (file) => {
-    form.setFieldsValue({ class_banner: [file] });
+    form.setFieldsValue({ category_image: [file] });
     setProfilePic(file);
     setPreviewImage(URL.createObjectURL(file));
-    return false; // Prevent auto upload
+    return false; 
   };
 
-  const [form] = Form.useForm();
+
 
   console.log("profilePic", profilePic);
 
@@ -92,7 +93,6 @@ const ManageCategory = () => {
     },
   ];
   const onFinish = async (values) => {
-    console.log("Success:", values);
     const formData = new FormData();
     formData.append("category_image", profilePic);
     formData.append("name", values.name);
@@ -106,8 +106,9 @@ const ManageCategory = () => {
     }
   };
 
-  const handleProfilePicUpload = (e) => {
-    setProfilePic(e.file.originFileObj);
+ const handleProfilePicUpload = (e) => {
+    const file = e.file.originFileObj;
+    // setProfilePic(file);
   };
 
   return (
@@ -135,7 +136,7 @@ const ManageCategory = () => {
         title="Add Category"
         footer={null}
       >
-        <Form onFinish={onFinish} name="add-category" layout="vertical">
+        <Form form={form} onFinish={onFinish} name="add-category" layout="vertical">
           <Form.Item name="category_image">
             <div className="flex flex-col">
               <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
@@ -143,8 +144,8 @@ const ManageCategory = () => {
                   showUploadList={false}
                   maxCount={1}
                   beforeUpload={handleBeforeUpload}
-                  onChange={handleProfilePicUpload}
-                  setFileList={setProfilePic}
+                //   onChange={handleProfilePicUpload}
+                //   setFileList={setProfilePic}
                 >
                   {!previewImage ? (
                     <>
