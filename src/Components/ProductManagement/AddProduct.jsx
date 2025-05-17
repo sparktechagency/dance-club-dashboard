@@ -1,13 +1,63 @@
-import { Form, Input, InputNumber, Upload } from "antd";
+/* eslint-disable no-unused-vars */
+import { Form, Input, InputNumber, Select, Upload, Space } from "antd";
 import GoBackButton from "../Shared/GobackButton/GoBackButton";
-import {  FaImage } from "react-icons/fa";
+import { FaImage } from "react-icons/fa";
+import { useCreateProductMutation } from "../../redux/api/features/productApi/productApi";
 
 const AddProduct = () => {
+  const [createProduct] = useCreateProductMutation();
+  const options = [
+    {
+      label: "XS",
+      value: "XS",
+      desc: "XS (Xtra Small)",
+    },
+    {
+      label: "S",
+      value: "S",
+      desc: "S (Small)",
+    },
+    {
+      label: "M",
+      value: "M",
+      desc: "M (Medium)",
+    },
+    {
+      label: "L",
+      value: "L",
+      desc: "L (Large)",
+    },
+    {
+      label: "XL",
+      value: "XL",
+      desc: "XL (Xtra Large)",
+    },
+    {
+      label: "XXL",
+      value: "XXL",
+      desc: "XXL (Xtra Xtra Large)",
+    },
+  ];
   const onFinish = (values) => {
-    console.log("Success:", values);
+    const data = {
+      name: values.title,
+      price: values.price,
+      category: values.category,
+      stock: values.stock,
+      description: values.description,
+      size: values.size,
+      color: [values.color],
+    };
+
+    const images = [values.image];
+    // console.log("data:", data , images);
   };
+
   const handleOk = () => {};
   const handleProfilePicUpload = () => {};
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+  };
   return (
     <div>
       <GoBackButton text={"Add Product"} />
@@ -21,7 +71,7 @@ const AddProduct = () => {
           <div className="flex justify-between items-center gap-2">
             <div className="w-full md:w-[50%]">
               <Form.Item
-                name="title"
+                name="product_image"
                 label={<p className=" text-md">Add Product image</p>}
               >
                 <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
@@ -49,53 +99,84 @@ const AddProduct = () => {
                   placeholder=""
                 />
               </Form.Item>
-              <Form.Item name="price" label={<p className=" text-md">Price</p>}>
-                <InputNumber
+
+              <Form.Item
+                name="description"
+                label={<p className=" text-md">Description</p>}
+                style={{}}
+              >
+                <Input.TextArea
+                  rows={2}
                   required
-                  style={{ padding: "6px", width: "100%" }}
+                  style={{ padding: "6px" }}
                   className=" text-md"
                   placeholder=""
                 />
               </Form.Item>
             </div>
           </div>
-          <Form.Item
-            name="size"
-            label={<p className=" text-md">size</p>}
-            style={{}}
-          >
-            <InputNumber
-              required
-              style={{ padding: "6px", width: "100%" }}
-              className=" text-md"
-              placeholder="tittle here..."
-            />
-          </Form.Item>
-          <Form.Item
-            name="coupon"
-            label={<p className=" text-md">Coupon Code</p>}
-            style={{}}
-          >
-            <Input
-              required
-              style={{ padding: "6px" }}
-              className=" text-md"
-              placeholder=""
-            />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label={<p className=" text-md">Description</p>}
-            style={{}}
-          >
-            <Input.TextArea
-              rows={4}
-              required
-              style={{ padding: "6px" }}
-              className=" text-md"
-              placeholder=""
-            />
-          </Form.Item>
+          <div className="flex justify-between items-center gap-2">
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="size"
+                label={<p className=" text-md">size</p>}
+                style={{}}
+              >
+                <Select
+                  mode="multiple"
+                  style={{ width: "100%" }}
+                  placeholder="select one country"
+                  defaultValue={["china"]}
+                  onChange={handleChange}
+                  options={options}
+                  optionRender={(option) => (
+                    <Space>
+                      <span role="img" aria-label={option.data.label}>
+                        {option.data.emoji}
+                      </span>
+                      {option.data.desc}
+                    </Space>
+                  )}
+                />
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="color"
+                label={<p className=" text-md">Colors</p>}
+                style={{}}
+              >
+                <Input placeholder="Add Colors"></Input>
+              </Form.Item>
+            </div>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="stock"
+                label={<p className=" text-md">Quantity</p>}
+                style={{}}
+              >
+                <InputNumber
+                  required
+                  style={{ padding: "3px", width: "100%" }}
+                  className=" text-md"
+                  placeholder=""
+                />
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item name="price" label={<p className=" text-md">Price</p>}>
+                <InputNumber
+                  required
+                  style={{ padding: "3px", width: "100%" }}
+                  className=" text-md"
+                  placeholder=""
+                />
+              </Form.Item>
+            </div>
+          </div>
+
           <div className="flex justify-center ">
             <Form.Item>
               <button
@@ -103,7 +184,7 @@ const AddProduct = () => {
                 className="px-10 py-3 bg-primary text-white font-semiboldbold md:text-xl  shadow-lg rounded-xl"
                 type="submit"
               >
-                Publish
+                Submit
               </button>
             </Form.Item>
           </div>

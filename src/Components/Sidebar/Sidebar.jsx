@@ -48,6 +48,11 @@ const Sidebar = ({ closeDrawer }) => {
       label: "Manage Class",
       Link: "/manage-class",
     },
+     {
+      icon: <FaMoneyCheckAlt className="h-5 w-5" />,
+      label: "Manage Category ",
+      Link: "/manage-category",
+    },
     {
       icon: <LuCircleDollarSign className="h-5 w-5" />,
       label: "Manage Product ",
@@ -63,11 +68,7 @@ const Sidebar = ({ closeDrawer }) => {
       label: "Manage Token ",
       Link: "/manage-package",
     },
-    // {
-    //   icon: <FaMoneyCheckAlt className="h-5 w-5" />,
-    //   label: "Manage Membership ",
-    //   Link: "/manage-membership",
-    // },
+   
 
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,

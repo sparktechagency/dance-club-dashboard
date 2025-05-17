@@ -26,7 +26,10 @@ const ManageProducts = () => {
     category,
     searchTerm,
   });
-  console.log(productData?.data?.result);
+  
+  // console.log(productData?.data?.result);
+
+
   const allProducstData = productData?.data?.result;
   const [totalItems, setTotalItems] = useState(allProducstData?.length);
   const handlePageChange = (page, pageSize) => {
