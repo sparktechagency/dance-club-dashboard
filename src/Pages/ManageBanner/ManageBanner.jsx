@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { AllImages } from "../../assets/image/AllImages";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { Form, Modal, Upload } from "antd";
 import { FaImage } from "react-icons/fa";
+import { useGetAllBannerQuery } from "../../redux/api/features/bannerApi/bannerApi";
 
 const ManageBanner = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const { data: bannerData } = useGetAllBannerQuery();
+  const banner = bannerData?.data?.result;
+  console.log("banner", banner);
+
   const showModal = () => {
     setIsAddModalOpen(true);
   };
@@ -40,24 +45,44 @@ const ManageBanner = () => {
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="bg-neutral-200 p-5 rounded-xl flex flex-col gap-5">
-        <img src={AllImages.banner1} alt="" className="w-full" />
-          <button onClick={handleEdit} className="text-xl font-bold px-4 py-1 rounded-md">
+        {banner?.map((b) => (
+          <div key={b?._id} className="bg-neutral-200 p-5 rounded-xl flex flex-col gap-5">
+            <img src={b?.image} alt="" className="w-full h-44" />
+            <button
+              onClick={handleEdit}
+              className="text-xl font-bold px-4 py-1 rounded-md"
+            >
+              Edit
+            </button>
+          </div>
+        ))}
+        {/* <div className="bg-neutral-200 p-5 rounded-xl flex flex-col gap-5">
+          <img src={AllImages.banner1} alt="" className="w-full" />
+          <button
+            onClick={handleEdit}
+            className="text-xl font-bold px-4 py-1 rounded-md"
+          >
             Edit
           </button>
         </div>
         <div className="bg-neutral-200 p-5 rounded-xl flex flex-col gap-5">
-        <img src={AllImages.banner2} alt="" className="w-full" />
-          <button onClick={handleEdit} className="text-xl font-bold px-4 py-1 rounded-md">
+          <img src={AllImages.banner2} alt="" className="w-full" />
+          <button
+            onClick={handleEdit}
+            className="text-xl font-bold px-4 py-1 rounded-md"
+          >
             Edit
           </button>
         </div>
         <div className="bg-neutral-200 p-5 rounded-xl flex flex-col gap-5">
-        <img src={AllImages.banner3} alt="" className="w-full" />
-          <button onClick={handleEdit} className="text-xl font-bold px-4 py-1 rounded-md">
+          <img src={AllImages.banner3} alt="" className="w-full" />
+          <button
+            onClick={handleEdit}
+            className="text-xl font-bold px-4 py-1 rounded-md"
+          >
             Edit
           </button>
-        </div>
+        </div> */}
       </div>
       {/* Add Banner */}
       <Modal

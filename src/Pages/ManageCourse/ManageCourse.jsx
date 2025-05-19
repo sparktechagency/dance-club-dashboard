@@ -183,7 +183,7 @@ const ManageCourse = () => {
       };
 
       const bannerImage = coursesPic;
-      console.log("bannerImage", coursesPic);
+      // console.log("bannerImage", coursesPic);
       const editData = { ...data, bannerImage };
       formData.append("data", JSON.stringify(editData));
       formData.append("course_banner", coursesPic);
