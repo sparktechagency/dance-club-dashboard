@@ -20,4 +20,4 @@ const bannerApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllBannerQuery } = bannerApi;
+export const { useGetAllBannerQuery ,useCreateBannerMutation} = bannerApi;
