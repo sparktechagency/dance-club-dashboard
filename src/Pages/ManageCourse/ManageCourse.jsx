@@ -19,41 +19,30 @@ import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AllImages } from "../../assets/image/AllImages";
+import {
+  useCreateCourseMutation,
+  useGetAllCourseQuery,
+} from "../../redux/api/features/courseApi/courseApi";
 const ManageCourse = () => {
-  const userData = [
-    {
-      employee_id: "#1239",
-      name: "The Buzz Spot",
-      subName: "Non-Scheduled",
-      classImg: AllImages.image1,
-      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
-      price: "$1000",
-    },
-    {
-      employee_id: "#1239",
-      name: "Club Pulse",
-      subName: "Non-Scheduled",
-      classImg: AllImages.image2,
-      location: "Corona, Michigan",
-      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
-      price: "$1000",
-    },
-    {
-      employee_id: "#1239",
-      name: "Vibe Loungge",
-      subName: "Scheduled",
-      classImg: AllImages.image3,
-      location: "Corona, Michigan",
-      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
-      price: "$1000",
-    },
-  ];
+  const [form] = Form.useForm();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [coursesPic, setcoursesPic] = useState(null);
+  const [instrctorPic, setinstrctorPic] = useState(null);
+  const [previewInstructor, setPreviewInstrutor] = useState(null);
+
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(userData.length);
+
+  const [createCourse] = useCreateCourseMutation();
+
+  const { data: courseData } = useGetAllCourseQuery();
+  const courses = courseData?.data?.result;
+  // console.log("courseData", courses);
+
+  const [totalItems, setTotalItems] = useState(courses?.length);
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -86,9 +75,65 @@ const ManageCourse = () => {
     message.success("Deleted Successfully");
   };
 
-  const handleProfilePicUpload = () => {};
+  const handlecoursesPicUpload = (e) => {
+    const file = e.file.originFileObj;
+    setcoursesPic(file);
+  };
 
-  const onFinish = () => {};
+  const handleBefoeUpload = (file) => {
+    form.setFieldValue({ bannerImage: file });
+    setPreviewImage(URL.createObjectURL(file));
+    setcoursesPic(file);
+    return false;
+  };
+
+  console.log("coursesPic", coursesPic);
+  console.log("instrctorPic", instrctorPic);
+  const handleInstructorPicUpload = (e) => {
+    const file = e.file.originFileObj;
+    setinstrctorPic(file);
+  };
+
+  const handleInstructorBefoeUpload = (file) => {
+    form.setFieldValue({ profile_image: [file] });
+    setPreviewInstrutor(URL.createObjectURL(file));
+    setinstrctorPic(file);
+    return false;
+  };
+
+  const onFinish = async (values) => {
+    const formData = new FormData();
+
+    const data = {
+      title: values.title,
+      description: values.description,
+      duration: values.duration,
+      startDate: values.startDate,
+      price: values.price,
+      totalSeat: values.totalSeat,
+      instructorInfo: {
+        name: values.name,
+        email: values.email,
+        qualification: values.qualification,
+        expertise: [values.expertise],
+        profile_image: values.profile_image,
+      },
+    };
+
+    const bannerImage = values.bannerImage;
+    console.log("bannerImage", bannerImage);
+
+    try {
+      formData.append("data", JSON.stringify(data));
+      formData.append("course_banner", coursesPic);
+      await createCourse(formData).unwrap();
+      message.success("Course Added Successfully");
+      setIsAddModalOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onEditFInish = () => {};
   const columns = [
     {
@@ -99,11 +144,11 @@ const ManageCourse = () => {
     },
     {
       title: "Course Name",
-      key: "name",
+      key: "title",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <img src={record.classImg} alt="" />
-          <span>{record.name}</span>
+          <img src={record.bannerImage} alt="" className="w-10 h-10" />
+          <span>{record.title}</span>
         </div>
       ),
     },
@@ -199,7 +244,7 @@ const ManageCourse = () => {
       <div className=" overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={userData || []}
+          dataSource={courses || []}
           pagination={false}
           rowKey="id"
         />
@@ -212,12 +257,15 @@ const ManageCourse = () => {
         </Pagination>
       </div>
 
+      {/* Add course modal */}
+
       <Modal
         title="Add New Course"
         open={isAddModalOpen}
         onOk={handleOk}
         onCancel={handleAddModalClose}
         footer={false}
+        width={800}
       >
         <Form
           onFinish={onFinish}
@@ -227,59 +275,173 @@ const ManageCourse = () => {
         >
           <div className="w-full">
             <Form.Item
-              name="title"
-              label={<p className=" text-md">Add Product image</p>}
+              name="bannerImage"
+              label={<p className=" text-md">Add Course Banner image</p>}
             >
               <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
                 <Upload
                   showUploadList={false}
-                  onChange={handleProfilePicUpload}
+                  // onChange={handlecoursesPicUpload}
+                  beforeUpload={handleBefoeUpload}
+                  maxCount={1}
                   className=" "
                 >
-                  <FaImage className="text-secondary h-10 w-10" />
-                  <p className="text-secondary">Upload Image</p>
+                  {!previewImage ? (
+                    <>
+                      <FaImage className="text-secondary h-10 w-10" />
+                      <p className="text-secondary">Upload Image</p>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="h-24 object-contain"
+                      />
+                      <p className="text-secondary">{coursesPic?.name}</p>
+                    </>
+                  )}
                 </Upload>
               </div>
             </Form.Item>
           </div>
-          <Form.Item
-            name="course_name"
-            label={<p className=" text-md">Course Name</p>}
-          >
-            <Input className=" text-md" placeholder="Type Course Name"></Input>
-          </Form.Item>
-          <Form.Item
-            name="duration"
-            label={<p className=" text-md">Duration</p>}
-          >
-            <Input className=" text-md" placeholder="Type  duration"></Input>
-          </Form.Item>
-          <Form.Item
-            name="expiry"
-            label={<p className=" text-md">Start Date</p>}
-          >
-            <DatePicker style={{ width: "100%" }}></DatePicker>
-          </Form.Item>
-          <Form.Item name="price" label={<p className=" text-md">Price</p>}>
-            <InputNumber
-              min={0}
-              placeholder="Type Price"
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
+          <div className="flex justify-between items-center gap-2">
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="title"
+                label={<p className=" text-md">Course Name</p>}
+              >
+                <Input
+                  className=" text-md"
+                  placeholder="Type Course Name"
+                ></Input>
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="duration"
+                label={<p className=" text-md">Duration</p>}
+              >
+                <Input
+                  className=" text-md"
+                  placeholder="Type  duration"
+                ></Input>
+              </Form.Item>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center gap-2">
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="startDate"
+                label={<p className=" text-md">Start Date</p>}
+              >
+                <DatePicker style={{ width: "100%" }}></DatePicker>
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item name="price" label={<p className=" text-md">Price</p>}>
+                <InputNumber
+                  min={0}
+                  placeholder="Type Price"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="totalSeat"
+                label={<p className=" text-md">Total Seat </p>}
+              >
+                <InputNumber
+                  min={0}
+                  placeholder="Type Total Seat"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </div>
+          </div>
+
           <Form.Item
             name="description"
             label={<p className=" text-md">Description</p>}
           >
             <Input.TextArea rows={4}></Input.TextArea>
           </Form.Item>
+          <h1 className="text-xl font-bold my-2">Instructor Information</h1>
+          <div className="flex justify-between items-center gap-2">
+            <div className="w-full md:w-[50%]">
+              <Form.Item name="name" label={<p className=" text-md">Name</p>}>
+                <Input
+                  className=" text-md"
+                  placeholder="Type Instructor Name"
+                ></Input>
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item name="email" label={<p className=" text-md">Email</p>}>
+                <Input
+                  className=" text-md"
+                  placeholder="Type Instructor Email"
+                ></Input>
+              </Form.Item>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center gap-2">
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="qualification"
+                label={<p className=" text-md">Qualification</p>}
+              >
+                <Input
+                  className=" text-md"
+                  placeholder="Type Instructor Qualification"
+                ></Input>
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="expertise"
+                label={<p className=" text-md">Expertise</p>}
+              >
+                <Input
+                  className=" text-md"
+                  placeholder="Type Instructor Expertise"
+                ></Input>
+              </Form.Item>
+            </div>
+          </div>
+
+          <Form.Item
+            name="profile_image"
+            label={<p className=" text-md">Profile Image</p>}
+          >
+            <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
+              <Upload
+                showUploadList={false}
+                // onChange={handleInstructorPicUpload}
+                beforeUpload={handleInstructorBefoeUpload}
+                maxCount={1}
+                className=" "
+              >
+                {!previewInstructor ? (
+                  <FaImage className="text-secondary h-10 w-10" />
+                ) : (
+                  <img
+                    src={previewInstructor}
+                    alt="Preview"
+                    className="h-24 object-contain"
+                  />
+                )}
+              </Upload>
+            </div>
+          </Form.Item>
+
           <Form.Item type="submit">
             <div className="flex justify-center items-center gap-2">
               <button className="px-6 py-2 rounded-md bg-primary text-white">
                 Save
-              </button>
-              <button className="px-6 py-2 rounded-md border border-primary text-primary">
-                cancel
               </button>
             </div>
           </Form.Item>
@@ -307,7 +469,7 @@ const ManageCourse = () => {
               <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
                 <Upload
                   showUploadList={false}
-                  onChange={handleProfilePicUpload}
+                  onChange={handlecoursesPicUpload}
                   className=" "
                 >
                   <FaImage className="text-secondary h-10 w-10" />

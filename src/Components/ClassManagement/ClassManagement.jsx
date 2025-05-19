@@ -19,7 +19,7 @@ const ClassManagement = () => {
   const [banner, setbanner] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
-console.log("banner", banner);
+// console.log("banner", banner);
 
  const handleBeforeUpload = (file) => {
   form.setFieldsValue({ class_banner: [file] });
