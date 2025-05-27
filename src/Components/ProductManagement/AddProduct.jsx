@@ -13,7 +13,10 @@ const AddProduct = () => {
   const [fileList, setFileList] = useState([]);
   const [createProduct] = useCreateProductMutation();
   const { data: getAllCategory } = useGetCategoryForProductQuery();
-  console.log(getAllCategory?.data?.result);
+
+  console.log("profilePic", profilePic);
+
+
   const options = [
     {
       label: "XS",
@@ -63,12 +66,13 @@ const AddProduct = () => {
 
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
+ formData.append("product_image", profilePic); 
+    // fileList.forEach((profilePic) => {
+    //   formData.append("product_image", profilePic); 
+    // });
 
-    fileList.forEach((file) => {
-      formData.append("product_image", file); // If backend expects multiple images under same field
-    });
-
-    await createProduct(formData).unwrap();
+   const res= await createProduct(formData).unwrap();
+   console.log("res", res);
     message.success("Product added successfully!");
     form.resetFields();
     setFileList([]);
@@ -120,8 +124,20 @@ const AddProduct = () => {
                     beforeUpload={handleBeforeUpload}
                     className=" "
                   >
-                    <FaImage className="text-secondary h-10 w-10" />
-                    <p className="text-secondary">Upload Image</p>
+                  {
+                    previewImage ? (
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="w-full h-32 object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <FaImage className="text-4xl text-primary" />
+                        <p className="text-primary">Upload Image</p>
+                      </div>
+                    )
+                  }
                   </Upload>
                 </div>
               </Form.Item>
