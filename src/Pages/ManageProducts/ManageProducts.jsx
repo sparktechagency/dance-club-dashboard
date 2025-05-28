@@ -27,10 +27,11 @@ const ManageProducts = () => {
     searchTerm,
   });
 
-  // console.log(productData?.data?.result);
+  console.log(productData?.data?.meta?.total);
 
   const allProducstData = productData?.data?.result;
-  const [totalItems, setTotalItems] = useState(allProducstData?.length);
+
+  // const [totalItems, setTotalItems] = useState(allProducstData?.length);
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -47,7 +48,7 @@ const ManageProducts = () => {
   };
 
   const handleSearch = () => {
-    // refetc();
+    setCurrentPage(1);
   };
 
   const handleSession = (record) => {
@@ -167,7 +168,7 @@ const ManageProducts = () => {
                   allowClear
                   size="large"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   onPressEnter={handleSearch}
                   prefix={
                     <SearchOutlined
@@ -178,7 +179,7 @@ const ManageProducts = () => {
                 />
 
                 <button
-                  onClick={handleSearch}
+                  // onClick={handleSearch}
                   className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
                 >
                   search
@@ -218,10 +219,12 @@ const ManageProducts = () => {
       </div>
 
       <div className="mt-10 flex justify-center items-center">
-        <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}
-        </Pagination>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={productData?.data?.meta?.total || 0}
+          onChange={handlePageChange}
+        />
       </div>
 
       <Modal
@@ -279,7 +282,7 @@ const ManageProducts = () => {
                     />
                   ))}
                 </div>
-            </div>
+              </div>
             </div>
           </div>
         )}
