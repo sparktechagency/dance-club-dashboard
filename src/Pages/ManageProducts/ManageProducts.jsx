@@ -1,13 +1,17 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
+import { Avatar, ConfigProvider, Input, message, Pagination, Space, Table } from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaTrash } from "react-icons/fa";
 import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { useGetAllProductQuery } from "../../redux/api/features/productApi/productApi";
+import Swal from "sweetalert";
+import {
+  useDeleteProductMutation,
+  useGetAllProductQuery,
+} from "../../redux/api/features/productApi/productApi";
 const ManageProducts = () => {
   const navigate = useNavigate();
 
@@ -19,6 +23,8 @@ const ManageProducts = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [productId, setProductId] = useState(null);
+
   const { data: productData } = useGetAllProductQuery({
     page: currentPage,
     limit: pageSize,
@@ -26,12 +32,14 @@ const ManageProducts = () => {
     category,
     searchTerm,
   });
-  
-  // console.log(productData?.data?.result);
 
+  // console.log(productData?.data?.meta?.total);
 
   const allProducstData = productData?.data?.result;
-  const [totalItems, setTotalItems] = useState(allProducstData?.length);
+
+  const [deleteProduct] = useDeleteProductMutation();
+
+  // const [totalItems, setTotalItems] = useState(allProducstData?.length);
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -48,20 +56,34 @@ const ManageProducts = () => {
   };
 
   const handleSearch = () => {
-    // refetc();
+    setCurrentPage(1);
   };
 
   const handleSession = (record) => {
     console.log(record);
   };
-  const handleEdit = (record) => {
-    // console.log(record);
+  const handleDelete = (_id) => {
+    Swal({
+      title: "Are you sure you want to delete this product?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteProduct(_id);
+        message.success("Product deleted successfully!");
+      }
+    });
+  
   };
   const handleAddProduct = () => {
     navigate("/add-product");
   };
-  const handleEditProduct = () => {
-    navigate("/edit-product");
+  const handleEditProduct = (_id) => {
+    // console.log(_id);
+    // setProductId(_id);
+    navigate(`/edit-product/${_id}`, { state: { _id } });
   };
   const columns = [
     {
@@ -75,7 +97,7 @@ const ManageProducts = () => {
       key: "name",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <img src={record.images[0]} alt="" className="w-10 h-10"/>
+          <img src={record.images[0]} alt="" className="w-10 h-10" />
           <span>{record.name}</span>
         </div>
       ),
@@ -108,7 +130,9 @@ const ManageProducts = () => {
       key: "isAvailable",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <span className={record?.isAvailable ? "text-green-500" : "text-red-500"}>
+          <span
+            className={record?.isAvailable ? "text-green-500" : "text-red-500"}
+          >
             {record?.isAvailable ? "Available" : "Not Available"}
           </span>
         </div>
@@ -132,10 +156,13 @@ const ManageProducts = () => {
         >
           <Space size="middle">
             <button onClick={() => showModal(record)}>
-              <FaEye className="text-2xl"></FaEye>
+              <FaEye className="text-lg"></FaEye>
             </button>
-            <button onClick={() => handleEditProduct(record)}>
-              <AiOutlineEdit className="text-2xl" />
+            <button onClick={() => handleEditProduct(record?._id)}>
+              <AiOutlineEdit className="text-lg" />
+            </button>
+            <button onClick={() => handleDelete(record?._id)}>
+              <FaTrash className="text-lg text-red-500" />
             </button>
           </Space>
         </ConfigProvider>
@@ -166,7 +193,7 @@ const ManageProducts = () => {
                   allowClear
                   size="large"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   onPressEnter={handleSearch}
                   prefix={
                     <SearchOutlined
@@ -177,7 +204,7 @@ const ManageProducts = () => {
                 />
 
                 <button
-                  onClick={handleSearch}
+                  // onClick={handleSearch}
                   className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
                 >
                   search
@@ -217,54 +244,69 @@ const ManageProducts = () => {
       </div>
 
       <div className="mt-10 flex justify-center items-center">
-        <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
-        </Pagination>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={productData?.data?.meta?.total || 0}
+          onChange={handlePageChange}
+        />
       </div>
 
-      <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
+      <Modal
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+        width={800}
+      >
         {selectedUser && (
           <div className="">
-            <div className="bg-red-100  text-center relative h-[100px] w-full flex flex-col justify-center items-center">
-              <Avatar
-                className="shadow-md h-32 w-32 absolute top-[20px] left-[50%] translate-x-[-50%]"
-                src={selectedUser?.profileImage}
-              />
-            </div>
-
-            <div className="mt-16">
+            <div className="text-lg mb-4">
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Name :</p>
+                <p className=" font-bold">Product Name :</p>
                 <p>{selectedUser.name}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Employee Id :</p>
-                <p>{selectedUser.employee_id}</p>
+                <p className=" font-bold">Product Description:</p>
+                <p>{selectedUser.description}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Designation:</p>
-                <p>{selectedUser?.designation || "N/A"}</p>
+                <p className=" font-bold">Product Category:</p>
+                <p>{selectedUser?.category?.name || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Email :</p>
-                <p>{selectedUser.email}</p>
+                <p className=" font-bold">Available Color :</p>
+                <p>{selectedUser.color?.map((color) => color).join(", ")}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Contact No :</p>
-                <p>{selectedUser?.contact || "N/A"}</p>
+                <p className=" font-bold">Available Size :</p>
+                <p>{selectedUser?.size.join(", ") || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Member Since :</p>
-                <p>{selectedUser?.member_since || "N/A"}</p>
+                <p className=" font-bold"> Available stock :</p>
+                <p>{selectedUser?.stock || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Address :</p>
-                <p>{selectedUser.address || "N/A"}</p>
+                <p className=" font-bold">Price :</p>
+                <p>{selectedUser.price || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Qualification :</p>
-                <p>{selectedUser.qualification || "N/A"}</p>
+                <p className=" font-bold">Availablity :</p>
+                <p>
+                  {selectedUser?.isAvailable ? "Available" : "Not Available"}
+                </p>
+              </div>
+              <div className="">
+                <p className=" font-bold my-2">Product Images:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {selectedUser?.images?.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Product ${index + 1}`}
+                      className="w-full h-96 object-cover"
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>

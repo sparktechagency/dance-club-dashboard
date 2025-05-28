@@ -3,8 +3,8 @@ import { baseApi } from "../../baseApi";
 const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllProduct: builder.query({
-      query: ({ page, limit, isAvailable, searchTerm, category }) => ({
-        url: `/product/all-products?searchTerm=${searchTerm}&category=${category}&isAvailable=${isAvailable}&page=${page}&limit=${limit}`,
+      query: ({ page, limit, searchTerm,  }) => ({
+        url: `/product/all-products?searchTerm=${searchTerm}&page=${page}&limit=${limit}`,
         method: "GET",
       }),
       providesTags: ["Product"],
@@ -27,8 +27,8 @@ const productApi = baseApi.injectEndpoints({
       providesTags: ["Product"],
     }),
     editProduct: builder.mutation({
-      query: (data) => ({
-        url: `/product/update-product/${data._id}`,
+      query: ({_id,data}) => ({
+        url: `/product/update-product/${_id}`,
         method: "PUT",
         body: data,
       }),
@@ -51,3 +51,8 @@ export const {
   useEditProductMutation,
   useDeleteProductMutation,
 } = productApi;
+
+
+
+
+

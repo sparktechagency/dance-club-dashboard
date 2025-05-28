@@ -21,7 +21,7 @@ const ManageClass = () => {
     page: currentPage,
     limit: pageSize,
   });
-  console.log("allClassesData", allClassesData?.data?.result);
+  // console.log("allClassesData", allClassesData?.data?.result);
   const classData = allClassesData?.data?.result;
   const [totalItems, setTotalItems] = useState(classData?.length);
 

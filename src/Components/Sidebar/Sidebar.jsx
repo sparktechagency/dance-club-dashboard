@@ -65,7 +65,7 @@ const Sidebar = ({ closeDrawer }) => {
     },
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
-      label: "Manage Token ",
+      label: "Manage Package ",
       Link: "/manage-package",
     },
    
