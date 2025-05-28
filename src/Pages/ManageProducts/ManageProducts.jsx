@@ -26,9 +26,8 @@ const ManageProducts = () => {
     category,
     searchTerm,
   });
-  
-  // console.log(productData?.data?.result);
 
+  // console.log(productData?.data?.result);
 
   const allProducstData = productData?.data?.result;
   const [totalItems, setTotalItems] = useState(allProducstData?.length);
@@ -75,7 +74,7 @@ const ManageProducts = () => {
       key: "name",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <img src={record.images[0]} alt="" className="w-10 h-10"/>
+          <img src={record.images[0]} alt="" className="w-10 h-10" />
           <span>{record.name}</span>
         </div>
       ),
@@ -108,7 +107,9 @@ const ManageProducts = () => {
       key: "isAvailable",
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <span className={record?.isAvailable ? "text-green-500" : "text-red-500"}>
+          <span
+            className={record?.isAvailable ? "text-green-500" : "text-red-500"}
+          >
             {record?.isAvailable ? "Available" : "Not Available"}
           </span>
         </div>
@@ -218,54 +219,67 @@ const ManageProducts = () => {
 
       <div className="mt-10 flex justify-center items-center">
         <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
+          Showing {(currentPage - 1) * pageSize + 1} to
+          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}
         </Pagination>
       </div>
 
-      <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
+      <Modal
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+        width={800}
+      >
         {selectedUser && (
           <div className="">
-            <div className="bg-red-100  text-center relative h-[100px] w-full flex flex-col justify-center items-center">
-              <Avatar
-                className="shadow-md h-32 w-32 absolute top-[20px] left-[50%] translate-x-[-50%]"
-                src={selectedUser?.profileImage}
-              />
-            </div>
-
-            <div className="mt-16">
+            <div className="text-lg mb-4">
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Name :</p>
+                <p className=" font-bold">Product Name :</p>
                 <p>{selectedUser.name}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Employee Id :</p>
-                <p>{selectedUser.employee_id}</p>
+                <p className=" font-bold">Product Description:</p>
+                <p>{selectedUser.description}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Designation:</p>
-                <p>{selectedUser?.designation || "N/A"}</p>
+                <p className=" font-bold">Product Category:</p>
+                <p>{selectedUser?.category?.name || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Email :</p>
-                <p>{selectedUser.email}</p>
+                <p className=" font-bold">Available Color :</p>
+                <p>{selectedUser.color?.map((color) => color).join(", ")}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Contact No :</p>
-                <p>{selectedUser?.contact || "N/A"}</p>
+                <p className=" font-bold">Available Size :</p>
+                <p>{selectedUser?.size.join(", ") || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Member Since :</p>
-                <p>{selectedUser?.member_since || "N/A"}</p>
+                <p className=" font-bold"> Available stock :</p>
+                <p>{selectedUser?.stock || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Address :</p>
-                <p>{selectedUser.address || "N/A"}</p>
+                <p className=" font-bold">Price :</p>
+                <p>{selectedUser.price || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
-                <p className=" font-bold">Qualification :</p>
-                <p>{selectedUser.qualification || "N/A"}</p>
+                <p className=" font-bold">Availablity :</p>
+                <p>
+                  {selectedUser?.isAvailable ? "Available" : "Not Available"}
+                </p>
               </div>
+              <div className="">
+                <p className=" font-bold my-2">Product Images:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {selectedUser?.images?.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Product ${index + 1}`}
+                      className="w-full h-96 object-cover"
+                    />
+                  ))}
+                </div>
+            </div>
             </div>
           </div>
         )}
