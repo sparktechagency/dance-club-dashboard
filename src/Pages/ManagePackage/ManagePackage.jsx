@@ -2,27 +2,15 @@ import { useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { FaPen } from "react-icons/fa";
 import { DatePicker, Form, Input, Modal, Table } from "antd";
+import { useGetAllPackageQuery } from "../../redux/api/features/packageApi/PackageApi";
 
 const ManagePackage = () => {
-  const Data = [
-    {
-      token_number: "1",
-      price: "$1000",
-      duration: "1 Month",
-    },
-    {
-      token_number: "2",
-      price: "$2000",
-      duration: "2 Month",
-    },
-    {
-      token_number: "3",
-      price: "$3000",
-      duration: "3 Month",
-    },
-  ];
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+const {data: packageData} = useGetAllPackageQuery();
+console.log("packageData", packageData?.data?.result);
 
   const handleAddPackage = () => {
     setIsAddModalOpen(true);
@@ -57,17 +45,35 @@ const ManagePackage = () => {
       title: "Price",
       dataIndex: "price",
       render: (_, record) => (
-        <span className="bg-primary text-black px-4 py-2 rounded-lg font-bold">
-          ${record.price}
+        <span className="bg-primary text-white px-4 py-2 rounded-lg font-bold">
+          ${record?.price}
         </span>
       ),
     },
     {
-      title: "Expiry",
-      dataIndex: "duration",
+      title: "Package Type",
+      dataIndex: "packageType",
       render: (_, record) => (
-        <span className="bg-secondary text-white px-4 py-2 rounded-lg font-bold">
-          {record.duration}
+        <span className=" px-4 py-2 rounded-lg font-bold">
+          {record.packageType}
+        </span>
+      ),
+    },
+    {
+      title: "Total Token",
+      dataIndex: "totalToken",
+      render: (_, record) => (
+        <span className=" px-4 py-2 rounded-lg font-bold">
+          {record.totalToken}
+        </span>
+      ),
+    },
+    {
+      title: "Validity In Weeks",
+      dataIndex: "validityInWeeks",
+      render: (_, record) => (
+        <span className=" px-4 py-2 rounded-lg font-bold">
+          {record.validityInWeeks}
         </span>
       ),
     },
@@ -92,13 +98,13 @@ const ManagePackage = () => {
           onClick={handleAddPackage}
           className="px-4 py-2 rounded-md bg-primary text-white"
         >
-          Add New Token
+          Add New Package
         </button>
       </div>
       <div className="mt-10 max-w-screen-xl mx-auto">
         <Table
           columns={columns}
-          dataSource={Data || []}
+          dataSource={packageData?.data?.result || []}
           pagination={false}
           rowKey="id"
         />
