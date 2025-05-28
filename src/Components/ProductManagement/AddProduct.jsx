@@ -1,111 +1,90 @@
 /* eslint-disable no-unused-vars */
-import { Form, Input, InputNumber, Select, Upload, Space, message } from "antd";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Upload,
+  Space,
+  message,
+} from "antd";
 import GoBackButton from "../Shared/GobackButton/GoBackButton";
-import { FaImage } from "react-icons/fa";
+import { FaPlus, FaTimes } from "react-icons/fa";
 import { useCreateProductMutation } from "../../redux/api/features/productApi/productApi";
 import { useGetCategoryForProductQuery } from "../../redux/api/features/categoryApi/categoryApi";
 import { useState } from "react";
 
 const AddProduct = () => {
   const [form] = Form.useForm();
-  const [profilePic, setProfilePic] = useState(null);
-  const [previewImage, setPreviewImage] = useState(null);
   const [fileList, setFileList] = useState([]);
   const [createProduct] = useCreateProductMutation();
   const { data: getAllCategory } = useGetCategoryForProductQuery();
 
-  console.log("profilePic", profilePic);
-
-
   const options = [
-    {
-      label: "XS",
-      value: "XS",
-      desc: "XS (Xtra Small)",
-    },
-    {
-      label: "S",
-      value: "S",
-      desc: "S (Small)",
-    },
-    {
-      label: "M",
-      value: "M",
-      desc: "M (Medium)",
-    },
-    {
-      label: "L",
-      value: "L",
-      desc: "L (Large)",
-    },
-    {
-      label: "XL",
-      value: "XL",
-      desc: "XL (Xtra Large)",
-    },
-    {
-      label: "XXL",
-      value: "XXL",
-      desc: "XXL (Xtra Xtra Large)",
-    },
+    { label: "XS", value: "XS", desc: "XS (Xtra Small)" },
+    { label: "S", value: "S", desc: "S (Small)" },
+    { label: "M", value: "M", desc: "M (Medium)" },
+    { label: "L", value: "L", desc: "L (Large)" },
+    { label: "XL", value: "XL", desc: "XL (Xtra Large)" },
+    { label: "XXL", value: "XXL", desc: "XXL (Xtra Xtra Large)" },
   ];
 
-  const formData = new FormData();
-
-  const onFinish = async (values) => {
-  try {
-    const data = {
-      name: values.title,
-      price: values.price,
-      category: values.category,
-      stock: values.stock,
-      description: values.description,
-      size: values.size,
-      color: values.color ? values.color.split(",").map(c => c.trim()) : [],
-    };
-
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(data));
- formData.append("product_image", profilePic); 
-    // fileList.forEach((profilePic) => {
-    //   formData.append("product_image", profilePic); 
-    // });
-
-   const res= await createProduct(formData).unwrap();
-   console.log("res", res);
-    message.success("Product added successfully!");
-    form.resetFields();
-    setFileList([]);
-  } catch (error) {
-    message.error("Failed to add product.");
-  }
-};
-
-
-
-  
   const categoryOptions = getAllCategory?.data?.result.map((item) => ({
     label: item.name,
     value: item._id,
   }));
 
-  const handleBeforeUpload = (file) => {
-    form.setFieldValue("images", file);
-    setProfilePic(file);
-    setPreviewImage(URL.createObjectURL(file));
-    return false;
+  const onFinish = async (values) => {
+    try {
+      const data = {
+        name: values.title,
+        price: values.price,
+        category: values.category,
+        stock: values.stock,
+        description: values.description,
+        size: values.size,
+        color: values.color
+          ? values.color.split(",").map((c) => c.trim())
+          : [],
+      };
+
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+
+      fileList.forEach((file) => {
+        formData.append("product_image", file);
+      });
+
+      await createProduct(formData).unwrap();
+      message.success("Product added successfully!");
+      form.resetFields();
+      setFileList([]);
+    } catch (error) {
+      message.error("Failed to add product.");
+    }
   };
 
-  const handleOk = () => {};
-  const handleProfilePicUpload = () => {};
+  const handleBeforeUpload = (file) => {
+    setFileList((prevList) => [...prevList, file]);
+    return false; // prevent automatic upload
+  };
+
+  const removeImage = (fileToRemove) => {
+    setFileList((prevList) =>
+      prevList.filter((file) => file.uid !== fileToRemove.uid)
+    );
+  };
+
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
+
   return (
     <div>
       <GoBackButton text={"Add Product"} />
       <div className="mt-5">
         <Form
+          form={form}
           name="add-product"
           initialValues={{ remember: false }}
           onFinish={onFinish}
@@ -115,134 +94,130 @@ const AddProduct = () => {
             <div className="w-full md:w-[50%]">
               <Form.Item
                 name="product_image"
-                label={<p className=" text-md">Add Product image</p>}
+                label={<p className="text-md">Add Product Images</p>}
               >
-                <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
-                  <Upload
-                    showUploadList={false}
-                    onChange={handleProfilePicUpload}
-                    beforeUpload={handleBeforeUpload}
-                    className=" "
-                  >
-                  {
-                    previewImage ? (
-                      <img
-                        src={previewImage}
-                        alt="Preview"
-                        className="w-full h-32 object-cover"
-                      />
-                    ) : (
-                      <div className="flex flex-col items-center">
-                        <FaImage className="text-4xl text-primary" />
-                        <p className="text-primary">Upload Image</p>
+                <div className="border border-dashed border-secondary p-3">
+                  <div className="flex gap-3 flex-wrap">
+                    {fileList.map((file) => (
+                      <div
+                        key={file.uid}
+                        className="relative w-24 h-24 border rounded overflow-hidden"
+                      >
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt="preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(file)}
+                          className="absolute top-1 right-1 bg-white rounded-full p-1 text-xs"
+                        >
+                          <FaTimes className="text-red-600" />
+                        </button>
                       </div>
-                    )
-                  }
-                  </Upload>
+                    ))}
+
+                    <Upload
+                      multiple
+                      showUploadList={false}
+                      beforeUpload={handleBeforeUpload}
+                    >
+                      <div className="w-24 h-24 border border-dashed flex items-center justify-center rounded cursor-pointer hover:bg-gray-100">
+                        <FaPlus className="text-xl text-gray-500" />
+                      </div>
+                    </Upload>
+                  </div>
                 </div>
               </Form.Item>
             </div>
+
             <div className="w-full md:w-[50%] flex flex-col">
               <Form.Item
                 name="title"
-                label={<p className=" text-md">Product Name</p>}
-                style={{}}
+                label={<p className="text-md">Product Name</p>}
               >
-                <Input
-                  required
-                  style={{ padding: "6px" }}
-                  className=" text-md"
-                  placeholder=""
-                />
+                <Input required placeholder="Enter product name" />
               </Form.Item>
+
               <Form.Item
                 name="category"
-                label={<p className=" text-md">Product Category</p>}
-                style={{}}
+                label={<p className="text-md">Product Category</p>}
               >
-                <Select options={categoryOptions}></Select>
+                <Select options={categoryOptions} />
               </Form.Item>
             </div>
           </div>
+
           <div className="flex justify-between items-center gap-2">
             <div className="w-full md:w-[50%]">
               <Form.Item
                 name="size"
-                label={<p className=" text-md">size</p>}
-                style={{}}
+                label={<p className="text-md">Size</p>}
               >
                 <Select
                   mode="multiple"
-                  style={{ width: "100%" }}
-                  placeholder="select one country"
-                  defaultValue={["china"]}
+                  placeholder="Select sizes"
                   onChange={handleChange}
                   options={options}
                   optionRender={(option) => (
                     <Space>
-                      <span role="img" aria-label={option.data.label}>
-                        {option.data.emoji}
-                      </span>
                       {option.data.desc}
                     </Space>
                   )}
                 />
               </Form.Item>
             </div>
+
             <div className="w-full md:w-[50%]">
               <Form.Item
                 name="color"
-                label={<p className=" text-md">Colors</p>}
-                style={{}}
+                label={<p className="text-md">Colors</p>}
               >
-                <Input placeholder="Add Colors"></Input>
+                <Input placeholder="e.g. Red, Blue" />
               </Form.Item>
             </div>
           </div>
+
           <div className="flex justify-between items-center gap-2">
             <div className="w-full md:w-[50%]">
               <Form.Item
                 name="stock"
-                label={<p className=" text-md">Quantity</p>}
-                style={{}}
+                label={<p className="text-md">Quantity</p>}
               >
                 <InputNumber
                   required
-                  style={{ padding: "3px", width: "100%" }}
-                  className=" text-md"
-                  placeholder=""
+                  style={{ width: "100%" }}
+                  placeholder="Enter stock quantity"
                 />
               </Form.Item>
             </div>
+
             <div className="w-full md:w-[50%]">
-              <Form.Item name="price" label={<p className=" text-md">Price</p>}>
+              <Form.Item name="price" label={<p className="text-md">Price</p>}>
                 <InputNumber
                   required
-                  style={{ padding: "3px", width: "100%" }}
-                  className=" text-md"
-                  placeholder=""
+                  style={{ width: "100%" }}
+                  placeholder="Enter price"
                 />
               </Form.Item>
             </div>
           </div>
+
           <Form.Item
             name="description"
-            label={<p className=" text-md">Description</p>}
-            style={{}}
+            label={<p className="text-md">Description</p>}
           >
             <Input.TextArea
               rows={4}
-              required
-              style={{ padding: "6px" }}
-              className=" text-md"
-              placeholder=""
+              placeholder="Enter product description"
             />
           </Form.Item>
-          <div className="flex justify-center ">
+
+          <div className="flex justify-center">
             <Form.Item>
               <button
-                onClick={handleOk}
-                className="px-10 py-3 bg-primary text-white font-semiboldbold md:text-xl  shadow-lg rounded-xl"
+                className="px-10 py-3 bg-primary text-white font-semibold md:text-xl shadow-lg rounded-xl"
                 type="submit"
               >
                 Submit
