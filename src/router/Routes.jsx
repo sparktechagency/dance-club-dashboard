@@ -26,6 +26,7 @@ import ManageCourse from "../Pages/ManageCourse/ManageCourse";
 import ClassManagement from "../Components/ClassManagement/ClassManagement";
 import OrderDetails from "../Pages/ManageOrder/OrderDetails";
 import ManageCategory from "../Pages/ManageCategory/ManageCategory";
+import EditProduct from "../Components/ProductManagement/EditProduct";
 
 export const router = createBrowserRouter([
   {
@@ -80,8 +81,8 @@ export const router = createBrowserRouter([
         element: <AddProduct />,
       },
       {
-        path: "/edit-product",
-        element: <AddProduct />,
+        path: "/edit-product/:_id",
+        element: <EditProduct />,
       },
       {
         path: "/manage-order",

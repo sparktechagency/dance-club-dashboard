@@ -1,13 +1,17 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
+import { Avatar, ConfigProvider, Input, message, Pagination, Space, Table } from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaTrash } from "react-icons/fa";
 import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { useGetAllProductQuery } from "../../redux/api/features/productApi/productApi";
+import Swal from "sweetalert";
+import {
+  useDeleteProductMutation,
+  useGetAllProductQuery,
+} from "../../redux/api/features/productApi/productApi";
 const ManageProducts = () => {
   const navigate = useNavigate();
 
@@ -19,6 +23,8 @@ const ManageProducts = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [productId, setProductId] = useState(null);
+
   const { data: productData } = useGetAllProductQuery({
     page: currentPage,
     limit: pageSize,
@@ -27,9 +33,11 @@ const ManageProducts = () => {
     searchTerm,
   });
 
-  console.log(productData?.data?.meta?.total);
+  // console.log(productData?.data?.meta?.total);
 
   const allProducstData = productData?.data?.result;
+
+  const [deleteProduct] = useDeleteProductMutation();
 
   // const [totalItems, setTotalItems] = useState(allProducstData?.length);
   const handlePageChange = (page, pageSize) => {
@@ -54,14 +62,28 @@ const ManageProducts = () => {
   const handleSession = (record) => {
     console.log(record);
   };
-  const handleEdit = (record) => {
-    // console.log(record);
+  const handleDelete = (_id) => {
+    Swal({
+      title: "Are you sure you want to delete this product?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteProduct(_id);
+        message.success("Product deleted successfully!");
+      }
+    });
+  
   };
   const handleAddProduct = () => {
     navigate("/add-product");
   };
-  const handleEditProduct = () => {
-    navigate("/edit-product");
+  const handleEditProduct = (_id) => {
+    // console.log(_id);
+    // setProductId(_id);
+    navigate(`/edit-product/${_id}`, { state: { _id } });
   };
   const columns = [
     {
@@ -134,10 +156,13 @@ const ManageProducts = () => {
         >
           <Space size="middle">
             <button onClick={() => showModal(record)}>
-              <FaEye className="text-2xl"></FaEye>
+              <FaEye className="text-lg"></FaEye>
             </button>
-            <button onClick={() => handleEditProduct(record)}>
-              <AiOutlineEdit className="text-2xl" />
+            <button onClick={() => handleEditProduct(record?._id)}>
+              <AiOutlineEdit className="text-lg" />
+            </button>
+            <button onClick={() => handleDelete(record?._id)}>
+              <FaTrash className="text-lg text-red-500" />
             </button>
           </Space>
         </ConfigProvider>
