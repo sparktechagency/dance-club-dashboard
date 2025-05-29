@@ -5,6 +5,7 @@ import { IoIosLock } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import {
+  useChangePasswordMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
 } from "../../redux/api/features/profileApi/profileApi";
@@ -18,9 +19,10 @@ const AdminProfile = () => {
   const { data: profile } = useGetProfileQuery();
   const [userData, setUserData] = useState(null);
 
-  const [currentPassword, setCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [oldPassword, setoldPassword] = useState(false);
+  const [shownewPassword, setShownewPassword] = useState(false);
+  const [showconfirmNewPassword, setShowconfirmNewPassword] = useState(false);
+  const [changePassword] = useChangePasswordMutation();
 
   const [updateProfile] = useUpdateProfileMutation();
 
@@ -32,9 +34,9 @@ const AdminProfile = () => {
   }, [profile?.data, form]);
 
   const togglePasswordVisibility = (type) => {
-    if (type === "current") setCurrentPassword(!currentPassword);
-    else if (type === "new") setShowNewPassword(!showNewPassword);
-    else setShowConfirmPassword(!showConfirmPassword);
+    if (type === "current") setoldPassword(!oldPassword);
+    else if (type === "new") setShownewPassword(!shownewPassword);
+    else setShowconfirmNewPassword(!showconfirmNewPassword);
   };
 
   const toggleEditMode = () => setIsEditing(!isEditing);
@@ -65,6 +67,25 @@ const AdminProfile = () => {
     return false; // Prevent auto-upload
   };
 
+  const onFinishChangePassword = (values) => {
+    const data = {
+      oldPassword: values.oldPassword,
+      newPassword: values.newPassword,
+      confirmNewPassword: values.confirmNewPassword,
+    };
+
+    changePassword(data)
+      .unwrap()
+      .then((res) => {
+        console.log("res", res);
+        form.resetFields();
+        message.success("Password changed successfully!");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="mx-2">
       <GoBackButton text="Admin Profile" />
@@ -88,7 +109,9 @@ const AdminProfile = () => {
                 </Upload>
               )}
             </div>
-            <h1 className="text-2xl font-semibold my-3">{profile?.data?.name}</h1>
+            <h1 className="text-2xl font-semibold my-3">
+              {profile?.data?.name}
+            </h1>
           </div>
         </div>
 
@@ -174,6 +197,7 @@ const AdminProfile = () => {
 
         {activeTab === "Change Password" && (
           <Form
+            onFinish={onFinishChangePassword}
             layout="vertical"
             style={{ maxWidth: 800 }}
             className="mx-auto p-5 bg-white shadow-md rounded-md"
@@ -183,21 +207,21 @@ const AdminProfile = () => {
             </p>
 
             <Form.Item
-              name="currentPassword"
-              label="Current Password"
+              name="oldPassword"
+              label="old Password"
               rules={[{ required: true }]}
             >
               <div className="relative">
                 <Input
-                  type={currentPassword ? "text" : "password"}
-                  placeholder="Enter current password"
+                  type={oldPassword ? "text" : "password"}
+                  placeholder="Enter old Password"
                 />
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility("current")}
                   className="absolute right-2 top-2"
                 >
-                  {currentPassword ? <FaLockOpen /> : <IoIosLock />}
+                  {oldPassword ? <FaLockOpen /> : <IoIosLock />}
                 </button>
               </div>
             </Form.Item>
@@ -209,7 +233,7 @@ const AdminProfile = () => {
             >
               <div className="relative">
                 <Input
-                  type={showNewPassword ? "text" : "password"}
+                  type={shownewPassword ? "text" : "password"}
                   placeholder="Enter new password"
                 />
                 <button
@@ -217,19 +241,19 @@ const AdminProfile = () => {
                   onClick={() => togglePasswordVisibility("new")}
                   className="absolute right-2 top-2"
                 >
-                  {showNewPassword ? <FaLockOpen /> : <IoIosLock />}
+                  {shownewPassword ? <FaLockOpen /> : <IoIosLock />}
                 </button>
               </div>
             </Form.Item>
 
             <Form.Item
-              name="confirmPassword"
+              name="confirmNewPassword"
               label="Confirm Password"
               rules={[{ required: true }]}
             >
               <div className="relative">
                 <Input
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showconfirmNewPassword ? "text" : "password"}
                   placeholder="Confirm new password"
                 />
                 <button
@@ -237,7 +261,7 @@ const AdminProfile = () => {
                   onClick={() => togglePasswordVisibility("confirm")}
                   className="absolute right-2 top-2"
                 >
-                  {showConfirmPassword ? <FaLockOpen /> : <IoIosLock />}
+                  {showconfirmNewPassword ? <FaLockOpen /> : <IoIosLock />}
                 </button>
               </div>
             </Form.Item>
