@@ -18,7 +18,28 @@ const SeetingsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Privacy"],
     }),
+
+    getTremCondition: builder.query({
+      query: () => ({
+        url: "/manage/get-terms-conditions",
+        method: "GET",
+      }),
+      providesTags: ["TremCondition"],
+    }),
+    createTermsCOndition: builder.mutation({
+      query: (data) => ({
+        url: "/manage/add-terms-conditions",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["TremCondition"],
+    }),
   }),
 });
 
-export const { useGetPrivacyQuery,useCreatePrivacyMutation } = SeetingsApi;
+export const {
+  useGetPrivacyQuery,
+  useCreatePrivacyMutation,
+  useGetTremConditionQuery,
+  useCreateTermsCOnditionMutation
+} = SeetingsApi;
