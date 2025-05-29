@@ -25,15 +25,15 @@ const packageApi = baseApi.injectEndpoints({
       providesTags: ["Package"],
     }),
     updatePackage: builder.mutation({
-      query: ({_id,data}) => ({
+      query: ({ _id, data }) => ({
         url: `/package/update-package/${_id}`,
-        method: "PUT",
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["Package"],
     }),
     deletePackage: builder.mutation({
-      query: (_id ) => ({
+      query: (_id) => ({
         url: `/package/update-package/${_id}`,
         method: "DELETE",
       }),
@@ -42,4 +42,10 @@ const packageApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllPackageQuery, useCreatePackageMutation,useGetSInglePackageQuery ,useUpdatePackageMutation,useDeletePackageMutation } = packageApi;
+export const {
+  useGetAllPackageQuery,
+  useCreatePackageMutation,
+  useGetSInglePackageQuery,
+  useUpdatePackageMutation,
+  useDeletePackageMutation,
+} = packageApi;

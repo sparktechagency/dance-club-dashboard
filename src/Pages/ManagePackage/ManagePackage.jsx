@@ -1,19 +1,9 @@
 import { useEffect, useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { FaPen, FaTrash } from "react-icons/fa";
-import {
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  message,
-  Modal,
-  Select,
-  Table,
-} from "antd";
+import { Form, InputNumber, message, Modal, Select, Table } from "antd";
 import {
   useCreatePackageMutation,
-  useDeletePackageMutation,
   useGetAllPackageQuery,
   useGetSInglePackageQuery,
   useUpdatePackageMutation,
@@ -24,10 +14,11 @@ const ManagePackage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [packageId, setPackageId] = useState("");
+  // console.log("packageId", packageId);
   const { data: packageData } = useGetAllPackageQuery();
   const [createPackage] = useCreatePackageMutation();
   const { data: getSInglePackageData } = useGetSInglePackageQuery(packageId);
-  // const [updatePackage] = useUpdatePackageMutation(packageId);
+  const [updatePackage] = useUpdatePackageMutation();
   // const [deletePackage] = useDeletePackageMutation(packageId);
 
   console.log("getSInglePackageData", getSInglePackageData?.data);
@@ -80,7 +71,25 @@ const ManagePackage = () => {
         console.log(error);
       });
   };
-  const onEditFInish = () => {};
+  const onEditFInish = (values) => {
+    const data = {
+      totalToken: values.totalToken,
+      price: values.price,
+      validityInWeeks: values.validityInWeeks,
+      packageType: values.packageType,
+    };
+    // console.log("data", data);
+    updatePackage({ _id: packageId, data })
+      .unwrap()
+      .then((res) => {
+        console.log("res", res);
+        message.success("Package updated successfully!");
+        setIsEditModalOpen(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleDelete = (_id) => {
     console.log(_id);
     message.error("Deleted Successfully");
@@ -96,7 +105,7 @@ const ManagePackage = () => {
       title: "Price",
       dataIndex: "price",
       render: (_, record) => (
-        <span className="bg-primary text-white px-4 py-2 rounded-lg font-bold">
+        <span className=" px-2  py-2 rounded-lg font-bold ">
           ${record?.price}
         </span>
       ),
@@ -240,36 +249,54 @@ const ManagePackage = () => {
         footer={false}
       >
         <Form
-          name="add-token"
-          initialValues={{ remember: false }}
-          layout="vertical"
+          form={form}
           onFinish={onEditFInish}
+          name="add-package"
+          layout="vertical"
         >
           <Form.Item
             name="packageType"
-            label={<p className=" text-md">Token Number</p>}
+            label={<p className=" text-md">Package Type</p>}
           >
-            <Input className=" text-md" placeholder="Type Token Number"></Input>
+            <Select className=" text-md" placeholder="Select Package Type">
+              <Select.Option value="NORMAL_CLASS">NORMAL_CLASS</Select.Option>
+              <Select.Option value="POPUP_CLASS">POPUP_CLASS</Select.Option>
+            </Select>
           </Form.Item>
           <Form.Item
             name="price"
-            label={<p className=" text-md">Token Price</p>}
+            label={<p className=" text-md">Package Price</p>}
           >
-            <Input className=" text-md" placeholder="Type Token Price"></Input>
+            <InputNumber
+              style={{ width: "100%" }}
+              className=" text-md"
+              placeholder="Type Package Price"
+            ></InputNumber>
           </Form.Item>
           <Form.Item
-            name="expiry"
-            label={<p className=" text-md">Token Expiry Date</p>}
+            name="validityInWeeks"
+            label={<p className=" text-md">Validity In Weeks</p>}
           >
-            <DatePicker style={{ width: "100%" }}></DatePicker>
+            <InputNumber
+              style={{ width: "100%" }}
+              className=" text-md"
+              placeholder="Type Validity In Weeks"
+            ></InputNumber>
+          </Form.Item>
+          <Form.Item
+            name="totalToken"
+            label={<p className=" text-md">Total Token</p>}
+          >
+            <InputNumber
+              style={{ width: "100%" }}
+              className=" text-md"
+              placeholder="Type Total Token"
+            ></InputNumber>
           </Form.Item>
           <Form.Item type="submit">
             <div className="flex justify-center items-center gap-2">
               <button className="px-6 py-2 rounded-md bg-primary text-white">
                 Save
-              </button>
-              <button className="px-6 py-2 rounded-md border border-primary text-primary">
-                cancel
               </button>
             </div>
           </Form.Item>
