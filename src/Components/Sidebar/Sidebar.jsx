@@ -7,7 +7,6 @@ import { BiChevronDown } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import {
   MdDashboard,
-  MdMenuBook,
   MdPrivacyTip,
 } from "react-icons/md";
 import { LuCircleDollarSign } from "react-icons/lu";
@@ -108,11 +107,11 @@ const Sidebar = ({ closeDrawer }) => {
           label: "Terms & Condition",
           Link: "/settings/terms-condition",
         },
-        {
-          icon: <MdMenuBook className="h-5 w-5" />,
-          label: "profile",
-          Link: "/admin-profile",
-        },
+        // {
+        //   icon: <MdMenuBook className="h-5 w-5" />,
+        //   label: "profile",
+        //   Link: "/admin-profile",
+        // },
       ],
     },
   ];
