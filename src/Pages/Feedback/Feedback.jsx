@@ -9,31 +9,14 @@ import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { useNavigate } from "react-router-dom";
 import { IoArrowUndoSharp } from "react-icons/io5";
 import { FaTrashAlt } from "react-icons/fa";
+import { useGetAllFeedbackQuery } from "../../redux/api/features/feedbackApi/feedbackApi";
+import { render } from "react-dom";
 const Feedback = () => {
   const navigate = useNavigate();
-  const userData = [
-    {
-      employee_id: "#1239",
-      name: "The Buzz Spot",
-      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
-      time: "8:00am",
-      status: "Pending",
-    },
-    {
-      employee_id: "#1239",
-      name: "The Buzz Spot",
-      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
-      time: "8:00am",
-      status: "Replied",
-    },
-    {
-      employee_id: "#1239",
-      name: "The Buzz Spot",
-      description: "Our Bachelor of Commerce program is ACBSP-accredited.",
-      time: "8:00am",
-      status: "Pending",
-    },
-  ];
+
+  const { data: feedbackdata } = useGetAllFeedbackQuery();
+  console.log("feedbackdata", feedbackdata?.data?.result);
+  const userData = feedbackdata?.data?.result;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [email, setEmail] = useState("");
@@ -71,27 +54,28 @@ const Feedback = () => {
       dataIndex: "description",
       key: "description",
     },
-    {
-      title: "Time",
-      dataIndex: "time",
-      key: "time",
-    },
+    // {
+    //   title: "Time",
+    //   dataIndex: "time",
+    //   key: "time",
+    //   render: (text, record) => <p>{record.time}</p>,
+    // },
     {
       title: "Status",
       dataIndex: "status",
       render: (text, record) => (
-       <div className="flex gap-5 justify-start items-center">
-         <p
-          onClick={showModal}
-          className={`flex items-center justify-center gap-2 border rounded-md px-3 py-1  ${
-            record.status === "Pending" ? "text-red-500" : "text-green-500"
-          }`}
-        >
-          <IoArrowUndoSharp />
-          {record.status}
-        </p>
-        <FaTrashAlt className="text-red-500 text-xl"/>
-       </div>
+        <div className="flex gap-5 justify-start items-center">
+          <p
+            onClick={showModal}
+            className={`flex items-center justify-center gap-2 border rounded-md px-3 py-1  ${
+              record.status === "Pending" ? "text-red-500" : "text-green-500"
+            }`}
+          >
+            <IoArrowUndoSharp />
+            {record.status}
+          </p>
+          <FaTrashAlt className="text-red-500 text-xl" />
+        </div>
       ),
     },
   ];
@@ -135,16 +119,12 @@ const Feedback = () => {
         {selectedUser && (
           <div className="">
             <h1 className="text-xl font-bold">Feedback Reply</h1>
-            <p>Feedback form: Jullu Jalal</p>
+            <p>{selectedUser?.name}</p>
             <p className="border p-2 rounded-xl">
-              There are many variations of passages of Lorem Ipsum available,
-              but the majority have suffered alteration in some form, by
-              injected humour, or randomised words which don't look even
-              slightly believable. If you are going to use a passage of Lorem
-              Ipsum, you need to be sure{" "}
+              {selectedUser?.description}
             </p>
             <Form
-              name="add-product"
+              name="feedback-replay"
               initialValues={{ remember: false }}
               onFinish={onFinish}
               layout="vertical"
@@ -169,7 +149,7 @@ const Feedback = () => {
                     className="px-5 py-3 bg-green-500 text-white  rounded-lg"
                     type="submit"
                   >
-              Save
+                    Save
                   </button>
                 </Form.Item>
               </div>
