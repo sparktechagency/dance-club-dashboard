@@ -10,19 +10,25 @@ import { useNavigate } from "react-router-dom";
 import { IoArrowUndoSharp } from "react-icons/io5";
 import { FaTrashAlt } from "react-icons/fa";
 import { useGetAllFeedbackQuery } from "../../redux/api/features/feedbackApi/feedbackApi";
-import { render } from "react-dom";
 const Feedback = () => {
   const navigate = useNavigate();
 
   const { data: feedbackdata } = useGetAllFeedbackQuery();
-  console.log("feedbackdata", feedbackdata?.data?.result);
+  // console.log("feedbackdata", feedbackdata?.data?.result);
+
+
   const userData = feedbackdata?.data?.result;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  console.log("selectedUser", selectedUser);
+
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(userData.length);
+  const [totalItems, setTotalItems] = useState(userData?.length);
+
+
+
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -40,6 +46,10 @@ const Feedback = () => {
 
   const onFinish = (values) => {
     console.log("Success:", values);
+    const data = {
+      name:values.name,
+      description:values.description
+    };
   };
   const handleOk = () => {};
 
@@ -66,7 +76,7 @@ const Feedback = () => {
       render: (text, record) => (
         <div className="flex gap-5 justify-start items-center">
           <p
-            onClick={showModal}
+            onClick={() => showModal(record)}
             className={`flex items-center justify-center gap-2 border rounded-md px-3 py-1  ${
               record.status === "Pending" ? "text-red-500" : "text-green-500"
             }`}
@@ -119,10 +129,8 @@ const Feedback = () => {
         {selectedUser && (
           <div className="">
             <h1 className="text-xl font-bold">Feedback Reply</h1>
-            <p>{selectedUser?.name}</p>
-            <p className="border p-2 rounded-xl">
-              {selectedUser?.description}
-            </p>
+            <p className="text-lg font-semibold my-2">{selectedUser?.name}</p>
+            <p className="border p-2 rounded-xl">{selectedUser?.description}</p>
             <Form
               name="feedback-replay"
               initialValues={{ remember: false }}
