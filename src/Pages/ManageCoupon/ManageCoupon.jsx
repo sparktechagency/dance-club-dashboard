@@ -17,9 +17,14 @@ import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import {
   useCreateCouponMutation,
+  useDeleteCouponMutation,
   useEditCouponMutation,
   useGetCouponQuery,
 } from "../../redux/api/features/couponApi/couponApi";
+
+import swal from "sweetalert";
+
+
 const ManageCoupon = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +40,8 @@ const ManageCoupon = () => {
   const _id = selectedUser?._id;
   console.log(_id);
   const [createCoupon] = useCreateCouponMutation();
-  const [editCoupon] = useEditCouponMutation({_id});
+  const [editCoupon] = useEditCouponMutation({ _id });
+  const [deleteCoupon] = useDeleteCouponMutation();
 
   // console.log(selectedUser);
   const userData = couponData?.data?.result;
@@ -102,10 +108,21 @@ const ManageCoupon = () => {
     setIsModalOpen(false);
   };
 
-  const handleEdit = (_id) => {
+  const handleDelete = (_id) => {
     console.log("_id", _id);
     setSelectedUser(_id);
-    setAddCouponModal(true);
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this imaginary file!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteCoupon(_id).unwrap();
+        message.success("Coupon Deleted Successfully");
+      }
+    });
   };
 
   const columns = [
@@ -150,7 +167,7 @@ const ManageCoupon = () => {
             <button onClick={() => showModal(record)}>
               <AiOutlineEdit className="text-2xl" />
             </button>
-            <button onClick={() => handleEdit(record?._id)}>
+            <button onClick={() => handleDelete(record?._id)}>
               <FaTrash className="text-2xl text-red-500" />
             </button>
           </Space>
