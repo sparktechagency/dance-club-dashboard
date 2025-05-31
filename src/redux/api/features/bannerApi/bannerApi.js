@@ -17,7 +17,14 @@ const bannerApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Banner"],
     }),
+    deleteBanner: builder.mutation({
+      query: (_id) => ({
+        url: `/banner/delete-banner/${_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Banner"],
+    }),
   }),
 });
 
-export const { useGetAllBannerQuery ,useCreateBannerMutation} = bannerApi;
+export const { useGetAllBannerQuery, useCreateBannerMutation, useDeleteBannerMutation } = bannerApi;

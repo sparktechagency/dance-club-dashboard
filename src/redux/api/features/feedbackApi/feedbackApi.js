@@ -18,9 +18,19 @@ const feedbackApi = baseApi.injectEndpoints({
       invalidatesTags: ["Feedback"],
     }),
 
-
-
+    replayFeedback: builder.mutation({
+      query: ({ _id, data }) => ({
+        url: `/feedback/reply-feedback/${_id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Feedback"],
+    }),
   }),
 });
 
-export const { useGetAllFeedbackQuery,useDeleteFeedbackMutation } = feedbackApi;
+export const {
+  useGetAllFeedbackQuery,
+  useDeleteFeedbackMutation,
+  useReplayFeedbackMutation,
+} = feedbackApi;

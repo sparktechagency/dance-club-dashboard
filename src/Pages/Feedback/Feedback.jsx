@@ -1,41 +1,48 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Form, Input, Pagination, Table } from "antd";
+import {
+  ConfigProvider,
+  Form,
+  Input,
+  message,
+  Pagination,
+  Table,
+} from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 
 import { useNavigate } from "react-router-dom";
 import { IoArrowUndoSharp } from "react-icons/io5";
 import { FaTrashAlt } from "react-icons/fa";
-import { useGetAllFeedbackQuery } from "../../redux/api/features/feedbackApi/feedbackApi";
+import {
+  useGetAllFeedbackQuery,
+  useReplayFeedbackMutation,
+} from "../../redux/api/features/feedbackApi/feedbackApi";
 const Feedback = () => {
   const navigate = useNavigate();
 
   const { data: feedbackdata } = useGetAllFeedbackQuery();
-  // console.log("feedbackdata", feedbackdata?.data?.result);
-
+  const [replayFeedback] = useReplayFeedbackMutation();
 
   const userData = feedbackdata?.data?.result;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  console.log("selectedUser", selectedUser);
+  // console.log("selectedUser", selectedUser);
 
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(userData?.length);
 
-
-
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
   };
 
-  const showModal = (record) => {
-    setSelectedUser(record);
+  const showModal = (_id) => {
+    console.log("record", _id);
+    setSelectedUser(_id);
     setIsModalOpen(true);
   };
 
@@ -45,11 +52,21 @@ const Feedback = () => {
   };
 
   const onFinish = (values) => {
-    console.log("Success:", values);
     const data = {
-      name:values.name,
-      description:values.description
+      replyMessage: values.replyMessage,
     };
+    console.log("data", data);
+    replayFeedback({ _id: selectedUser, data })
+      .unwrap()
+      .then((res) => {
+        console.log("res", res);
+        message.success("Replay sent successfully");
+        setIsModalOpen(false);
+      })
+      .catch((error) => {
+        message.error("Failed to send replay");
+        console.log(error);
+      });
   };
   const handleOk = () => {};
 
@@ -76,7 +93,7 @@ const Feedback = () => {
       render: (text, record) => (
         <div className="flex gap-5 justify-start items-center">
           <p
-            onClick={() => showModal(record)}
+            onClick={() => showModal(record?._id)}
             className={`flex items-center justify-center gap-2 border rounded-md px-3 py-1  ${
               record.status === "Pending" ? "text-red-500" : "text-green-500"
             }`}
@@ -126,11 +143,11 @@ const Feedback = () => {
       </div>
 
       <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
-        {selectedUser && (
+        {/* {feedbackdata?.data?.result && (
           <div className="">
             <h1 className="text-xl font-bold">Feedback Reply</h1>
-            <p className="text-lg font-semibold my-2">{selectedUser?.name}</p>
-            <p className="border p-2 rounded-xl">{selectedUser?.description}</p>
+            <p className="text-lg font-semibold my-2">{feedbackdata?.data?.result?.name}</p>
+            <p className="border p-2 rounded-xl">{feedbackdata?.data?.result?.description}</p>
             <Form
               name="feedback-replay"
               initialValues={{ remember: false }}
@@ -138,8 +155,8 @@ const Feedback = () => {
               layout="vertical"
             >
               <Form.Item
-                name="description"
-                label={<p className=" text-md">Description</p>}
+                name="replyMessage"
+                label={<p className=" text-md my-3">Reply Message</p>}
                 style={{}}
               >
                 <Input.TextArea
@@ -163,7 +180,42 @@ const Feedback = () => {
               </div>
             </Form>
           </div>
-        )}
+        )} */}
+        <div className="">
+          <h1 className="text-xl font-bold">Feedback Reply</h1>
+        
+          <Form
+            name="feedback-replay"
+            initialValues={{ remember: false }}
+            onFinish={onFinish}
+            layout="vertical"
+          >
+            <Form.Item
+              name="replyMessage"
+              label={<p className=" text-md my-3">Reply Message</p>}
+              style={{}}
+            >
+              <Input.TextArea
+                rows={4}
+                required
+                style={{ padding: "6px" }}
+                className=" text-md"
+                placeholder=""
+              />
+            </Form.Item>
+            <div className="flex justify-center ">
+              <Form.Item>
+                <button
+                  onClick={handleOk}
+                  className="px-5 py-3 bg-green-500 text-white  rounded-lg"
+                  type="submit"
+                >
+                  Save
+                </button>
+              </Form.Item>
+            </div>
+          </Form>
+        </div>
       </Modal>
     </div>
   );
