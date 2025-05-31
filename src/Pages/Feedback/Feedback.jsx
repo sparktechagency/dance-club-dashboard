@@ -9,19 +9,23 @@ import { useNavigate } from "react-router-dom";
 import { IoArrowUndoSharp } from "react-icons/io5";
 import { FaTrashAlt } from "react-icons/fa";
 import {
+  useDeleteFeedbackMutation,
   useGetAllFeedbackQuery,
   useReplayFeedbackMutation,
 } from "../../redux/api/features/feedbackApi/feedbackApi";
+import swal from "sweetalert";
+
+
 const Feedback = () => {
   const navigate = useNavigate();
 
   const { data: feedbackdata } = useGetAllFeedbackQuery();
   const [replayFeedback] = useReplayFeedbackMutation();
-
+  const [deleteFeedback] = useDeleteFeedbackMutation();
   const userData = feedbackdata?.data?.result;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  console.log("selectedUser", selectedUser);
+  // console.log("selectedUser", selectedUser);
 
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
@@ -34,7 +38,7 @@ const Feedback = () => {
   };
 
   const showModal = (_id) => {
-    console.log("record", _id);
+    // console.log("record", _id);
     setSelectedUser(_id);
     setIsModalOpen(true);
   };
@@ -62,6 +66,27 @@ const Feedback = () => {
       });
   };
   const handleOk = () => {};
+  const handleDelete = (_id) => {
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this feedback!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteFeedback(_id)
+          .unwrap()
+          .then((res) => {
+            message.success("Feedback deleted successfully");
+          })
+          .catch((error) => {
+            message.error("Failed to delete feedback");
+            console.log(error);
+          });
+      }
+    });
+  };
 
   const columns = [
     {
@@ -96,7 +121,10 @@ const Feedback = () => {
             <IoArrowUndoSharp />
             {record.status}
           </p>
-          <FaTrashAlt className="text-red-500 text-xl" />
+          <FaTrashAlt
+            onClick={() => handleDelete(record?._id)}
+            className="text-red-500 text-xl"
+          />
         </div>
       ),
     },
