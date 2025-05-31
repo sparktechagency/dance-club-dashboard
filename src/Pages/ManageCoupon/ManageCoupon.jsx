@@ -17,9 +17,13 @@ import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import {
   useCreateCouponMutation,
+  useDeleteCouponMutation,
   useEditCouponMutation,
   useGetCouponQuery,
 } from "../../redux/api/features/couponApi/couponApi";
+
+import swal from "sweetalert";
+
 const ManageCoupon = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,10 +36,13 @@ const ManageCoupon = () => {
     page: currentPage,
     limit: pageSize,
   });
+  const _id = selectedUser?._id;
+  console.log(_id);
   const [createCoupon] = useCreateCouponMutation();
-  const [editCoupon] = useEditCouponMutation();
+  const [editCoupon] = useEditCouponMutation({ _id });
+  const [deleteCoupon] = useDeleteCouponMutation();
 
-  // console.log(couponData);
+  // console.log(selectedUser);
   const userData = couponData?.data?.result;
   const [totalItems, setTotalItems] = useState(userData?.length);
   const handlePageChange = (page, pageSize) => {
@@ -87,7 +94,7 @@ const ManageCoupon = () => {
       discountPercentage: Number(values.discountPercentage),
     };
     try {
-      await editCoupon(data).unwrap();
+      await editCoupon({ _id: selectedUser._id, data }).unwrap();
       message.success("Coupon created successfully!");
       setAddCouponModal(false);
       form.resetFields();
@@ -100,8 +107,21 @@ const ManageCoupon = () => {
     setIsModalOpen(false);
   };
 
-  const handleEdit = () => {
-    setAddCouponModal(false);
+  const handleDelete = (_id) => {
+    console.log("_id", _id);
+    setSelectedUser(_id);
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this imaginary file!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteCoupon(_id).unwrap();
+        message.success("Coupon Deleted Successfully");
+      }
+    });
   };
 
   const columns = [
@@ -146,7 +166,7 @@ const ManageCoupon = () => {
             <button onClick={() => showModal(record)}>
               <AiOutlineEdit className="text-2xl" />
             </button>
-            <button onClick={() => handleEdit(record)}>
+            <button onClick={() => handleDelete(record?._id)}>
               <FaTrash className="text-2xl text-red-500" />
             </button>
           </Space>
@@ -190,10 +210,12 @@ const ManageCoupon = () => {
       </div>
 
       <div className="mt-10 flex justify-center items-center">
-        <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
-        </Pagination>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={couponData?.data?.meta?.total || 0}
+          onChange={handlePageChange}
+        />
       </div>
       {/* Add Modal */}
       <Modal

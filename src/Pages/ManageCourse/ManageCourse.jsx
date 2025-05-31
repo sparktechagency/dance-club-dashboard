@@ -17,13 +17,15 @@ import { FaImage, FaTrashAlt } from "react-icons/fa";
 import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
-
+import swal from "sweetalert";
 import {
   useCreateCourseMutation,
+  useDeleteCourseMutation,
   useGetAllCourseQuery,
   useGetCourseByIdQuery,
   useUpdateCourseMutation,
 } from "../../redux/api/features/courseApi/courseApi";
+import dayjs from "dayjs";
 const ManageCourse = () => {
   const [form] = Form.useForm();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -45,7 +47,7 @@ const ManageCourse = () => {
   // console.log("courseId", courseId);
   const { data: singleCourseData } = useGetCourseByIdQuery(courseId);
   const [updateCourse] = useUpdateCourseMutation({ courseId: courseId });
-  // console.log("singleCourseData", singleCourseData?.data);
+  const [deleteCourse] = useDeleteCourseMutation();
 
   const [totalItems, setTotalItems] = useState(courses?.length);
   const handlePageChange = (page, pageSize) => {
@@ -54,7 +56,7 @@ const ManageCourse = () => {
   };
 
   const handleSearch = () => {
-    // refetc();
+    setCurrentPage(1);
   };
 
   const showModal = () => {
@@ -74,6 +76,7 @@ const ManageCourse = () => {
   useEffect(() => {
     if (isEditModalOpen && singleCourseData?.data) {
       const data = singleCourseData.data;
+
       form.setFieldsValue({
         name: data.instructorInfo?.name,
         email: data.instructorInfo?.email,
@@ -86,12 +89,12 @@ const ManageCourse = () => {
         title: data.title,
         description: data.description,
         duration: data.duration,
-        startDate: data.startDate,
+        startDate: data.startDate ? dayjs(data.startDate) : null,
         price: data.price,
         totalSeat: data.totalSeat,
       });
     }
-  }, [singleCourseData?.data, isEditModalOpen, form]);
+  }, [isEditModalOpen, singleCourseData, form]);
 
   const handleEditModalClose = () => {
     setIsEditModalOpen(false);
@@ -100,9 +103,26 @@ const ManageCourse = () => {
     setIsEditModalOpen(false);
   };
 
-  const handleDelete = () => {
-    message.success("Deleted Successfully");
-  };
+const handleDelete = (_id) => {
+  console.log(_id);
+  swal({
+    title: "Are you sure you want to delete this course?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then(async (willDelete) => {
+    if (willDelete) {
+      try {
+        await deleteCourse(_id).unwrap();
+        message.success("Deleted Successfully");
+      } catch (err) {
+        console.error("Failed to delete:", err);
+        message.error("Failed to delete course");
+      }
+    }
+  });
+};
 
   const handlecoursesPicUpload = (e) => {
     const file = e.file.originFileObj;
@@ -116,8 +136,6 @@ const ManageCourse = () => {
     return false;
   };
 
-  // console.log("coursesPic", coursesPic);
-  // console.log("instrctorPic", instrctorPic);
   const handleInstructorPicUpload = (e) => {
     const file = e.file.originFileObj;
     setinstrctorPic(file);
@@ -188,7 +206,7 @@ const ManageCourse = () => {
       formData.append("data", JSON.stringify(editData));
       formData.append("course_banner", coursesPic);
 
-      await updateCourse({ data:formData, _id: courseId }).unwrap();
+      await updateCourse({ data: formData, _id: courseId }).unwrap();
       message.success("Course Updated Successfully");
       setIsEditModalOpen(false);
     } catch (error) {
@@ -257,7 +275,7 @@ const ManageCourse = () => {
             <button onClick={() => handleEdit(record?._id)}>
               <AiOutlineEdit className="text-2xl" />
             </button>
-            <button onClick={handleDelete}>
+            <button onClick={() => handleDelete(record?._id)}>
               <FaTrashAlt className="text-2xl"></FaTrashAlt>
             </button>
           </Space>
@@ -326,10 +344,12 @@ const ManageCourse = () => {
       </div>
 
       <div className="mt-10 flex justify-center items-center">
-        <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
-        </Pagination>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={courses?.data?.meta?.total || 0}
+          onChange={handlePageChange}
+        />
       </div>
 
       {/* Add course modal */}
@@ -524,7 +544,7 @@ const ManageCourse = () => {
       </Modal>
       {/* Edit Modal */}
       <Modal
-        title="Add New Course"
+        title="Edit Course"
         open={isEditModalOpen}
         onOk={handlEditeOk}
         onCancel={handleEditModalClose}

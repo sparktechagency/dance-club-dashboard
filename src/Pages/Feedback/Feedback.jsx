@@ -1,13 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import {
-  ConfigProvider,
-  Form,
-  Input,
-  message,
-  Pagination,
-  Table,
-} from "antd";
+import { ConfigProvider, Form, Input, message, Pagination, Table } from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
@@ -16,15 +9,19 @@ import { useNavigate } from "react-router-dom";
 import { IoArrowUndoSharp } from "react-icons/io5";
 import { FaTrashAlt } from "react-icons/fa";
 import {
+  useDeleteFeedbackMutation,
   useGetAllFeedbackQuery,
   useReplayFeedbackMutation,
 } from "../../redux/api/features/feedbackApi/feedbackApi";
+import swal from "sweetalert";
+
+
 const Feedback = () => {
   const navigate = useNavigate();
 
   const { data: feedbackdata } = useGetAllFeedbackQuery();
   const [replayFeedback] = useReplayFeedbackMutation();
-
+  const [deleteFeedback] = useDeleteFeedbackMutation();
   const userData = feedbackdata?.data?.result;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -41,7 +38,7 @@ const Feedback = () => {
   };
 
   const showModal = (_id) => {
-    console.log("record", _id);
+    // console.log("record", _id);
     setSelectedUser(_id);
     setIsModalOpen(true);
   };
@@ -69,6 +66,27 @@ const Feedback = () => {
       });
   };
   const handleOk = () => {};
+  const handleDelete = (_id) => {
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this feedback!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteFeedback(_id)
+          .unwrap()
+          .then((res) => {
+            message.success("Feedback deleted successfully");
+          })
+          .catch((error) => {
+            message.error("Failed to delete feedback");
+            console.log(error);
+          });
+      }
+    });
+  };
 
   const columns = [
     {
@@ -81,12 +99,14 @@ const Feedback = () => {
       dataIndex: "description",
       key: "description",
     },
-    // {
-    //   title: "Time",
-    //   dataIndex: "time",
-    //   key: "time",
-    //   render: (text, record) => <p>{record.time}</p>,
-    // },
+    {
+      title: "Replay",
+      dataIndex: "replyMessage",
+      key: "replyMessage",
+      render: (text, record) => (
+        <p>{record?.replyMessage || "No Replay provided yet"}</p>
+      ),
+    },
     {
       title: "Status",
       dataIndex: "status",
@@ -101,7 +121,10 @@ const Feedback = () => {
             <IoArrowUndoSharp />
             {record.status}
           </p>
-          <FaTrashAlt className="text-red-500 text-xl" />
+          <FaTrashAlt
+            onClick={() => handleDelete(record?._id)}
+            className="text-red-500 text-xl"
+          />
         </div>
       ),
     },
@@ -183,7 +206,12 @@ const Feedback = () => {
         )} */}
         <div className="">
           <h1 className="text-xl font-bold">Feedback Reply</h1>
-        
+          {selectedUser?.name && (
+            <p className="text-lg font-semibold my-2">{selectedUser?.name}</p>
+          )}
+          {selectedUser?.description && (
+            <p className="border p-2 rounded-xl">{selectedUser?.description}</p>
+          )}
           <Form
             name="feedback-replay"
             initialValues={{ remember: false }}
