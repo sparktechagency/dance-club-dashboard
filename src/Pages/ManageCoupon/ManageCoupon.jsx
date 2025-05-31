@@ -33,9 +33,9 @@ const ManageCoupon = () => {
     limit: pageSize,
   });
   const [createCoupon] = useCreateCouponMutation();
-  const [editCoupon] = useEditCouponMutation();
+  const [editCoupon] = useEditCouponMutation(selectedUser?._id);
 
-  // console.log(couponData);
+  // console.log(selectedUser);
   const userData = couponData?.data?.result;
   const [totalItems, setTotalItems] = useState(userData?.length);
   const handlePageChange = (page, pageSize) => {
@@ -87,7 +87,7 @@ const ManageCoupon = () => {
       discountPercentage: Number(values.discountPercentage),
     };
     try {
-      await editCoupon(data).unwrap();
+      await editCoupon({ _d: selectedUser._id, data }).unwrap();
       message.success("Coupon created successfully!");
       setAddCouponModal(false);
       form.resetFields();
@@ -100,8 +100,10 @@ const ManageCoupon = () => {
     setIsModalOpen(false);
   };
 
-  const handleEdit = () => {
-    setAddCouponModal(false);
+  const handleEdit = (_id) => {
+    console.log("_id", _id);
+    setSelectedUser(_id);
+    setAddCouponModal(true);
   };
 
   const columns = [
@@ -146,7 +148,7 @@ const ManageCoupon = () => {
             <button onClick={() => showModal(record)}>
               <AiOutlineEdit className="text-2xl" />
             </button>
-            <button onClick={() => handleEdit(record)}>
+            <button onClick={() => handleEdit(record?._id)}>
               <FaTrash className="text-2xl text-red-500" />
             </button>
           </Space>
