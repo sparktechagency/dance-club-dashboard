@@ -1,5 +1,14 @@
 /* eslint-disable no-unused-vars */
-import { Form, Input, InputNumber, Select, Upload, Space, message, Spin } from "antd";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Upload,
+  Space,
+  message,
+  Spin,
+} from "antd";
 import GoBackButton from "../Shared/GobackButton/GoBackButton";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import {
@@ -10,19 +19,17 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useGetCategoryForProductQuery } from "../../redux/api/features/categoryApi/categoryApi";
+import { router } from "../../router/Routes";
 
 const EditProduct = () => {
   const location = useLocation();
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
-  const [createProduct] = useCreateProductMutation();
   const productId = location?.state?._id;
-  console.log("productId", productId);
   const { data: getAllCategory } = useGetCategoryForProductQuery();
   const { data: getSingleProduct, isLoading } =
     useGetSingleProductQuery(productId);
   const [editProduct] = useEditProductMutation({ productId });
-  console.log("getSingleProduct", getSingleProduct?.data);
   const options = [
     { label: "XS", value: "XS", desc: "XS (Xtra Small)" },
     { label: "S", value: "S", desc: "S (Small)" },
@@ -38,24 +45,27 @@ const EditProduct = () => {
   }));
 
   useEffect(() => {
-    const imageList = getSingleProduct?.data?.images?.map((image, index) => ({
-      uid: index.toString(),
-      name: `image-${index}`,
-      status: "done",
-      url: image,
-    }));
+    if (getSingleProduct?.data) {
+      const imageList = getSingleProduct.data.images?.map((image, index) => ({
+        uid: index.toString(),
+        name: `image-${index}`,
+        status: "done",
+        url: image,
+      }));
 
-    form.setFieldsValue({
-      title: getSingleProduct?.data?.name,
-      price: getSingleProduct?.data?.price,
-      category: getSingleProduct?.data?.category?.name,
-      stock: getSingleProduct?.data?.stock,
-      description: getSingleProduct?.data?.description,
-      size: getSingleProduct?.data?.size,
-      color: getSingleProduct?.data?.color,
-      images: imageList,
-    });
-  }, [form, getSingleProduct?.data?.result]);
+      form.setFieldsValue({
+        title: getSingleProduct.data.name,
+        price: getSingleProduct.data.price,
+        category: getSingleProduct.data.category?.name,
+        stock: getSingleProduct.data.stock,
+        description: getSingleProduct.data.description,
+        size: getSingleProduct.data.size,
+        color: getSingleProduct.data.color,
+      });
+
+      setFileList(imageList || []);
+    }
+  }, [form, getSingleProduct?.data]);
 
   const onFinish = async (values) => {
     try {
@@ -66,9 +76,10 @@ const EditProduct = () => {
         stock: values.stock,
         description: values.description,
         size: values.size,
-        color: values.color ? values.color.split(",").map((c) => c.trim()) : [],
+        color: Array.isArray(getSingleProduct.data.color)
+          ? getSingleProduct.data.color.join(", ")
+          : getSingleProduct.data.color,
       };
-      console.log("data", data);
 
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
@@ -77,13 +88,14 @@ const EditProduct = () => {
         formData.append("product_image", file);
       });
 
-      const res = await editProduct({ productId, formData }).unwrap();
-      console.log("res", res);
+      const res = await editProduct({ _id: productId, data:formData }).unwrap();
       message.success("Product updated successfully!");
       form.resetFields();
       setFileList([]);
+      router.navigate("/manage-product");
     } catch (error) {
-      message.error("Failed to Update product.");
+      console.log(error);
+      message.error(error?.message);
     }
   };
 
@@ -112,11 +124,9 @@ const EditProduct = () => {
           </div>
         ) : (
           <div>
-            {" "}
             <Form
               form={form}
               name="edit-product"
-              initialValues={{ remember: false }}
               onFinish={onFinish}
               layout="vertical"
             >
@@ -134,10 +144,11 @@ const EditProduct = () => {
                             className="relative w-24 h-24 border rounded overflow-hidden"
                           >
                             <img
-                              src={URL.createObjectURL(file)}
+                              src={file.url || URL.createObjectURL(file)}
                               alt="preview"
                               className="w-full h-full object-cover"
                             />
+
                             <button
                               type="button"
                               onClick={() => removeImage(file)}

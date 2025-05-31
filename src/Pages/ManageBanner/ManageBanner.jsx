@@ -5,8 +5,11 @@ import { Form, message, Modal, Upload } from "antd";
 import { FaImage } from "react-icons/fa";
 import {
   useCreateBannerMutation,
+  useDeleteBannerMutation,
   useGetAllBannerQuery,
 } from "../../redux/api/features/bannerApi/bannerApi";
+import swal from 'sweetalert';
+
 
 const ManageBanner = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -18,6 +21,8 @@ const ManageBanner = () => {
   const [createBanner, { isLoading }] = useCreateBannerMutation();
   const banner = bannerData?.data?.result;
   // console.log("banner", banner);
+
+  const [deleteBanner] = useDeleteBannerMutation();
 
   const showModal = () => {
     setIsAddModalOpen(true);
@@ -55,6 +60,21 @@ const ManageBanner = () => {
     setPreviewImage(URL.createObjectURL(file));
     return false;
   };
+  const handleDelete = (id) => {
+    console.log(id);
+    swal({
+      title: "Are you sure you want to delete this banner?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteBanner(id);
+        message.success("Banner deleted successfully!");
+      }
+    });
+  };
 
   return (
     <div>
@@ -75,10 +95,10 @@ const ManageBanner = () => {
           >
             <img src={b?.image} alt="" className="w-full h-44" />
             <button
-              onClick={handleEdit}
-              className="text-xl font-bold px-4 py-1 rounded-md"
+              onClick={() => handleDelete(b?._id)}
+              className="text-xl font-bold px-4 py-1 rounded-md bg-primary text-white"
             >
-              Edit
+              Delete
             </button>
           </div>
         ))}

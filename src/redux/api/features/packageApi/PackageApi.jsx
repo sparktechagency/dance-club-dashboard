@@ -34,7 +34,7 @@ const packageApi = baseApi.injectEndpoints({
     }),
     deletePackage: builder.mutation({
       query: (_id) => ({
-        url: `/package/update-package/${_id}`,
+        url: `/package/delete-package/${_id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Package"],

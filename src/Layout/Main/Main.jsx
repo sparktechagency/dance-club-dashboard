@@ -7,10 +7,11 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { FaX } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import user from "../../assets/image/user.png";
+import { useGetProfileQuery } from "../../redux/api/features/profileApi/profileApi";
 const MainLayout = () => {
   const [drawer, setDrawer] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
+  const { data: profile } = useGetProfileQuery();
   const toggleDrawer = () => setDrawer(!drawer);
   const closeDrawer = () => setDrawer(false);
 
@@ -58,12 +59,12 @@ const MainLayout = () => {
                 <Link to="/admin-profile">
                   <div className="flex justify-center items-center gap-2">
                     <img
-                      src={user}
+                      src={profile?.data?.profile_image || user}
                       alt=""
                       className="w-10 h-10 rounded-full border border-black"
                     />
                     <p className="md:text-xl font-semibold text-black">
-                      Mr Admin
+                      {profile?.data?.name}
                     </p>
                   </div>
                 </Link>

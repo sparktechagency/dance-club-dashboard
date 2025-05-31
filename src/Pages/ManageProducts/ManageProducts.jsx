@@ -23,7 +23,6 @@ const ManageProducts = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [productId, setProductId] = useState(null);
 
   const { data: productData } = useGetAllProductQuery({
     page: currentPage,
@@ -33,13 +32,11 @@ const ManageProducts = () => {
     searchTerm,
   });
 
-  // console.log(productData?.data?.meta?.total);
 
   const allProducstData = productData?.data?.result;
 
   const [deleteProduct] = useDeleteProductMutation();
 
-  // const [totalItems, setTotalItems] = useState(allProducstData?.length);
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -81,8 +78,7 @@ const ManageProducts = () => {
     navigate("/add-product");
   };
   const handleEditProduct = (_id) => {
-    // console.log(_id);
-    // setProductId(_id);
+
     navigate(`/edit-product/${_id}`, { state: { _id } });
   };
   const columns = [
@@ -189,10 +185,11 @@ const ManageProducts = () => {
             >
               <div className="flex gap-2 items-center relative">
                 <Input
-                  placeholder="Search Class"
+                  placeholder="Search by product name"
                   allowClear
                   size="large"
-                  value={email}
+                  style={{width:"300px"}}
+                  value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onPressEnter={handleSearch}
                   prefix={
@@ -204,8 +201,8 @@ const ManageProducts = () => {
                 />
 
                 <button
-                  // onClick={handleSearch}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
+                  onClick={handleSearch}
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primary text-white  p-2 rounded-r-lg"
                 >
                   search
                 </button>
