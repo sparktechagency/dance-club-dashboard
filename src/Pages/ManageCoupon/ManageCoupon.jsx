@@ -24,7 +24,6 @@ import {
 
 import swal from "sweetalert";
 
-
 const ManageCoupon = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -211,10 +210,12 @@ const ManageCoupon = () => {
       </div>
 
       <div className="mt-10 flex justify-center items-center">
-        <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
-        </Pagination>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={couponData?.data?.meta?.total || 0}
+          onChange={handlePageChange}
+        />
       </div>
       {/* Add Modal */}
       <Modal
