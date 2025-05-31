@@ -1,36 +1,38 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { FaPen, FaTrash } from "react-icons/fa";
 import { Form, InputNumber, message, Modal, Select, Table } from "antd";
 import {
   useCreatePackageMutation,
+  useDeletePackageMutation,
   useGetAllPackageQuery,
-  useGetSInglePackageQuery,
-  useUpdatePackageMutation,
+  // useGetSInglePackageQuery,
 } from "../../redux/api/features/packageApi/PackageApi";
+import swal from "sweetalert";
 
 const ManagePackage = () => {
   const [form] = Form.useForm();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [packageId, setPackageId] = useState("");
+  // const [packageId, setPackageId] = useState("");
   // console.log("packageId", packageId);
   const { data: packageData } = useGetAllPackageQuery();
   const [createPackage] = useCreatePackageMutation();
-  const { data: getSInglePackageData } = useGetSInglePackageQuery(packageId);
-  const [updatePackage] = useUpdatePackageMutation();
-  // const [deletePackage] = useDeletePackageMutation(packageId);
+  // const { data: getSInglePackageData } = useGetSInglePackageQuery(packageId);
 
-  console.log("getSInglePackageData", getSInglePackageData?.data);
+  // const [updatePackage] = useUpdatePackageMutation();
 
-  useEffect(() => {
-    form.setFieldValue({
-      totalToken: getSInglePackageData?.data?.totalToken,
-      price: getSInglePackageData?.data?.price,
-      validityInWeeks: getSInglePackageData?.data?.validityInWeeks,
-      packageType: getSInglePackageData?.data?.packageType,
-    });
-  }, [form, getSInglePackageData?.data]);
+  const [deletePackage] = useDeletePackageMutation();
+
+
+  // useEffect(() => {
+  //   form.setFieldValue({
+  //     totalToken: getSInglePackageData?.data?.totalToken,
+  //     price: getSInglePackageData?.data?.price,
+  //     validityInWeeks: getSInglePackageData?.data?.validityInWeeks,
+  //     packageType: getSInglePackageData?.data?.packageType,
+  //   });
+  // }, [form, getSInglePackageData?.data]);
 
   const handleAddPackage = () => {
     setIsAddModalOpen(true);
@@ -42,7 +44,8 @@ const ManagePackage = () => {
     setIsAddModalOpen(false);
   };
   const handleEDitPackage = (_id) => {
-    setPackageId(_id);
+    console.log("record", _id);
+    // setPackageId(_id);
     setIsEditModalOpen(true);
   };
   const handleEditModalClose = () => {
@@ -71,29 +74,44 @@ const ManagePackage = () => {
         console.log(error);
       });
   };
-  const onEditFInish = (values) => {
-    const data = {
-      totalToken: values.totalToken,
-      price: values.price,
-      validityInWeeks: values.validityInWeeks,
-      packageType: values.packageType,
-    };
-    // console.log("data", data);
-    updatePackage({ _id: packageId, data })
-      .unwrap()
-      .then((res) => {
-        console.log("res", res);
-        message.success("Package updated successfully!");
-        setIsEditModalOpen(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  // const onEditFInish = (values) => {
+  //   const data = {
+  //     totalToken: values.totalToken,
+  //     price: values.price,
+  //     validityInWeeks: values.validityInWeeks,
+  //     packageType: values.packageType,
+  //   };
+  //   updatePackage({ _id: packageId, data })
+  //     .unwrap()
+  //     .then((res) => {
+  //       console.log("res", res);
+  //       message.success("Package updated successfully!");
+  //       setIsEditModalOpen(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+  const handleDelete = async (_id) => {
+    const confirm = await swal({
+      title: "Are you sure you want to delete this package?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
+
+    if (confirm) {
+      try {
+        await deletePackage(_id).unwrap();
+        message.success("Package deleted successfully!");
+      } catch (error) {
+        console.error("Delete failed:", error);
+        message.error("Failed to delete package.");
+      }
+    }
   };
-  const handleDelete = (_id) => {
-    console.log(_id);
-    message.error("Deleted Successfully");
-  };
+
   const columns = [
     {
       title: "Token No",
@@ -250,7 +268,7 @@ const ManagePackage = () => {
       >
         <Form
           form={form}
-          onFinish={onEditFInish}
+          // onFinish={onEditFInish}
           name="add-package"
           layout="vertical"
         >
