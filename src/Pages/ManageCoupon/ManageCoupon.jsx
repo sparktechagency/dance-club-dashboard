@@ -32,8 +32,10 @@ const ManageCoupon = () => {
     page: currentPage,
     limit: pageSize,
   });
+  const _id = selectedUser?._id;
+  console.log(_id);
   const [createCoupon] = useCreateCouponMutation();
-  const [editCoupon] = useEditCouponMutation(selectedUser?._id);
+  const [editCoupon] = useEditCouponMutation({_id});
 
   // console.log(selectedUser);
   const userData = couponData?.data?.result;
@@ -87,7 +89,7 @@ const ManageCoupon = () => {
       discountPercentage: Number(values.discountPercentage),
     };
     try {
-      await editCoupon({ _d: selectedUser._id, data }).unwrap();
+      await editCoupon({ _id: selectedUser._id, data }).unwrap();
       message.success("Coupon created successfully!");
       setAddCouponModal(false);
       form.resetFields();
