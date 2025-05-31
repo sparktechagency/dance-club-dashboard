@@ -1,13 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import {
-  ConfigProvider,
-  Form,
-  Input,
-  message,
-  Pagination,
-  Table,
-} from "antd";
+import { ConfigProvider, Form, Input, message, Pagination, Table } from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
@@ -28,7 +21,7 @@ const Feedback = () => {
   const userData = feedbackdata?.data?.result;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  // console.log("selectedUser", selectedUser);
+  console.log("selectedUser", selectedUser);
 
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
@@ -81,12 +74,14 @@ const Feedback = () => {
       dataIndex: "description",
       key: "description",
     },
-    // {
-    //   title: "Time",
-    //   dataIndex: "time",
-    //   key: "time",
-    //   render: (text, record) => <p>{record.time}</p>,
-    // },
+    {
+      title: "Replay",
+      dataIndex: "replyMessage",
+      key: "replyMessage",
+      render: (text, record) => (
+        <p>{record?.replyMessage || "No Replay provided yet"}</p>
+      ),
+    },
     {
       title: "Status",
       dataIndex: "status",
@@ -183,7 +178,12 @@ const Feedback = () => {
         )} */}
         <div className="">
           <h1 className="text-xl font-bold">Feedback Reply</h1>
-        
+          {selectedUser?.name && (
+            <p className="text-lg font-semibold my-2">{selectedUser?.name}</p>
+          )}
+          {selectedUser?.description && (
+            <p className="border p-2 rounded-xl">{selectedUser?.description}</p>
+          )}
           <Form
             name="feedback-replay"
             initialValues={{ remember: false }}
