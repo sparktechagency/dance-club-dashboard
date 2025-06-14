@@ -39,11 +39,13 @@ const ManageCourse = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [createCourse] = useCreateCourseMutation();
   const { data: courseData, isLoading } = useGetAllCourseQuery({
     page: currentPage,
     limit: pageSize,
+    searchTerm,
   });
   const courses = courseData?.data?.result;
 
@@ -57,7 +59,8 @@ const ManageCourse = () => {
     setCurrentPage(page);
   };
 
-  const handleSearch = () => {
+  const handleSearch = (value) => {
+    setSearchTerm(value);
     setCurrentPage(1);
   };
 
@@ -273,20 +276,16 @@ const ManageCourse = () => {
                   placeholder="Search course"
                   allowClear
                   size="large"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+
                   onPressEnter={handleSearch}
-                  prefix={
-                    <SearchOutlined
-                      style={{ cursor: "pointer" }}
-                      onClick={handleSearch}
-                    />
-                  }
+                  
                 />
 
                 <button
                   onClick={handleSearch}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg bg-primary"
                 >
                   search
                 </button>
