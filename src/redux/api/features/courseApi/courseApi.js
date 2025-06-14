@@ -3,8 +3,9 @@ import { baseApi } from "../../baseApi";
 const CourseAPi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllCourse: builder.query({
-      query: () => ({
-        url: "/course/get-all-course",
+      query: ({ page, limit }) => ({
+        url: `/course/get-all-course?limit=${limit}&page=${page}`,
+        method: "GET",
       }),
       providesTags: ["Course"],
     }),

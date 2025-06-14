@@ -41,7 +41,10 @@ const ManageCourse = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [createCourse] = useCreateCourseMutation();
-  const { data: courseData, isLoading } = useGetAllCourseQuery();
+  const { data: courseData, isLoading } = useGetAllCourseQuery({
+    page: currentPage,
+    limit: pageSize,
+  });
   const courses = courseData?.data?.result;
 
   // console.log("courseId", courseId);
@@ -49,10 +52,8 @@ const ManageCourse = () => {
   const [updateCourse] = useUpdateCourseMutation({ courseId: courseId });
   const [deleteCourse] = useDeleteCourseMutation();
 
-  const [totalItems, setTotalItems] = useState(courses?.length);
-  const handlePageChange = (page, pageSize) => {
+  const handlePageChange = (page) => {
     setCurrentPage(page);
-    setPageSize(pageSize);
   };
 
   const handleSearch = () => {
@@ -103,26 +104,26 @@ const ManageCourse = () => {
     setIsEditModalOpen(false);
   };
 
-const handleDelete = (_id) => {
-  console.log(_id);
-  swal({
-    title: "Are you sure you want to delete this course?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    buttons: true,
-    dangerMode: true,
-  }).then(async (willDelete) => {
-    if (willDelete) {
-      try {
-        await deleteCourse(_id).unwrap();
-        message.success("Deleted Successfully");
-      } catch (err) {
-        console.error("Failed to delete:", err);
-        message.error("Failed to delete course");
+  const handleDelete = (_id) => {
+    console.log(_id);
+    swal({
+      title: "Are you sure you want to delete this course?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        try {
+          await deleteCourse(_id).unwrap();
+          message.success("Deleted Successfully");
+        } catch (err) {
+          console.error("Failed to delete:", err);
+          message.error("Failed to delete course");
+        }
       }
-    }
-  });
-};
+    });
+  };
 
   const handlecoursesPicUpload = (e) => {
     const file = e.file.originFileObj;
@@ -347,7 +348,7 @@ const handleDelete = (_id) => {
         <Pagination
           current={currentPage}
           pageSize={pageSize}
-          total={courses?.data?.meta?.total || 0}
+          total={courseData?.data?.meta?.total}
           onChange={handlePageChange}
         />
       </div>
