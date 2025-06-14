@@ -47,8 +47,9 @@ const ManageCourse = () => {
   });
   const courses = courseData?.data?.result;
 
-  // console.log("courseId", courseId);
-  const { data: singleCourseData } = useGetCourseByIdQuery(courseId);
+  const { data: singleCourseData } = useGetCourseByIdQuery(courseId, {
+    skip: !courseId || courseId.length !== 24,
+  });
   const [updateCourse] = useUpdateCourseMutation({ courseId: courseId });
   const [deleteCourse] = useDeleteCourseMutation();
 
@@ -75,17 +76,10 @@ const ManageCourse = () => {
   };
 
   useEffect(() => {
-    if (isEditModalOpen && singleCourseData?.data) {
-      const data = singleCourseData.data;
-
+    if (isEditModalOpen && singleCourseData?.data?.[0]) {
+      const data = singleCourseData?.data?.[0];
       form.setFieldsValue({
-        name: data.instructorInfo?.name,
-        email: data.instructorInfo?.email,
-        qualification: data.instructorInfo?.qualification,
-        expertise: data.instructorInfo?.expertise,
-        experience: data.instructorInfo?.experience,
-        phone: data.instructorInfo?.phone,
-        profile_image: data.instructorInfo?.profile_image,
+        name: data?.instructorName,
         bannerImage: data.bannerImage,
         title: data.title,
         description: data.description,
@@ -125,27 +119,10 @@ const ManageCourse = () => {
     });
   };
 
-  const handlecoursesPicUpload = (e) => {
-    const file = e.file.originFileObj;
-    setcoursesPic(file);
-  };
-
   const handleBefoeUpload = (file) => {
     form.setFieldValue({ bannerImage: file });
     setPreviewImage(URL.createObjectURL(file));
     setcoursesPic(file);
-    return false;
-  };
-
-  const handleInstructorPicUpload = (e) => {
-    const file = e.file.originFileObj;
-    setinstrctorPic(file);
-  };
-
-  const handleInstructorBefoeUpload = (file) => {
-    form.setFieldValue({ profile_image: [file] });
-    setPreviewInstrutor(URL.createObjectURL(file));
-    setinstrctorPic(file);
     return false;
   };
 
@@ -159,13 +136,7 @@ const ManageCourse = () => {
       startDate: values.startDate,
       price: values.price,
       totalSeat: values.totalSeat,
-      instructorInfo: {
-        name: values.name,
-        email: values.email,
-        qualification: values.qualification,
-        expertise: [values.expertise],
-        profile_image: values.profile_image,
-      },
+      instructorName: values.name,
     };
 
     const bannerImage = values.bannerImage;
@@ -192,13 +163,7 @@ const ManageCourse = () => {
         startDate: values.startDate,
         price: values.price,
         totalSeat: values.totalSeat,
-        instructorInfo: {
-          name: values.name,
-          email: values.email,
-          qualification: values.qualification,
-          expertise: [values.expertise],
-          profile_image: values.profile_image,
-        },
+        instructorName: values.name,
       };
 
       const bannerImage = coursesPic;
@@ -212,6 +177,7 @@ const ManageCourse = () => {
       setIsEditModalOpen(false);
     } catch (error) {
       console.log(error);
+      message.error(error?.message);
     }
   };
   const columns = [
@@ -415,6 +381,17 @@ const ManageCourse = () => {
             </div>
             <div className="w-full md:w-[50%]">
               <Form.Item
+                name="name"
+                label={<p className=" text-md">Instructor Name</p>}
+              >
+                <Input
+                  className=" text-md"
+                  placeholder="Type Instructor Name"
+                ></Input>
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
                 name="duration"
                 label={<p className=" text-md">Duration</p>}
               >
@@ -463,75 +440,6 @@ const ManageCourse = () => {
             label={<p className=" text-md">Description</p>}
           >
             <Input.TextArea rows={4}></Input.TextArea>
-          </Form.Item>
-          <h1 className="text-xl font-bold my-2">Instructor Information</h1>
-          <div className="flex justify-between items-center gap-2">
-            <div className="w-full md:w-[50%]">
-              <Form.Item name="name" label={<p className=" text-md">Name</p>}>
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Name"
-                ></Input>
-              </Form.Item>
-            </div>
-            <div className="w-full md:w-[50%]">
-              <Form.Item name="email" label={<p className=" text-md">Email</p>}>
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Email"
-                ></Input>
-              </Form.Item>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center gap-2">
-            <div className="w-full md:w-[50%]">
-              <Form.Item
-                name="qualification"
-                label={<p className=" text-md">Qualification</p>}
-              >
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Qualification"
-                ></Input>
-              </Form.Item>
-            </div>
-            <div className="w-full md:w-[50%]">
-              <Form.Item
-                name="expertise"
-                label={<p className=" text-md">Expertise</p>}
-              >
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Expertise"
-                ></Input>
-              </Form.Item>
-            </div>
-          </div>
-
-          <Form.Item
-            name="profile_image"
-            label={<p className=" text-md">Profile Image</p>}
-          >
-            <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
-              <Upload
-                showUploadList={false}
-                // onChange={handleInstructorPicUpload}
-                beforeUpload={handleInstructorBefoeUpload}
-                maxCount={1}
-                className=" "
-              >
-                {!previewInstructor ? (
-                  <FaImage className="text-secondary h-10 w-10" />
-                ) : (
-                  <img
-                    src={previewInstructor}
-                    alt="Preview"
-                    className="h-24 object-contain"
-                  />
-                )}
-              </Upload>
-            </div>
           </Form.Item>
 
           <Form.Item type="submit">
@@ -604,6 +512,17 @@ const ManageCourse = () => {
             </div>
             <div className="w-full md:w-[50%]">
               <Form.Item
+                name="name"
+                label={<p className=" text-md">Instructor Name</p>}
+              >
+                <Input
+                  className=" text-md"
+                  placeholder="Type Instructor Name"
+                ></Input>
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
                 name="duration"
                 label={<p className=" text-md">Duration</p>}
               >
@@ -652,75 +571,6 @@ const ManageCourse = () => {
             label={<p className=" text-md">Description</p>}
           >
             <Input.TextArea rows={4}></Input.TextArea>
-          </Form.Item>
-          <h1 className="text-xl font-bold my-2">Instructor Information</h1>
-          <div className="flex justify-between items-center gap-2">
-            <div className="w-full md:w-[50%]">
-              <Form.Item name="name" label={<p className=" text-md">Name</p>}>
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Name"
-                ></Input>
-              </Form.Item>
-            </div>
-            <div className="w-full md:w-[50%]">
-              <Form.Item name="email" label={<p className=" text-md">Email</p>}>
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Email"
-                ></Input>
-              </Form.Item>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center gap-2">
-            <div className="w-full md:w-[50%]">
-              <Form.Item
-                name="qualification"
-                label={<p className=" text-md">Qualification</p>}
-              >
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Qualification"
-                ></Input>
-              </Form.Item>
-            </div>
-            <div className="w-full md:w-[50%]">
-              <Form.Item
-                name="expertise"
-                label={<p className=" text-md">Expertise</p>}
-              >
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Expertise"
-                ></Input>
-              </Form.Item>
-            </div>
-          </div>
-
-          <Form.Item
-            name="profile_image"
-            label={<p className=" text-md">Profile Image</p>}
-          >
-            <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
-              <Upload
-                showUploadList={false}
-                // onChange={handleInstructorPicUpload}
-                beforeUpload={handleInstructorBefoeUpload}
-                maxCount={1}
-                className=" "
-              >
-                {!previewInstructor ? (
-                  <FaImage className="text-secondary h-10 w-10" />
-                ) : (
-                  <img
-                    src={previewInstructor}
-                    alt="Preview"
-                    className="h-24 object-contain"
-                  />
-                )}
-              </Upload>
-            </div>
           </Form.Item>
 
           <Form.Item type="submit">
