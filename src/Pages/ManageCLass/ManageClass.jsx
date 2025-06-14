@@ -174,12 +174,14 @@ const ManageClass = () => {
                 style={{ width: 200 }}
               >
                 <Select.Option value="Scheduled Class">
-                  <Link to="/add-class">
+                  <Link to="/add-schedule-class" state={{ classType: "Scheduled Class" }}>
                   Scheduled Class
                   </Link>
                 </Select.Option>
-                <Select.Option value="Non Scheduled Class">
+                <Select.Option value="Non Scheduled Class" state={{ classType: "Non Scheduled Class" }}>
+                  <Link to="/add-non-schedule-class" >
                   Non Scheduled Class
+                  </Link>
                 </Select.Option>
               </Select>
             </div>

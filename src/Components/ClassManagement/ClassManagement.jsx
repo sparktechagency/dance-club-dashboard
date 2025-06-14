@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   DatePicker,
   Form,
@@ -13,57 +14,71 @@ import GoBackButton from "../Shared/GobackButton/GoBackButton";
 import { FaImage } from "react-icons/fa";
 import { useState } from "react";
 import { useCraeteClassMutation } from "../../redux/api/features/classApi/classApi";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ClassManagement = () => {
   const [form] = Form.useForm();
   const [banner, setbanner] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const location = useLocation();
+  const nevigate = useNavigate();
+  const [isScheduled, setIsScheduled] = useState(true);
+  const TypeOfClass = location.state?.classType;
+  if (!TypeOfClass === "Scheduled Class") {
+    setIsScheduled(false);
+  }
 
-// console.log("banner", banner);
+  console.log("banner", isScheduled);
 
- const handleBeforeUpload = (file) => {
-  form.setFieldsValue({ class_banner: [file] });
-  setbanner(file);
-  setPreviewImage(URL.createObjectURL(file));
-  return false; // Prevent auto upload
-};
-
-
-  const [craeteClass] = useCraeteClassMutation();
-const onFinish = async (values) => {
-  const data = {
-    title: values.title,
-    description: values.description,
-    tokenNeedForBook: Number(values.tokenNeedForBook),
-    classType: values.classType,
-    isScheduled: values.isScheduled === 1,
-    date: values.date,
-    time: values.time,
-    durationInMinutes: values.durationInMinutes,
-    totalSeat: values.totalSeat,
+  const handleBeforeUpload = (file) => {
+    form.setFieldsValue({ class_banner: [file] });
+    setbanner(file);
+    setPreviewImage(URL.createObjectURL(file));
+    return false; // Prevent auto upload
   };
 
-  try {
-    if (!banner) {
-      message.error("Please upload a class banner image.");
-      return;
+  const [craeteClass] = useCraeteClassMutation();
+  const onFinish = async (values) => {
+    const data = {
+      title: values.title,
+      description: values.description,
+      tokenNeedForBook: values.tokenNeedForBook,
+      classType: values.classType,
+      isScheduled: isScheduled,
+      totalSeat: values.totalSeat,
+      location: values.location,
+      instructorName: values.instructorName,
+      classSchedule: [
+        {
+          day: values.day,
+          time: values.time,
+          durationInMinutes: values.durationInMinutes,
+        },
+      ],
+    };
+    // console.log(data);
+
+    try {
+      if (!banner) {
+        message.error("Please upload a class banner image.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      formData.append("class_banner", banner);
+
+      await craeteClass(formData).unwrap();
+      message.success("Class added successfully!");
+      form.resetFields();
+      setbanner(null);
+      setPreviewImage(null);
+      nevigate("/manage-class");
+    } catch (error) {
+      console.log(error);
+      message.error("Failed to create class.");
     }
-
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(data));
-    formData.append("class_banner", banner);
-
-    await craeteClass(formData).unwrap();
-    message.success("Class added successfully!");
-    form.resetFields();
-    setbanner(null);
-    setPreviewImage(null);
-  } catch (error) {
-    console.log(error);
-    message.error("Failed to create class.");
-  }
-};
-
+  };
 
   const handleOk = () => {};
   const handleProfilePicUpload = (e) => {
@@ -78,7 +93,6 @@ const onFinish = async (values) => {
   return (
     <div>
       <GoBackButton text={"Add class"} />
-  
 
       <div className="mt-5">
         <Form
@@ -87,29 +101,18 @@ const onFinish = async (values) => {
           onFinish={onFinish}
           layout="vertical"
         >
-          <Form.Item name="isScheduled" label={<p className=" text-md"></p>}>
-            <Radio.Group
-              onChange={onChange}
-              value={value}
-              options={[
-                { value: 1, label: "Scheduled" },
-                { value: 2, label: "Non-Scheduled" },
-              ]}
-            />
-          </Form.Item>
-
           <div className="flex justify-between items-center gap-2">
             <div className="w-full md:w-[50%]">
               <Form.Item
                 name="class_banner"
-                label={<p className=" text-md">Add Product image</p>}
+                label={<p className=" text-md">Add Class image</p>}
               >
                 <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
                   <Upload
                     showUploadList={false}
                     maxCount={1}
                     beforeUpload={handleBeforeUpload}
-                    onChange={handleProfilePicUpload}
+                    // onChange={handleProfilePicUpload}
                     setFileList={setbanner}
                   >
                     {!previewImage ? (
@@ -134,7 +137,7 @@ const onFinish = async (values) => {
             <div className="w-full md:w-[50%] flex flex-col">
               <Form.Item
                 name="title"
-                label={<p className=" text-md">Product Name</p>}
+                label={<p className=" text-md">Class Name</p>}
               >
                 <Input
                   required
@@ -156,6 +159,7 @@ const onFinish = async (values) => {
               </Form.Item>
             </div>
           </div>
+
           <div className="flex justify-between items-center gap-2">
             <div className="w-full md:w-[50%]">
               <Form.Item
@@ -192,13 +196,44 @@ const onFinish = async (values) => {
           <div className="flex justify-between items-center gap-2">
             <div className="w-full md:w-[50%]">
               <Form.Item
-                name="tokenNeedForBook"
-                label={<p className=" text-md">Token Need For Booking</p>}
+                name="instructorName"
+                label={<p className=" text-md">Instructor Name</p>}
                 style={{}}
               >
                 <Input
                   required
                   style={{ padding: "6px" }}
+                  className=" text-md"
+                  placeholder="Add Instructor Name"
+                />
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="location"
+                label={<p className=" text-md">location</p>}
+                style={{}}
+              >
+                <Input
+                  required
+                  style={{ padding: "6px" }}
+                  className=" text-md"
+                  placeholder="Add Location"
+                />
+              </Form.Item>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center gap-2">
+            <div className="w-full md:w-[50%]">
+              <Form.Item
+                name="tokenNeedForBook"
+                label={<p className=" text-md">Token Need For Booking</p>}
+                style={{}}
+              >
+                <InputNumber
+                  required
+                  style={{ width: "100%" }}
                   className=" text-md"
                   placeholder=""
                 />
@@ -206,16 +241,19 @@ const onFinish = async (values) => {
             </div>
             <div className="w-full md:w-[50%]">
               <Form.Item
-                name="date"
-                label={<p className=" text-md">Date</p>}
+                name="day"
+                label={<p className=" text-md">Day</p>}
                 style={{}}
               >
-                <DatePicker
-                  required
-                  style={{ padding: "6px", width: "100%" }}
-                  className=" text-md"
-                  placeholder=""
-                />
+                <Select placeholder="Select Day" style={{ width: "100%" }}>
+                  <Select.Option value="Saturday">Saturday</Select.Option>
+                  <Select.Option value="Sunday">Sunday</Select.Option>
+                  <Select.Option value="Monday">Monday</Select.Option>
+                  <Select.Option value="Tuesday">Tuesday</Select.Option>
+                  <Select.Option value="Wednesday">Wednesday</Select.Option>
+                  <Select.Option value="Thursday">Thursday</Select.Option>
+                  <Select.Option value="Friday">Friday</Select.Option>
+                </Select>
               </Form.Item>
             </div>
           </div>

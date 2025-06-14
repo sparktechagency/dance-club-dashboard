@@ -64,7 +64,11 @@ export const router = createBrowserRouter([
         element: <ManageClass />,
       },
       {
-        path: "/add-class",
+        path: "/add-schedule-class",
+        element: <ClassManagement />,
+      },
+      {
+        path: "/add-non-schedule-class",
         element: <ClassManagement />,
       },
       {
