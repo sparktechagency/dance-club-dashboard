@@ -174,14 +174,18 @@ const ManageClass = () => {
                 style={{ width: 200 }}
               >
                 <Select.Option value="Scheduled Class">
-                  <Link to="/add-schedule-class" state={{ classType: "Scheduled Class" }}>
-                  Scheduled Class
+                  <Link
+                    to="/add-schedule-class"
+                    state={{ classType: "Scheduled Class" }}
+                  >
+                    Scheduled Class
                   </Link>
                 </Select.Option>
-                <Select.Option value="Non Scheduled Class" state={{ classType: "Non Scheduled Class" }}>
-                  <Link to="/add-non-schedule-class" >
-                  Non Scheduled Class
-                  </Link>
+                <Select.Option
+                  value="Non Scheduled Class"
+                  state={{ classType: "Non Scheduled Class" }}
+                >
+                  <Link to="/add-non-schedule-class">Non Scheduled Class</Link>
                 </Select.Option>
               </Select>
             </div>
@@ -218,10 +222,12 @@ const ManageClass = () => {
       </div>
 
       <div className="mt-10 flex justify-center items-center">
-        <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
-        </Pagination>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={allClassesData?.data?.meta?.total}
+          onChange={handlePageChange}
+        ></Pagination>
       </div>
 
       <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
@@ -239,6 +245,10 @@ const ManageClass = () => {
               <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Name :</p>
                 <p>{selectedUser.title}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Instructor Name :</p>
+                <p>{selectedUser.instructorName}</p>
               </div>
               <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Description</p>

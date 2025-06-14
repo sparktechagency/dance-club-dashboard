@@ -16,19 +16,19 @@ import { useState } from "react";
 import { useCraeteClassMutation } from "../../redux/api/features/classApi/classApi";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const ClassManagement = () => {
+const NonScheduledClass = () => {
   const [form] = Form.useForm();
   const [banner, setbanner] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const location = useLocation();
   const nevigate = useNavigate();
-  const [isScheduled, setIsScheduled] = useState(true);
+  const [isScheduled, setIsScheduled] = useState(false);
   const TypeOfClass = location.state?.classType;
   if (!TypeOfClass === "Scheduled Class") {
     setIsScheduled(false);
   }
 
-  // console.log("banner", isScheduled);
+//   console.log("banner", isScheduled);
 
   const handleBeforeUpload = (file) => {
     form.setFieldsValue({ class_banner: [file] });
@@ -45,17 +45,14 @@ const ClassManagement = () => {
       tokenNeedForBook: values.tokenNeedForBook,
       classType: values.classType,
       isScheduled: isScheduled,
+      date: values.date,
+      time: values.time,
+      durationInMinutes: values.durationInMinutes,
       totalSeat: values.totalSeat,
       location: values.location,
       instructorName: values.instructorName,
-      classSchedule: [
-        {
-          day: values.day,
-          time: values.time,
-          durationInMinutes: values.durationInMinutes,
-        },
-      ],
     };
+
     // console.log(data);
 
     try {
@@ -92,7 +89,7 @@ const ClassManagement = () => {
 
   return (
     <div>
-      <GoBackButton text={"Add Scheduled class"} />
+      <GoBackButton text={"Add Non Scheduled class"} />
 
       <div className="mt-5">
         <Form
@@ -241,19 +238,16 @@ const ClassManagement = () => {
             </div>
             <div className="w-full md:w-[50%]">
               <Form.Item
-                name="day"
-                label={<p className=" text-md">Day</p>}
+                name="date"
+                label={<p className=" text-md">Date</p>}
                 style={{}}
               >
-                <Select placeholder="Select Day" style={{ width: "100%" }}>
-                  <Select.Option value="Saturday">Saturday</Select.Option>
-                  <Select.Option value="Sunday">Sunday</Select.Option>
-                  <Select.Option value="Monday">Monday</Select.Option>
-                  <Select.Option value="Tuesday">Tuesday</Select.Option>
-                  <Select.Option value="Wednesday">Wednesday</Select.Option>
-                  <Select.Option value="Thursday">Thursday</Select.Option>
-                  <Select.Option value="Friday">Friday</Select.Option>
-                </Select>
+                <DatePicker
+                  required
+                  style={{ padding: "4px", width: "100%" }}
+                  className=" text-md"
+                  placeholder=""
+                />
               </Form.Item>
             </div>
           </div>
@@ -305,4 +299,4 @@ const ClassManagement = () => {
   );
 };
 
-export default ClassManagement;
+export default NonScheduledClass;
