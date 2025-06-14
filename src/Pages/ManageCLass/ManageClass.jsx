@@ -1,5 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
+import {
+  Avatar,
+  ConfigProvider,
+  Input,
+  Pagination,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
 import { FaEye } from "react-icons/fa";
@@ -7,7 +15,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AllImages } from "../../assets/image/AllImages";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetAllClassesQuery } from "../../redux/api/features/classApi/classApi";
 const ManageClass = () => {
   const navigate = useNavigate();
@@ -159,12 +167,28 @@ const ManageClass = () => {
                 </button>
               </div>
             </ConfigProvider>
-            <button
+            <div className="">
+              <Select
+                placeholder="Add Class"
+                size="large"
+                style={{ width: 200 }}
+              >
+                <Select.Option value="Scheduled Class">
+                  <Link to="/add-class">
+                  Scheduled Class
+                  </Link>
+                </Select.Option>
+                <Select.Option value="Non Scheduled Class">
+                  Non Scheduled Class
+                </Select.Option>
+              </Select>
+            </div>
+            {/* <button
               onClick={hnadleAddClass}
               className="bg-primary text-white py-2 px-4 rounded-md"
             >
               Add New Class
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -201,14 +225,15 @@ const ManageClass = () => {
       <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
         {selectedUser && (
           <div className="">
-            <div className="bg-red-100  text-center relative h-[100px] w-full flex flex-col justify-center items-center">
-              <Avatar
-                className="shadow-md h-32 w-32 absolute top-[20px] left-[50%] translate-x-[-50%]"
+            <div className="flex items-center justify-center ">
+              <img
                 src={selectedUser?.class_banner}
+                alt=""
+                className="w-full h-60 rounded-md "
               />
             </div>
 
-            <div className="mt-16">
+            <div className="mt-4">
               <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Name :</p>
                 <p>{selectedUser.title}</p>
@@ -226,8 +251,24 @@ const ManageClass = () => {
                 <p>{selectedUser?.totalSeat || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Location:</p>
+                <p>{selectedUser?.location || "N/A"}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Token Need For Booking:</p>
                 <p>{selectedUser.tokenNeedForBook}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Class Duration:</p>
+                <p>{selectedUser.durationInMinutes} Minutes</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Date:</p>
+                <p>{selectedUser.date} </p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Time:</p>
+                <p>{selectedUser.time} </p>
               </div>
               <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Is Scheduled :</p>
