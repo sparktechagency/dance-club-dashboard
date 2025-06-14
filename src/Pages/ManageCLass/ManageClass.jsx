@@ -25,9 +25,11 @@ const ManageClass = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const { data: allClassesData, isLoading } = useGetAllClassesQuery({
     page: currentPage,
     limit: pageSize,
+    searchTerm,
   });
   // console.log("allClassesData", allClassesData?.data?.result);
   const classData = allClassesData?.data?.result;
@@ -48,8 +50,9 @@ const ManageClass = () => {
     setSelectedUser(null);
   };
 
-  const handleSearch = () => {
-    // refetc();
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
   };
 
   const handleSession = (record) => {
@@ -148,20 +151,20 @@ const ManageClass = () => {
                   placeholder="Search Class"
                   allowClear
                   size="large"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   onPressEnter={handleSearch}
-                  prefix={
-                    <SearchOutlined
-                      style={{ cursor: "pointer" }}
-                      onClick={handleSearch}
-                    />
-                  }
+                  // prefix={
+                  //   <SearchOutlined
+                  //     style={{ cursor: "pointer" }}
+                  //     onClick={handleSearch}
+                  //   />
+                  // }
                 />
 
                 <button
                   onClick={handleSearch}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg bg-primary"
                 >
                   search
                 </button>
