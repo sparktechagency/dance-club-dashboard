@@ -38,7 +38,7 @@ const Sidebar = ({ closeDrawer }) => {
   const menuItems = [
     {
       icon: <MdDashboard className="h-5 w-5" />,
-      label: "dashboard",
+      label: "Dashboard",
       Link: "/",
     },
 

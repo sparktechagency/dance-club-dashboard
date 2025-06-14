@@ -1,5 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, Pagination, Space, Table } from "antd";
+import {
+  Avatar,
+  ConfigProvider,
+  Input,
+  Pagination,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
 import { FaEye } from "react-icons/fa";
@@ -7,7 +15,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AllImages } from "../../assets/image/AllImages";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetAllClassesQuery } from "../../redux/api/features/classApi/classApi";
 const ManageClass = () => {
   const navigate = useNavigate();
@@ -17,9 +25,11 @@ const ManageClass = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const { data: allClassesData, isLoading } = useGetAllClassesQuery({
     page: currentPage,
     limit: pageSize,
+    searchTerm,
   });
   // console.log("allClassesData", allClassesData?.data?.result);
   const classData = allClassesData?.data?.result;
@@ -40,8 +50,9 @@ const ManageClass = () => {
     setSelectedUser(null);
   };
 
-  const handleSearch = () => {
-    // refetc();
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
   };
 
   const handleSession = (record) => {
@@ -140,31 +151,53 @@ const ManageClass = () => {
                   placeholder="Search Class"
                   allowClear
                   size="large"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   onPressEnter={handleSearch}
-                  prefix={
-                    <SearchOutlined
-                      style={{ cursor: "pointer" }}
-                      onClick={handleSearch}
-                    />
-                  }
+                  // prefix={
+                  //   <SearchOutlined
+                  //     style={{ cursor: "pointer" }}
+                  //     onClick={handleSearch}
+                  //   />
+                  // }
                 />
 
                 <button
                   onClick={handleSearch}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg bg-primary"
                 >
                   search
                 </button>
               </div>
             </ConfigProvider>
-            <button
+            <div className="">
+              <Select
+                placeholder="Add Class"
+                size="large"
+                style={{ width: 200 }}
+              >
+                <Select.Option value="Scheduled Class">
+                  <Link
+                    to="/add-schedule-class"
+                    state={{ classType: "Scheduled Class" }}
+                  >
+                    Scheduled Class
+                  </Link>
+                </Select.Option>
+                <Select.Option
+                  value="Non Scheduled Class"
+                  state={{ classType: "Non Scheduled Class" }}
+                >
+                  <Link to="/add-non-schedule-class">Non Scheduled Class</Link>
+                </Select.Option>
+              </Select>
+            </div>
+            {/* <button
               onClick={hnadleAddClass}
               className="bg-primary text-white py-2 px-4 rounded-md"
             >
               Add New Class
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -192,26 +225,33 @@ const ManageClass = () => {
       </div>
 
       <div className="mt-10 flex justify-center items-center">
-        <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
-        </Pagination>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={allClassesData?.data?.meta?.total}
+          onChange={handlePageChange}
+        ></Pagination>
       </div>
 
       <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
         {selectedUser && (
           <div className="">
-            <div className="bg-red-100  text-center relative h-[100px] w-full flex flex-col justify-center items-center">
-              <Avatar
-                className="shadow-md h-32 w-32 absolute top-[20px] left-[50%] translate-x-[-50%]"
+            <div className="flex items-center justify-center ">
+              <img
                 src={selectedUser?.class_banner}
+                alt=""
+                className="w-full h-60 rounded-md "
               />
             </div>
 
-            <div className="mt-16">
+            <div className="mt-4">
               <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Name :</p>
                 <p>{selectedUser.title}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Instructor Name :</p>
+                <p>{selectedUser.instructorName}</p>
               </div>
               <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Description</p>
@@ -226,8 +266,24 @@ const ManageClass = () => {
                 <p>{selectedUser?.totalSeat || "N/A"}</p>
               </div>
               <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Location:</p>
+                <p>{selectedUser?.location || "N/A"}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Token Need For Booking:</p>
                 <p>{selectedUser.tokenNeedForBook}</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Class Duration:</p>
+                <p>{selectedUser.durationInMinutes} Minutes</p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Date:</p>
+                <p>{selectedUser.date} </p>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <p className=" font-bold">Time:</p>
+                <p>{selectedUser.time} </p>
               </div>
               <div className="flex gap-2 mb-4">
                 <p className=" font-bold">Is Scheduled :</p>

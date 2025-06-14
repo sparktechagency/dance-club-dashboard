@@ -39,23 +39,28 @@ const ManageCourse = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [createCourse] = useCreateCourseMutation();
-  const { data: courseData, isLoading } = useGetAllCourseQuery();
+  const { data: courseData, isLoading } = useGetAllCourseQuery({
+    page: currentPage,
+    limit: pageSize,
+    searchTerm,
+  });
   const courses = courseData?.data?.result;
 
-  // console.log("courseId", courseId);
-  const { data: singleCourseData } = useGetCourseByIdQuery(courseId);
+  const { data: singleCourseData } = useGetCourseByIdQuery(courseId, {
+    skip: !courseId || courseId.length !== 24,
+  });
   const [updateCourse] = useUpdateCourseMutation({ courseId: courseId });
   const [deleteCourse] = useDeleteCourseMutation();
 
-  const [totalItems, setTotalItems] = useState(courses?.length);
-  const handlePageChange = (page, pageSize) => {
+  const handlePageChange = (page) => {
     setCurrentPage(page);
-    setPageSize(pageSize);
   };
 
-  const handleSearch = () => {
+  const handleSearch = (value) => {
+    setSearchTerm(value);
     setCurrentPage(1);
   };
 
@@ -74,17 +79,10 @@ const ManageCourse = () => {
   };
 
   useEffect(() => {
-    if (isEditModalOpen && singleCourseData?.data) {
-      const data = singleCourseData.data;
-
+    if (isEditModalOpen && singleCourseData?.data?.[0]) {
+      const data = singleCourseData?.data?.[0];
       form.setFieldsValue({
-        name: data.instructorInfo?.name,
-        email: data.instructorInfo?.email,
-        qualification: data.instructorInfo?.qualification,
-        expertise: data.instructorInfo?.expertise,
-        experience: data.instructorInfo?.experience,
-        phone: data.instructorInfo?.phone,
-        profile_image: data.instructorInfo?.profile_image,
+        name: data?.instructorName,
         bannerImage: data.bannerImage,
         title: data.title,
         description: data.description,
@@ -103,48 +101,31 @@ const ManageCourse = () => {
     setIsEditModalOpen(false);
   };
 
-const handleDelete = (_id) => {
-  console.log(_id);
-  swal({
-    title: "Are you sure you want to delete this course?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    buttons: true,
-    dangerMode: true,
-  }).then(async (willDelete) => {
-    if (willDelete) {
-      try {
-        await deleteCourse(_id).unwrap();
-        message.success("Deleted Successfully");
-      } catch (err) {
-        console.error("Failed to delete:", err);
-        message.error("Failed to delete course");
+  const handleDelete = (_id) => {
+    console.log(_id);
+    swal({
+      title: "Are you sure you want to delete this course?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        try {
+          await deleteCourse(_id).unwrap();
+          message.success("Deleted Successfully");
+        } catch (err) {
+          console.error("Failed to delete:", err);
+          message.error("Failed to delete course");
+        }
       }
-    }
-  });
-};
-
-  const handlecoursesPicUpload = (e) => {
-    const file = e.file.originFileObj;
-    setcoursesPic(file);
+    });
   };
 
   const handleBefoeUpload = (file) => {
     form.setFieldValue({ bannerImage: file });
     setPreviewImage(URL.createObjectURL(file));
     setcoursesPic(file);
-    return false;
-  };
-
-  const handleInstructorPicUpload = (e) => {
-    const file = e.file.originFileObj;
-    setinstrctorPic(file);
-  };
-
-  const handleInstructorBefoeUpload = (file) => {
-    form.setFieldValue({ profile_image: [file] });
-    setPreviewInstrutor(URL.createObjectURL(file));
-    setinstrctorPic(file);
     return false;
   };
 
@@ -158,13 +139,7 @@ const handleDelete = (_id) => {
       startDate: values.startDate,
       price: values.price,
       totalSeat: values.totalSeat,
-      instructorInfo: {
-        name: values.name,
-        email: values.email,
-        qualification: values.qualification,
-        expertise: [values.expertise],
-        profile_image: values.profile_image,
-      },
+      instructorName: values.name,
     };
 
     const bannerImage = values.bannerImage;
@@ -191,13 +166,7 @@ const handleDelete = (_id) => {
         startDate: values.startDate,
         price: values.price,
         totalSeat: values.totalSeat,
-        instructorInfo: {
-          name: values.name,
-          email: values.email,
-          qualification: values.qualification,
-          expertise: [values.expertise],
-          profile_image: values.profile_image,
-        },
+        instructorName: values.name,
       };
 
       const bannerImage = coursesPic;
@@ -211,6 +180,7 @@ const handleDelete = (_id) => {
       setIsEditModalOpen(false);
     } catch (error) {
       console.log(error);
+      message.error(error?.message);
     }
   };
   const columns = [
@@ -306,20 +276,16 @@ const handleDelete = (_id) => {
                   placeholder="Search course"
                   allowClear
                   size="large"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+
                   onPressEnter={handleSearch}
-                  prefix={
-                    <SearchOutlined
-                      style={{ cursor: "pointer" }}
-                      onClick={handleSearch}
-                    />
-                  }
+                  
                 />
 
                 <button
                   onClick={handleSearch}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg bg-primary"
                 >
                   search
                 </button>
@@ -347,7 +313,7 @@ const handleDelete = (_id) => {
         <Pagination
           current={currentPage}
           pageSize={pageSize}
-          total={courses?.data?.meta?.total || 0}
+          total={courseData?.data?.meta?.total}
           onChange={handlePageChange}
         />
       </div>
@@ -414,6 +380,17 @@ const handleDelete = (_id) => {
             </div>
             <div className="w-full md:w-[50%]">
               <Form.Item
+                name="name"
+                label={<p className=" text-md">Instructor Name</p>}
+              >
+                <Input
+                  className=" text-md"
+                  placeholder="Type Instructor Name"
+                ></Input>
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
                 name="duration"
                 label={<p className=" text-md">Duration</p>}
               >
@@ -462,75 +439,6 @@ const handleDelete = (_id) => {
             label={<p className=" text-md">Description</p>}
           >
             <Input.TextArea rows={4}></Input.TextArea>
-          </Form.Item>
-          <h1 className="text-xl font-bold my-2">Instructor Information</h1>
-          <div className="flex justify-between items-center gap-2">
-            <div className="w-full md:w-[50%]">
-              <Form.Item name="name" label={<p className=" text-md">Name</p>}>
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Name"
-                ></Input>
-              </Form.Item>
-            </div>
-            <div className="w-full md:w-[50%]">
-              <Form.Item name="email" label={<p className=" text-md">Email</p>}>
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Email"
-                ></Input>
-              </Form.Item>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center gap-2">
-            <div className="w-full md:w-[50%]">
-              <Form.Item
-                name="qualification"
-                label={<p className=" text-md">Qualification</p>}
-              >
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Qualification"
-                ></Input>
-              </Form.Item>
-            </div>
-            <div className="w-full md:w-[50%]">
-              <Form.Item
-                name="expertise"
-                label={<p className=" text-md">Expertise</p>}
-              >
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Expertise"
-                ></Input>
-              </Form.Item>
-            </div>
-          </div>
-
-          <Form.Item
-            name="profile_image"
-            label={<p className=" text-md">Profile Image</p>}
-          >
-            <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
-              <Upload
-                showUploadList={false}
-                // onChange={handleInstructorPicUpload}
-                beforeUpload={handleInstructorBefoeUpload}
-                maxCount={1}
-                className=" "
-              >
-                {!previewInstructor ? (
-                  <FaImage className="text-secondary h-10 w-10" />
-                ) : (
-                  <img
-                    src={previewInstructor}
-                    alt="Preview"
-                    className="h-24 object-contain"
-                  />
-                )}
-              </Upload>
-            </div>
           </Form.Item>
 
           <Form.Item type="submit">
@@ -603,6 +511,17 @@ const handleDelete = (_id) => {
             </div>
             <div className="w-full md:w-[50%]">
               <Form.Item
+                name="name"
+                label={<p className=" text-md">Instructor Name</p>}
+              >
+                <Input
+                  className=" text-md"
+                  placeholder="Type Instructor Name"
+                ></Input>
+              </Form.Item>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <Form.Item
                 name="duration"
                 label={<p className=" text-md">Duration</p>}
               >
@@ -651,75 +570,6 @@ const handleDelete = (_id) => {
             label={<p className=" text-md">Description</p>}
           >
             <Input.TextArea rows={4}></Input.TextArea>
-          </Form.Item>
-          <h1 className="text-xl font-bold my-2">Instructor Information</h1>
-          <div className="flex justify-between items-center gap-2">
-            <div className="w-full md:w-[50%]">
-              <Form.Item name="name" label={<p className=" text-md">Name</p>}>
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Name"
-                ></Input>
-              </Form.Item>
-            </div>
-            <div className="w-full md:w-[50%]">
-              <Form.Item name="email" label={<p className=" text-md">Email</p>}>
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Email"
-                ></Input>
-              </Form.Item>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center gap-2">
-            <div className="w-full md:w-[50%]">
-              <Form.Item
-                name="qualification"
-                label={<p className=" text-md">Qualification</p>}
-              >
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Qualification"
-                ></Input>
-              </Form.Item>
-            </div>
-            <div className="w-full md:w-[50%]">
-              <Form.Item
-                name="expertise"
-                label={<p className=" text-md">Expertise</p>}
-              >
-                <Input
-                  className=" text-md"
-                  placeholder="Type Instructor Expertise"
-                ></Input>
-              </Form.Item>
-            </div>
-          </div>
-
-          <Form.Item
-            name="profile_image"
-            label={<p className=" text-md">Profile Image</p>}
-          >
-            <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
-              <Upload
-                showUploadList={false}
-                // onChange={handleInstructorPicUpload}
-                beforeUpload={handleInstructorBefoeUpload}
-                maxCount={1}
-                className=" "
-              >
-                {!previewInstructor ? (
-                  <FaImage className="text-secondary h-10 w-10" />
-                ) : (
-                  <img
-                    src={previewInstructor}
-                    alt="Preview"
-                    className="h-24 object-contain"
-                  />
-                )}
-              </Upload>
-            </div>
           </Form.Item>
 
           <Form.Item type="submit">
