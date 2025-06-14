@@ -17,11 +17,13 @@ const ManagePackage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [packageId, setPackageId] = useState("");
-  console.log("packageId", packageId);
+  // console.log("packageId", packageId);
   const { data: packageData } = useGetAllPackageQuery();
   const [createPackage] = useCreatePackageMutation();
-  const { data: getSInglePackageData } = useGetSInglePackageQuery(packageId);
-  console.log("getSInglePackageData", getSInglePackageData);
+  const { data: getSInglePackageData } = useGetSInglePackageQuery(packageId,{
+    skip: !packageId || packageId.length !== 24,
+  });
+  // console.log("getSInglePackageData", getSInglePackageData);
 
   const [updatePackage] = useUpdatePackageMutation(packageId);
 

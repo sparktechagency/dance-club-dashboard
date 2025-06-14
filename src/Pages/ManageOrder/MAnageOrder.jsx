@@ -15,14 +15,13 @@ const MAnageOrder = () => {
   const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const { data: newOrderData } = useNewOrderOnDashboardQuery({
     page: currentPage,
     limit: pageSize,
   });
   const userData = newOrderData?.data?.result;
-  const [totalItems, setTotalItems] = useState(userData?.length);
-
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -38,8 +37,9 @@ const MAnageOrder = () => {
     setSelectedUser(null);
   };
 
-  const handleSearch = () => {
-    // refetc();
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
   };
 
   const handleSession = (record) => {
@@ -52,7 +52,6 @@ const MAnageOrder = () => {
     navigate(`/order-details/${_id}`, { state: { selectedOrderId: _id } });
   };
 
-  const handleChange = () => {};
   const columns = [
     {
       title: "#",
@@ -142,8 +141,8 @@ const MAnageOrder = () => {
                   placeholder="Search "
                   allowClear
                   size="large"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   onPressEnter={handleSearch}
                   prefix={
                     <SearchOutlined
@@ -155,7 +154,7 @@ const MAnageOrder = () => {
 
                 <button
                   onClick={handleSearch}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg"
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-primaryColor text-white p-2 rounded-r-lg bg-primary"
                 >
                   search
                 </button>
@@ -188,10 +187,12 @@ const MAnageOrder = () => {
       </div>
 
       <div className="mt-10 flex justify-center items-center">
-        <Pagination onChange={handlePageChange}>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
-        </Pagination>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={newOrderData?.data?.meta?.total}
+          onChange={handlePageChange}
+        ></Pagination>
       </div>
 
       <Modal open={isModalOpen} onCancel={handleCancel} footer={null}>
