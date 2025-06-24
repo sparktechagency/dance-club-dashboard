@@ -5,10 +5,7 @@ import { FiLogOut } from "react-icons/fi";
 import { BsGraphUp } from "react-icons/bs";
 import { BiChevronDown } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import {
-  MdDashboard,
-  MdPrivacyTip,
-} from "react-icons/md";
+import { MdDashboard, MdPrivacyTip } from "react-icons/md";
 import { LuCircleDollarSign } from "react-icons/lu";
 import { FaMoneyCheckAlt } from "react-icons/fa";
 import { RiTerminalWindowLine } from "react-icons/ri";
@@ -47,7 +44,7 @@ const Sidebar = ({ closeDrawer }) => {
       label: "Manage Class",
       Link: "/manage-class",
     },
-     {
+    {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
       label: "Manage Category ",
       Link: "/manage-category",
@@ -67,7 +64,6 @@ const Sidebar = ({ closeDrawer }) => {
       label: "Manage Package ",
       Link: "/manage-package",
     },
-   
 
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
@@ -89,14 +85,12 @@ const Sidebar = ({ closeDrawer }) => {
       label: "Manage Coupon",
       Link: "/manage-coupon",
     },
-   
- 
+
     {
       icon: <AiOutlineSetting className="h-5 w-5" />,
       label: "Settings",
       isDropdown: true,
       subItems: [
-    
         {
           icon: <MdPrivacyTip className="h-5 w-5" />,
           label: "Privacy Policy",
@@ -130,19 +124,19 @@ const Sidebar = ({ closeDrawer }) => {
                       : "bg-secondary text-white font-semibold"
                   }`}
                 ></div>
-                <div
-                  className={`w-full flex justify-between items-center px-5 py-2 cursor-pointer  rounded-e-md  ${
-                    active === item.label
-                      ? "bg-primary text-white font-semibold"
-                      : "bg-secondary text-white font-semibold"
-                  }`}
-                  onClick={() =>
-                    item.isDropdown
-                      ? toggleDropdown(item.label)
-                      : handleActiveRoute(item.label)
-                  }
-                >
-                  <Link to={item.Link}>
+                <Link to={item.Link}>
+                  <div
+                    className={`w-52 flex justify-between items-center px-5 py-2 cursor-pointer  rounded-e-md  ${
+                      active === item.label
+                        ? "bg-primary text-white font-semibold"
+                        : "bg-secondary text-white font-semibold"
+                    }`}
+                    onClick={() =>
+                      item.isDropdown
+                        ? toggleDropdown(item.label)
+                        : handleActiveRoute(item.label)
+                    }
+                  >
                     <div className="flex items-center gap-3">
                       {/* {item.icon} */}
                       <p>{item.label}</p>
@@ -154,8 +148,8 @@ const Sidebar = ({ closeDrawer }) => {
                         />
                       )}
                     </div>
-                  </Link>
-                </div>
+                  </div>
+                </Link>
               </div>
 
               {/* Dropdown for sub-items */}

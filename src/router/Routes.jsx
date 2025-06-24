@@ -28,6 +28,7 @@ import OrderDetails from "../Pages/ManageOrder/OrderDetails";
 import ManageCategory from "../Pages/ManageCategory/ManageCategory";
 import EditProduct from "../Components/ProductManagement/EditProduct";
 import NonScheduledClass from "../Components/ClassManagement/NonScheduledClass";
+import EditClass from "../Components/ClassManagement/EditClass";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
       {
         path: "/add-non-schedule-class",
         element: <NonScheduledClass />,
+      },
+      {
+        path: "/edit-class",
+        element: <EditClass />,
       },
       {
         path: "manage-category",
