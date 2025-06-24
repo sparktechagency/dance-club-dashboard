@@ -51,7 +51,7 @@ const ClassManagement = () => {
       classSchedule: [
         {
           day: values.day,
-          time: values.time,
+          time: values.time?.format("HH:mm"),
           durationInMinutes: values.durationInMinutes,
         },
       ],
@@ -266,6 +266,7 @@ const ClassManagement = () => {
               >
                 <TimePicker
                   required
+                  format="HH:mm"
                   style={{ padding: "6px", width: "100%" }}
                   className=" text-md"
                   placeholder=""

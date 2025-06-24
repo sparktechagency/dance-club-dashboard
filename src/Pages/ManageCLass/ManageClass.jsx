@@ -11,10 +11,8 @@ import {
 import { useState } from "react";
 import { Modal } from "antd";
 import { FaEye } from "react-icons/fa";
-import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { AiOutlineEdit } from "react-icons/ai";
-import { AllImages } from "../../assets/image/AllImages";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetAllClassesQuery } from "../../redux/api/features/classApi/classApi";
 const ManageClass = () => {
@@ -59,7 +57,7 @@ const ManageClass = () => {
     console.log(record);
   };
   const handleEdit = (record) => {
-    // console.log(record);
+    navigate("/edit-class");
   };
   const hnadleAddClass = () => {
     navigate("/add-class");
