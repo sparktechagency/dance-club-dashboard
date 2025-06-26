@@ -29,7 +29,7 @@ import ManageCategory from "../Pages/ManageCategory/ManageCategory";
 import EditProduct from "../Components/ProductManagement/EditProduct";
 import NonScheduledClass from "../Components/ClassManagement/NonScheduledClass";
 import EditClass from "../Components/ClassManagement/EditClass";
-import PrivateRoute from "./PrivateROute";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
