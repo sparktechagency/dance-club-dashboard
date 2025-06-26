@@ -29,6 +29,7 @@ import ManageCategory from "../Pages/ManageCategory/ManageCategory";
 import EditProduct from "../Components/ProductManagement/EditProduct";
 import NonScheduledClass from "../Components/ClassManagement/NonScheduledClass";
 import EditClass from "../Components/ClassManagement/EditClass";
+import PrivateRoute from "./PrivateROute";
 
 export const router = createBrowserRouter([
   {
@@ -53,107 +54,113 @@ export const router = createBrowserRouter([
     path: "/continue-page",
     element: <ContinuePage />,
   },
+
   {
-    path: "/",
-    element: <MainLayout />,
+    element: <PrivateRoute />,
     children: [
       {
         path: "/",
-        element: <Analytics />,
-      },
-      {
-        path: "/manage-class",
-        element: <ManageClass />,
-      },
-      {
-        path: "/add-schedule-class",
-        element: <ClassManagement />,
-      },
-      {
-        path: "/add-non-schedule-class",
-        element: <NonScheduledClass />,
-      },
-      {
-        path: "/edit-class",
-        element: <EditClass />,
-      },
-      {
-        path: "manage-category",
-        element: <ManageCategory />,
-      },
+        element: <MainLayout />,
+        children: [
+          {
+            path: "/",
+            element: <Analytics />,
+          },
+          {
+            path: "/manage-class",
+            element: <ManageClass />,
+          },
+          {
+            path: "/add-schedule-class",
+            element: <ClassManagement />,
+          },
+          {
+            path: "/add-non-schedule-class",
+            element: <NonScheduledClass />,
+          },
+          {
+            path: "/edit-class",
+            element: <EditClass />,
+          },
+          {
+            path: "manage-category",
+            element: <ManageCategory />,
+          },
 
-      {
-        path: "/manage-product",
-        element: <ManageProducts />,
-      },
-      {
-        path: "/add-product",
-        element: <AddProduct />,
-      },
-      {
-        path: "/edit-product/:_id",
-        element: <EditProduct />,
-      },
-      {
-        path: "/manage-order",
-        element: <MAnageOrder />,
-      },
-      {
-        path: "/order-details/:_id",
-        element: <OrderDetails />,
-      },
-      {
-        path: "/manage-membership",
-        element: <ManageMenbership />,
-      },
-      {
-        path: "/manage-package",
-        element: <ManagePackage />,
-      },
-      {
-        path: "/manage-course",
-        element: <ManageCourse />,
-      },
-      {
-        path: "/add-new-membership",
-        element: <AddNewMembership />,
-      },
-      {
-        path: "/edit-membership",
-        element: <EditMembership />,
-      },
-      {
-        path: "/manage-banner",
-        element: <ManageBanner />,
-      },
-      {
-        path: "/feedback",
-        element: <Feedback />,
-      },
-      {
-        path: "/manage-coupon",
-        element: <ManageCoupon />,
-      },
+          {
+            path: "/manage-product",
+            element: <ManageProducts />,
+          },
+          {
+            path: "/add-product",
+            element: <AddProduct />,
+          },
+          {
+            path: "/edit-product/:_id",
+            element: <EditProduct />,
+          },
+          {
+            path: "/manage-order",
+            element: <MAnageOrder />,
+          },
+          {
+            path: "/order-details/:_id",
+            element: <OrderDetails />,
+          },
+          {
+            path: "/manage-membership",
+            element: <ManageMenbership />,
+          },
+          {
+            path: "/manage-package",
+            element: <ManagePackage />,
+          },
+          {
+            path: "/manage-course",
+            element: <ManageCourse />,
+          },
+          {
+            path: "/add-new-membership",
+            element: <AddNewMembership />,
+          },
+          {
+            path: "/edit-membership",
+            element: <EditMembership />,
+          },
+          {
+            path: "/manage-banner",
+            element: <ManageBanner />,
+          },
+          {
+            path: "/feedback",
+            element: <Feedback />,
+          },
+          {
+            path: "/manage-coupon",
+            element: <ManageCoupon />,
+          },
 
-      // setting:
+          // setting:
 
-      {
-        path: "/settings/privacy-policy",
-        element: <PrivacyPolicy />,
-      },
-      {
-        path: "/settings/terms-condition",
-        element: <TermsCondition />,
-      },
+          {
+            path: "/settings/privacy-policy",
+            element: <PrivacyPolicy />,
+          },
+          {
+            path: "/settings/terms-condition",
+            element: <TermsCondition />,
+          },
 
-      // Admin profile:
-      {
-        path: "/admin-profile",
-        element: <AdminProfile />,
-      },
-      {
-        path: "/notification",
-        element: <Notifications />,
+          // Admin profile:
+          {
+            path: "/admin-profile",
+            element: <AdminProfile />,
+          },
+          {
+            path: "/notification",
+            element: <Notifications />,
+          },
+        ],
       },
     ],
   },
