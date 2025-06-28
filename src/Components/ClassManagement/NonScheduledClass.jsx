@@ -105,6 +105,7 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="class_banner"
                 label={<p className=" text-md">Add Class image</p>}
+                      required
               >
                 <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
                   <Upload
@@ -137,9 +138,9 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="title"
                 label={<p className=" text-md">Class Name</p>}
+                required
               >
                 <Input
-                  required
                   style={{ padding: "6px" }}
                   className=" text-md"
                   placeholder=""
@@ -148,9 +149,9 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="description"
                 label={<p className=" text-md">Description</p>}
+                required
               >
                 <Input
-                  required
                   style={{ padding: "6px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
@@ -164,7 +165,7 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="classType"
                 label={<p className=" text-md">class Type</p>}
-                style={{}}
+                required
               >
                 <Select
                   placeholder="Select Class Type"
@@ -180,13 +181,19 @@ const NonScheduledClass = () => {
             <div className="w-full md:w-[50%]">
               <Form.Item
                 name="totalSeat"
-                label={<p className=" text-md">Total Seat</p>}
-                style={{}}
+                label={<p className="text-md">Total Seat</p>}
+                rules={[
+                  {
+                    required: true,
+                    message: "Total seat must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
                 <InputNumber
-                  required
                   style={{ padding: "3px", width: "100%" }}
-                  className=" text-md"
+                  className="text-md"
                 />
               </Form.Item>
             </div>
@@ -197,10 +204,9 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="instructorName"
                 label={<p className=" text-md">Instructor Name</p>}
-                style={{}}
+                required
               >
                 <Input
-                  required
                   style={{ padding: "6px" }}
                   className=" text-md"
                   placeholder="Add Instructor Name"
@@ -211,10 +217,10 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="location"
                 label={<p className=" text-md">location</p>}
-                style={{}}
+            required
               >
                 <Input
-                  required
+                  
                   style={{ padding: "6px" }}
                   className=" text-md"
                   placeholder="Add Location"
@@ -228,10 +234,16 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="tokenNeedForBook"
                 label={<p className=" text-md">Token Need For Booking</p>}
-                style={{}}
+                rules={[
+                  {
+                    required: true,
+                    message: "Token must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
                 <InputNumber
-                  required
                   style={{ width: "100%" }}
                   className=" text-md"
                   placeholder=""
@@ -242,10 +254,9 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="date"
                 label={<p className=" text-md">Date</p>}
-                style={{}}
+                required
               >
                 <DatePicker
-                  required
                   style={{ padding: "4px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
@@ -258,10 +269,9 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="time"
                 label={<p className=" text-md">Time</p>}
-                style={{}}
+                required
               >
                 <TimePicker
-                  required
                   format="HH:mm"
                   style={{ padding: "6px", width: "100%" }}
                   className=" text-md"
@@ -273,10 +283,9 @@ const NonScheduledClass = () => {
               <Form.Item
                 name="durationInMinutes"
                 label={<p className=" text-md">Duration</p>}
-                style={{}}
+                required
               >
                 <InputNumber
-                  required
                   style={{ padding: "3px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
