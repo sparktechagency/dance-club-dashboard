@@ -5,7 +5,6 @@ import {
   Input,
   InputNumber,
   message,
-  Radio,
   Select,
   TimePicker,
   Upload,
@@ -15,7 +14,7 @@ import { FaImage } from "react-icons/fa";
 import { useState } from "react";
 import { useCraeteClassMutation } from "../../redux/api/features/classApi/classApi";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import dayjs from "dayjs";
 const NonScheduledClass = () => {
   const [form] = Form.useForm();
   const [banner, setbanner] = useState(null);
@@ -28,7 +27,7 @@ const NonScheduledClass = () => {
     setIsScheduled(false);
   }
 
-//   console.log("banner", isScheduled);
+  // console.log("banner", isScheduled);
 
   const handleBeforeUpload = (file) => {
     form.setFieldsValue({ class_banner: [file] });
@@ -38,16 +37,19 @@ const NonScheduledClass = () => {
   };
 
   const [craeteClass] = useCraeteClassMutation();
+
   const onFinish = async (values) => {
+    const time = values?.time ? dayjs(values.time).format("HH:mm") : "";
+
     const data = {
       title: values.title,
-      description: values.description,
-      tokenNeedForBook: values.tokenNeedForBook,
-      classType: values.classType,
+      description: values?.description,
+      tokenNeedForBook: values?.tokenNeedForBook,
+      classType: values?.classType,
       isScheduled: isScheduled,
       date: values.date,
-      time: values.time,
-      durationInMinutes: values.durationInMinutes,
+      time: time,
+      durationInMinutes: values?.durationInMinutes,
       totalSeat: values.totalSeat,
       location: values.location,
       instructorName: values.instructorName,
@@ -260,6 +262,7 @@ const NonScheduledClass = () => {
               >
                 <TimePicker
                   required
+                  format="HH:mm"
                   style={{ padding: "6px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
