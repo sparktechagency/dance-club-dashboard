@@ -1,13 +1,5 @@
 /* eslint-disable no-unused-vars */
-import {
-  Form,
-  Input,
-  InputNumber,
-  Select,
-  Upload,
-  Space,
-  message,
-} from "antd";
+import { Form, Input, InputNumber, Select, Upload, Space, message } from "antd";
 import GoBackButton from "../Shared/GobackButton/GoBackButton";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import { useCreateProductMutation } from "../../redux/api/features/productApi/productApi";
@@ -43,9 +35,7 @@ const AddProduct = () => {
         stock: values.stock,
         description: values.description,
         size: values.size,
-        color: values.color
-          ? values.color.split(",").map((c) => c.trim())
-          : [],
+        color: values.color ? values.color.split(",").map((c) => c.trim()) : [],
       };
 
       const formData = new FormData();
@@ -95,6 +85,7 @@ const AddProduct = () => {
               <Form.Item
                 name="product_image"
                 label={<p className="text-md">Add Product Images</p>}
+                required
               >
                 <div className="border border-dashed border-secondary p-3">
                   <div className="flex gap-3 flex-wrap">
@@ -136,6 +127,7 @@ const AddProduct = () => {
               <Form.Item
                 name="title"
                 label={<p className="text-md">Product Name</p>}
+                required
               >
                 <Input required placeholder="Enter product name" />
               </Form.Item>
@@ -143,6 +135,7 @@ const AddProduct = () => {
               <Form.Item
                 name="category"
                 label={<p className="text-md">Product Category</p>}
+                required
               >
                 <Select options={categoryOptions} />
               </Form.Item>
@@ -154,17 +147,14 @@ const AddProduct = () => {
               <Form.Item
                 name="size"
                 label={<p className="text-md">Size</p>}
+                required
               >
                 <Select
                   mode="multiple"
                   placeholder="Select sizes"
                   onChange={handleChange}
                   options={options}
-                  optionRender={(option) => (
-                    <Space>
-                      {option.data.desc}
-                    </Space>
-                  )}
+                  optionRender={(option) => <Space>{option.data.desc}</Space>}
                 />
               </Form.Item>
             </div>
@@ -173,6 +163,7 @@ const AddProduct = () => {
               <Form.Item
                 name="color"
                 label={<p className="text-md">Colors</p>}
+                required
               >
                 <Input placeholder="e.g. Red, Blue" />
               </Form.Item>
@@ -184,9 +175,16 @@ const AddProduct = () => {
               <Form.Item
                 name="stock"
                 label={<p className="text-md">Quantity</p>}
+                rules={[
+                  {
+                    required: true,
+                    message: "Quantity must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
                 <InputNumber
-                  required
                   style={{ width: "100%" }}
                   placeholder="Enter stock quantity"
                 />
@@ -194,9 +192,19 @@ const AddProduct = () => {
             </div>
 
             <div className="w-full md:w-[50%]">
-              <Form.Item name="price" label={<p className="text-md">Price</p>}>
+              <Form.Item
+                name="price"
+                label={<p className="text-md">Price</p>}
+                rules={[
+                  {
+                    required: true,
+                    message: "Price must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
+              >
                 <InputNumber
-                  required
                   style={{ width: "100%" }}
                   placeholder="Enter price"
                 />
@@ -207,11 +215,9 @@ const AddProduct = () => {
           <Form.Item
             name="description"
             label={<p className="text-md">Description</p>}
+            required
           >
-            <Input.TextArea
-              rows={4}
-              placeholder="Enter product description"
-            />
+            <Input.TextArea rows={4} placeholder="Enter product description" />
           </Form.Item>
 
           <div className="flex justify-center">

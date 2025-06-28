@@ -5,6 +5,7 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   message,
   Pagination,
   Space,
@@ -86,7 +87,6 @@ const ManageCoupon = () => {
     }
   };
   const onEditFinish = async (values) => {
-    console.log("Success:", values);
     const data = {
       code: Number(values.code),
       startDate: values.startDate,
@@ -95,7 +95,7 @@ const ManageCoupon = () => {
     };
     try {
       await editCoupon({ _id: selectedUser._id, data }).unwrap();
-      message.success("Coupon created successfully!");
+      message.success("Coupon Updated successfully!");
       setAddCouponModal(false);
       form.resetFields();
     } catch (error) {
@@ -236,10 +236,17 @@ const ManageCoupon = () => {
                 name="code"
                 label={<p className=" text-md">Coupon Code</p>}
                 style={{}}
+                rules={[
+                  {
+                    required: true,
+                    message: "Code must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
-                <Input
-                  required
-                  style={{ padding: "6px" }}
+                <InputNumber
+                  style={{ padding: "3px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
                 />
@@ -247,11 +254,17 @@ const ManageCoupon = () => {
               <Form.Item
                 name="discountPercentage"
                 label={<p className=" text-md">Discount </p>}
-                style={{}}
+                rules={[
+                  {
+                    required: true,
+                    message: "Code must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
-                <Input
-                  required
-                  style={{ padding: "6px" }}
+                <InputNumber
+                  style={{ padding: "3px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
                 />
@@ -259,10 +272,9 @@ const ManageCoupon = () => {
               <Form.Item
                 name="startDate"
                 label={<p className=" text-md">Start Date</p>}
-                style={{}}
+                required
               >
                 <DatePicker
-                  required
                   style={{ padding: "6px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
@@ -271,7 +283,7 @@ const ManageCoupon = () => {
               <Form.Item
                 name="endDate"
                 label={<p className=" text-md">End Date</p>}
-                style={{}}
+                required
               >
                 <DatePicker
                   required
@@ -313,11 +325,17 @@ const ManageCoupon = () => {
               <Form.Item
                 name="code"
                 label={<p className=" text-md">Coupon Code</p>}
-                style={{}}
+                rules={[
+                  {
+                    // required: true,
+                    message: "Code must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
-                <Input
-                  required
-                  style={{ padding: "6px" }}
+                <InputNumber
+                  style={{ padding: "3px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
                 />
@@ -325,11 +343,18 @@ const ManageCoupon = () => {
               <Form.Item
                 name="discountPercentage"
                 label={<p className=" text-md">Discount </p>}
-                style={{}}
+                rules={[
+                  {
+                    // required: true,
+                    message: "Discount must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
-                <Input
+                <InputNumber
                   required
-                  style={{ padding: "6px" }}
+                  style={{ padding: "3px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
                 />

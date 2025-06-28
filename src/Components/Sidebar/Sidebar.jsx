@@ -27,7 +27,7 @@ const Sidebar = ({ closeDrawer }) => {
 
     if (isOpening && subItems?.length) {
       setActive(label);
-      setActiveSubItem(subItems[0].label);
+      // setActiveSubItem(subItems[0].label);
     } else {
       setActiveSubItem("");
     }
@@ -131,9 +131,7 @@ const Sidebar = ({ closeDrawer }) => {
                         ? "bg-primary text-white font-semibold"
                         : "bg-secondary text-white font-semibold"
                     }`}
-                    onClick={() =>
-                      toggleDropdown(item.label, item.subItems)
-                    }
+                    onClick={() => toggleDropdown(item.label, item.subItems)}
                   >
                     <div className="flex items-center gap-3">
                       <p>{item.label}</p>
@@ -171,7 +169,7 @@ const Sidebar = ({ closeDrawer }) => {
                   {item.subItems.map((subItem) => (
                     <Link to={subItem.Link} key={subItem.label}>
                       <div
-                        className={`py-2 px-5 cursor-pointer ml-6 mt-2 rounded-md ${
+                        className={`py-2 px-5 cursor-pointer ml-6 mt-2 rounded-md w-52 ${
                           activeSubItem === subItem.label
                             ? "text-white bg-primary font-bold"
                             : "text-white bg-secondary"
@@ -194,7 +192,7 @@ const Sidebar = ({ closeDrawer }) => {
           {/* Logout */}
           <Link className="text-black hover:text-black" to="/sign-in">
             <div
-              className="bg-primary w-72 md:mt-20 py-3 flex justify-center items-center cursor-pointer hover:bg-primary text-white"
+              className="bg-primary w-56 md:mt-20 py-3 flex justify-center items-center cursor-pointer hover:bg-primary text-white"
               onClick={() => console.log("Logged out")}
             >
               <FiLogOut className="text-xl" />

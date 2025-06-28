@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { FaPen, FaTrash } from "react-icons/fa";
 import { Form, InputNumber, message, Modal, Select, Table } from "antd";
@@ -20,7 +20,7 @@ const ManagePackage = () => {
   // console.log("packageId", packageId);
   const { data: packageData } = useGetAllPackageQuery();
   const [createPackage] = useCreatePackageMutation();
-  const { data: getSInglePackageData } = useGetSInglePackageQuery(packageId,{
+  const { data: getSInglePackageData } = useGetSInglePackageQuery(packageId, {
     skip: !packageId || packageId.length !== 24,
   });
   // console.log("getSInglePackageData", getSInglePackageData);
@@ -29,18 +29,16 @@ const ManagePackage = () => {
 
   const [deletePackage] = useDeletePackageMutation();
 
-
- useEffect(() => {
-  if (getSInglePackageData?.data) {
-    form.setFieldsValue({
-      totalToken: getSInglePackageData.data.totalToken,
-      price: getSInglePackageData.data.price,
-      validityInWeeks: getSInglePackageData.data.validityInWeeks,
-      packageType: getSInglePackageData.data.packageType,
-    });
-  }
-}, [form, getSInglePackageData]);
-
+  useEffect(() => {
+    if (getSInglePackageData?.data) {
+      form.setFieldsValue({
+        totalToken: getSInglePackageData.data.totalToken,
+        price: getSInglePackageData.data.price,
+        validityInWeeks: getSInglePackageData.data.validityInWeeks,
+        packageType: getSInglePackageData.data.packageType,
+      });
+    }
+  }, [form, getSInglePackageData]);
 
   const handleAddPackage = () => {
     setIsAddModalOpen(true);
@@ -222,6 +220,7 @@ const ManagePackage = () => {
           <Form.Item
             name="packageType"
             label={<p className=" text-md">Package Type</p>}
+            required
           >
             <Select className=" text-md" placeholder="Select Package Type">
               <Select.Option value="NORMAL_CLASS">NORMAL_CLASS</Select.Option>
@@ -231,6 +230,14 @@ const ManagePackage = () => {
           <Form.Item
             name="price"
             label={<p className=" text-md">Package Price</p>}
+            rules={[
+              {
+                required: true,
+                message: "Price must be at least 1",
+                type: "number",
+                min: 1,
+              },
+            ]}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -241,6 +248,14 @@ const ManagePackage = () => {
           <Form.Item
             name="validityInWeeks"
             label={<p className=" text-md">Validity In Weeks</p>}
+            rules={[
+              {
+                required: true,
+                message: "Week can not be a negative number.",
+                type: "number",
+                min: 1,
+              },
+            ]}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -251,6 +266,14 @@ const ManagePackage = () => {
           <Form.Item
             name="totalToken"
             label={<p className=" text-md">Total Token</p>}
+            rules={[
+              {
+                required: true,
+                message: "Token must be at least 1.",
+                type: "number",
+                min: 1,
+              },
+            ]}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -269,7 +292,7 @@ const ManagePackage = () => {
       </Modal>
       {/* Edit Modal */}
       <Modal
-      form={form}
+        form={form}
         title="Edit Token"
         open={isEditModalOpen}
         onOk={handlEditeOk}
@@ -294,6 +317,14 @@ const ManagePackage = () => {
           <Form.Item
             name="price"
             label={<p className=" text-md">Package Price</p>}
+            rules={[
+              {
+                // required: true,
+                message: "Price must be at least 1.",
+                type: "number",
+                min: 1,
+              },
+            ]}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -304,6 +335,14 @@ const ManagePackage = () => {
           <Form.Item
             name="validityInWeeks"
             label={<p className=" text-md">Validity In Weeks</p>}
+            rules={[
+              {
+                // required: true,
+                message: "Week can not be a negative Number.",
+                type: "number",
+                min: 1,
+              },
+            ]}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -314,6 +353,14 @@ const ManagePackage = () => {
           <Form.Item
             name="totalToken"
             label={<p className=" text-md">Total Token</p>}
+            rules={[
+              {
+                // required: true,
+                message: "Total Token must be at least 1.",
+                type: "number",
+                min: 1,
+              },
+            ]}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -323,7 +370,7 @@ const ManagePackage = () => {
           </Form.Item>
           <Form.Item type="submit">
             <div className="flex justify-center items-center gap-2">
-              <button className="px-6 py-2 rounded-md bg-primary text-white">
+              <button className="px-6 py-2 rounded-md bg-primary text-white cursor-pointer">
                 Save
               </button>
             </div>

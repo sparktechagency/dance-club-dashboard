@@ -162,7 +162,7 @@ const ManageCourse = () => {
       const data = {
         title: values.title,
         description: values.description,
-        duration: values.duration,
+        duration: values.duration.toString(),
         startDate: values.startDate,
         price: values.price,
         totalSeat: values.totalSeat,
@@ -278,9 +278,7 @@ const ManageCourse = () => {
                   size="large"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-
                   onPressEnter={handleSearch}
-                  
                 />
 
                 <button
@@ -338,6 +336,7 @@ const ManageCourse = () => {
             <Form.Item
               name="bannerImage"
               label={<p className=" text-md">Add Course Banner image</p>}
+              required
             >
               <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
                 <Upload
@@ -371,6 +370,7 @@ const ManageCourse = () => {
               <Form.Item
                 name="title"
                 label={<p className=" text-md">Course Name</p>}
+                required
               >
                 <Input
                   className=" text-md"
@@ -382,6 +382,7 @@ const ManageCourse = () => {
               <Form.Item
                 name="name"
                 label={<p className=" text-md">Instructor Name</p>}
+                required
               >
                 <Input
                   className=" text-md"
@@ -393,8 +394,18 @@ const ManageCourse = () => {
               <Form.Item
                 name="duration"
                 label={<p className=" text-md">Duration</p>}
+                required
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: "Duration must be at least 1.",
+                //     type: "number",
+                //     min: 1,
+                //   },
+                // ]}
               >
                 <Input
+                  style={{ width: "100%" }}
                   className=" text-md"
                   placeholder="Type  duration"
                 ></Input>
@@ -407,12 +418,24 @@ const ManageCourse = () => {
               <Form.Item
                 name="startDate"
                 label={<p className=" text-md">Start Date</p>}
+                required
               >
                 <DatePicker style={{ width: "100%" }}></DatePicker>
               </Form.Item>
             </div>
             <div className="w-full md:w-[50%]">
-              <Form.Item name="price" label={<p className=" text-md">Price</p>}>
+              <Form.Item
+                name="price"
+                label={<p className=" text-md">Price</p>}
+                rules={[
+                  {
+                    required: true,
+                    message: "Price must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
+              >
                 <InputNumber
                   min={0}
                   placeholder="Type Price"
@@ -424,6 +447,14 @@ const ManageCourse = () => {
               <Form.Item
                 name="totalSeat"
                 label={<p className=" text-md">Total Seat </p>}
+                rules={[
+                  {
+                    required: true,
+                    message: "Total seat must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
                 <InputNumber
                   min={0}
@@ -437,6 +468,7 @@ const ManageCourse = () => {
           <Form.Item
             name="description"
             label={<p className=" text-md">Description</p>}
+            required
           >
             <Input.TextArea rows={4}></Input.TextArea>
           </Form.Item>
@@ -543,7 +575,18 @@ const ManageCourse = () => {
               </Form.Item>
             </div>
             <div className="w-full md:w-[50%]">
-              <Form.Item name="price" label={<p className=" text-md">Price</p>}>
+              <Form.Item
+                name="price"
+                label={<p className=" text-md">Price</p>}
+                rules={[
+                  {
+                    // required: true,
+                    message: "Price must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
+              >
                 <InputNumber
                   min={0}
                   placeholder="Type Price"
@@ -555,6 +598,14 @@ const ManageCourse = () => {
               <Form.Item
                 name="totalSeat"
                 label={<p className=" text-md">Total Seat </p>}
+                rules={[
+                  {
+                    required: true,
+                    message: "Total seat must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
                 <InputNumber
                   min={0}
