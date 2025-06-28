@@ -30,6 +30,7 @@ import EditProduct from "../Components/ProductManagement/EditProduct";
 import NonScheduledClass from "../Components/ClassManagement/NonScheduledClass";
 import EditClass from "../Components/ClassManagement/EditClass";
 import PrivateRoute from "./PrivateRoute";
+import ManageBookings from "../Pages/ManageBookings/ManageBookings";
 
 export const router = createBrowserRouter([
   {
@@ -102,6 +103,10 @@ export const router = createBrowserRouter([
           {
             path: "/manage-order",
             element: <MAnageOrder />,
+          },
+          {
+            path: "/manage-booking",
+            element: <ManageBookings />,
           },
           {
             path: "/order-details/:_id",
