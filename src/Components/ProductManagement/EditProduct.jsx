@@ -88,7 +88,10 @@ const EditProduct = () => {
         formData.append("product_image", file);
       });
 
-      const res = await editProduct({ _id: productId, data:formData }).unwrap();
+      const res = await editProduct({
+        _id: productId,
+        data: formData,
+      }).unwrap();
       message.success("Product updated successfully!");
       form.resetFields();
       setFileList([]);
@@ -223,9 +226,16 @@ const EditProduct = () => {
                   <Form.Item
                     name="stock"
                     label={<p className="text-md">Quantity</p>}
+                    rules={[
+                      {
+                        // required: true,
+                        message: "Quantity must be at least 1.",
+                        type: "number",
+                        min: 1,
+                      },
+                    ]}
                   >
                     <InputNumber
-                      required
                       style={{ width: "100%" }}
                       placeholder="Enter stock quantity"
                     />
@@ -236,9 +246,16 @@ const EditProduct = () => {
                   <Form.Item
                     name="price"
                     label={<p className="text-md">Price</p>}
+                    rules={[
+                      {
+                        // required: true,
+                        message: "Price must be at least 1.",
+                        type: "number",
+                        min: 1,
+                      },
+                    ]}
                   >
                     <InputNumber
-                      required
                       style={{ width: "100%" }}
                       placeholder="Enter price"
                     />
