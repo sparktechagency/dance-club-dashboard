@@ -61,6 +61,11 @@ const Sidebar = ({ closeDrawer }) => {
     },
     {
       icon: <FaMoneyCheckAlt className="h-5 w-5" />,
+      label: "Manage Booking ",
+      Link: "/manage-booking",
+    },
+    {
+      icon: <FaMoneyCheckAlt className="h-5 w-5" />,
       label: "Manage Package ",
       Link: "/manage-package",
     },
