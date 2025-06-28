@@ -41,6 +41,11 @@ const Sidebar = ({ closeDrawer }) => {
     },
     {
       icon: <BsGraphUp className="h-5 w-5" />,
+      label: "Manage Users",
+      Link: "/manage-user",
+    },
+    {
+      icon: <BsGraphUp className="h-5 w-5" />,
       label: "Manage Class",
       Link: "/manage-class",
     },

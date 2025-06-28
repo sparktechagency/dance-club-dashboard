@@ -31,6 +31,7 @@ import NonScheduledClass from "../Components/ClassManagement/NonScheduledClass";
 import EditClass from "../Components/ClassManagement/EditClass";
 import PrivateRoute from "./PrivateRoute";
 import ManageBookings from "../Pages/ManageBookings/ManageBookings";
+import ManageUsers from "../Pages/ManageUsers/ManageUsers";
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +71,10 @@ export const router = createBrowserRouter([
           {
             path: "/manage-class",
             element: <ManageClass />,
+          },
+          {
+            path: "/manage-user",
+            element: <ManageUsers />,
           },
           {
             path: "/add-schedule-class",
