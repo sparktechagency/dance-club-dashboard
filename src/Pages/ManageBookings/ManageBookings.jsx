@@ -1,5 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, message, Pagination, Space, Table } from "antd";
+import {
+  Avatar,
+  ConfigProvider,
+  Input,
+  message,
+  Pagination,
+  Space,
+  Table,
+} from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
 import { FaEye, FaTrash } from "react-icons/fa";
@@ -12,6 +20,7 @@ import {
   useDeleteProductMutation,
   useGetAllProductQuery,
 } from "../../redux/api/features/productApi/productApi";
+import { useAllBookingQuery } from "../../redux/api/features/bookingApi/bookingApi";
 const ManageBookings = () => {
   const navigate = useNavigate();
 
@@ -24,16 +33,14 @@ const ManageBookings = () => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: productData } = useGetAllProductQuery({
+  const { data: bookingData } = useAllBookingQuery({
     page: currentPage,
     limit: pageSize,
-    isAvailable,
-    category,
     searchTerm,
   });
 
-
-  const allProducstData = productData?.data?.result;
+  const allBookings = bookingData?.data?.result;
+  // console.log("Allbookings", allBookings);
 
   const [deleteProduct] = useDeleteProductMutation();
 
@@ -72,98 +79,75 @@ const ManageBookings = () => {
         message.success("Product deleted successfully!");
       }
     });
-  
   };
   const handleAddProduct = () => {
     navigate("/add-product");
   };
   const handleEditProduct = (_id) => {
-
     navigate(`/edit-product/${_id}`, { state: { _id } });
   };
   const columns = [
     {
       title: "Sl No.",
-      dataIndex: "slno",
       key: "slno",
       render: (text, record, index) => index + 1,
     },
     {
-      title: "Product Name",
-      key: "name",
+      title: "Title",
+      key: "title",
       render: (_, record) => (
-        <div className="flex items-center gap-2">
-          <img src={record.images[0]} alt="" className="w-10 h-10" />
-          <span>{record.name}</span>
+        <div className="flex justify-center items-center gap-1">
+          <img
+            src={record?.classDetails?.[0]?.class_banner}
+            alt=""
+            className="h-10 w-10 rounded-md"
+          />
+          <span>{record?.classDetails?.[0]?.title || "N/A"}</span>
         </div>
       ),
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-    },
-    {
-      title: "Category",
-      key: "category",
+      title: "Description",
+      key: "description",
       render: (_, record) => (
-        <div className="flex items-center gap-2">
-          <span>{record.category?.name}</span>
-        </div>
+        <span>{record?.classDetails?.[0]?.description || "N/A"}</span>
       ),
     },
     {
-      title: "Quantity",
-      key: "stock",
+      title: "Class Date",
+      key: "classDate",
       render: (_, record) => (
-        <div className="flex items-center gap-2">
-          <span>{record.stock}</span>
-        </div>
+        <span>{new Date(record?.classDate).toLocaleDateString()}</span>
       ),
     },
     {
-      title: "Available",
-      key: "isAvailable",
-      render: (_, record) => (
-        <div className="flex items-center gap-2">
-          <span
-            className={record?.isAvailable ? "text-green-500" : "text-red-500"}
-          >
-            {record?.isAvailable ? "Available" : "Not Available"}
-          </span>
-        </div>
-      ),
+      title: "Total Student",
+      dataIndex: "totalStudent",
+      key: "totalStudent",
+    },
+    {
+      title: "Total Token Used",
+      dataIndex: "totalTokenUsed",
+      key: "totalTokenUsed",
+    },
+    {
+      title: "Total Earning",
+      dataIndex: "totalEarning",
+      key: "totalEarning",
     },
 
-    {
-      title: "View",
-      key: "view",
-      render: (_, record) => (
-        <ConfigProvider
-          theme={{
-            components: {
-              Button: {
-                defaultHoverBorderColor: "rgb(47,84,235)",
-                defaultHoverColor: "rgb(47,84,235)",
-                defaultBorderColor: "rgb(47,84,235)",
-              },
-            },
-          }}
-        >
-          <Space size="middle">
-            <button onClick={() => showModal(record)}>
-              <FaEye className="text-lg"></FaEye>
-            </button>
-            <button onClick={() => handleEditProduct(record?._id)}>
-              <AiOutlineEdit className="text-lg" />
-            </button>
-            <button onClick={() => handleDelete(record?._id)}>
-              <FaTrash className="text-lg text-red-500" />
-            </button>
-          </Space>
-        </ConfigProvider>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   key: "view",
+    //   render: (_, record) => (
+    //     <Space size="middle">
+        
+    //       <button onClick={() => handleDelete(record?._id)}>
+    //         <FaTrash className="text-lg text-red-500" />
+    //       </button>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return (
@@ -188,7 +172,7 @@ const ManageBookings = () => {
                   placeholder="Search by booking name"
                   allowClear
                   size="large"
-                  style={{width:"300px"}}
+                  style={{ width: "300px" }}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onPressEnter={handleSearch}
@@ -233,7 +217,7 @@ const ManageBookings = () => {
         >
           <Table
             columns={columns}
-            dataSource={allProducstData || []}
+            dataSource={allBookings || []}
             pagination={false}
             rowKey="id"
           />
@@ -244,7 +228,7 @@ const ManageBookings = () => {
         <Pagination
           current={currentPage}
           pageSize={pageSize}
-          total={productData?.data?.meta?.total || 0}
+          total={bookingData?.data?.meta?.total || 0}
           onChange={handlePageChange}
         />
       </div>
