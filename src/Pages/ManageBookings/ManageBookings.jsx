@@ -130,6 +130,11 @@ const ManageBookings = () => {
       dataIndex: "totalTokenUsed",
       key: "totalTokenUsed",
     },
+    {
+      title: "Total Earning",
+      dataIndex: "totalEarning",
+      key: "totalEarning",
+    },
 
     // {
     //   title: "Action",
