@@ -40,7 +40,7 @@ const ManageBookings = () => {
   });
 
   const allBookings = bookingData?.data?.result;
-  console.log("Allbookings", allBookings);
+  // console.log("Allbookings", allBookings);
 
   const [deleteProduct] = useDeleteProductMutation();
 
@@ -131,23 +131,18 @@ const ManageBookings = () => {
       key: "totalTokenUsed",
     },
 
-    {
-      title: "Action",
-      key: "view",
-      render: (_, record) => (
-        <Space size="middle">
-          {/* <button onClick={() => showModal(record)}>
-            <FaEye className="text-lg" />
-          </button> */}
-          {/* <button onClick={() => handleEditProduct(record?._id)}>
-            <AiOutlineEdit className="text-lg" />
-          </button> */}
-          <button onClick={() => handleDelete(record?._id)}>
-            <FaTrash className="text-lg text-red-500" />
-          </button>
-        </Space>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   key: "view",
+    //   render: (_, record) => (
+    //     <Space size="middle">
+        
+    //       <button onClick={() => handleDelete(record?._id)}>
+    //         <FaTrash className="text-lg text-red-500" />
+    //       </button>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return (
