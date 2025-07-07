@@ -65,6 +65,8 @@ const ManageCourse = () => {
   };
 
   const showModal = () => {
+    form.resetFields();
+    setPreviewImage(null);
     setIsAddModalOpen(true);
   };
   const handleAddModalClose = () => {
@@ -331,6 +333,7 @@ const ManageCourse = () => {
           name="add-token"
           initialValues={{ remember: false }}
           layout="vertical"
+          form={form}
         >
           <div className="w-full">
             <Form.Item

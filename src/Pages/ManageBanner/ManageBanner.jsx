@@ -25,6 +25,8 @@ const ManageBanner = () => {
 
   const showModal = () => {
     form.resetFields();
+    setPreviewImage(null);
+    setBannerPic(null);
     setIsAddModalOpen(true);
   };
   const handleAddModalClose = () => {

@@ -1,12 +1,22 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, ConfigProvider, Input, Pagination, Select, Table } from "antd";
+import {
+  Avatar,
+  ConfigProvider,
+  Input,
+  message,
+  Pagination,
+  Select,
+  Table,
+} from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
-import { useNavigate } from "react-router-dom";
-import user from "../../assets/image/p1.png";
-import { useNewOrderOnDashboardQuery } from "../../redux/api/features/orderApi/orderApi";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  useNewOrderOnDashboardQuery,
+  useUpdateOrderStatusMutation,
+} from "../../redux/api/features/orderApi/orderApi";
 const MAnageOrder = () => {
   const navigate = useNavigate();
 
@@ -21,6 +31,9 @@ const MAnageOrder = () => {
     page: currentPage,
     limit: pageSize,
   });
+
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
+
   const userData = newOrderData?.data?.result;
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
@@ -52,6 +65,9 @@ const MAnageOrder = () => {
     navigate(`/order-details/${_id}`, { state: { selectedOrderId: _id } });
   };
 
+  const handleStatus = (_id) => {
+    console.log(_id);
+  };
   const columns = [
     {
       title: "#",
@@ -98,11 +114,7 @@ const MAnageOrder = () => {
         return <p>{contact}</p>;
       },
     },
-    {
-      title: "Status",
-      key: "status",
-      dataIndex: "status",
-    },
+
     {
       title: "Action",
       key: "action",
@@ -116,6 +128,44 @@ const MAnageOrder = () => {
           </span>
         </div>
       ),
+    },
+    {
+      title: "Status",
+      key: "status",
+      dataIndex: "status",
+      render: (status, record) => {
+        return (
+          <Select
+            value={status} // <- current value from API
+            size="large"
+            style={{ width: 200 }}
+            onChange={async (value) => {
+              try {
+                if (!value) return;
+                await updateOrderStatus({
+                  id: record._id,
+                  status: value, // <- sending correct value here
+                }).unwrap();
+                message.success("Status updated successfully");
+              } catch (err) {
+                console.error("Error updating status", err);
+                message.error("Failed to update status");
+              }
+            }}
+          >
+            <Select.Option value="PENDING">Pending</Select.Option>
+            <Select.Option value="WAITING_FOR_PICK">
+              Waiting for Pick
+            </Select.Option>
+            <Select.Option value="CANCELED">Canceled</Select.Option>
+            <Select.Option value="ACCEPTED">Accepted</Select.Option>
+            <Select.Option value="PICKED">Picked</Select.Option>
+            <Select.Option value="SHIPPED">Shipped</Select.Option>
+            <Select.Option value="DELIVERED">Delivered</Select.Option>
+            <Select.Option value="COMPLETED">Completed</Select.Option>
+          </Select>
+        );
+      },
     },
   ];
 
