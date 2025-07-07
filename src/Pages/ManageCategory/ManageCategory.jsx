@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import {
   useCreateCategoryMutation,
@@ -9,7 +9,6 @@ import {
 } from "../../redux/api/features/categoryApi/categoryApi";
 import { Form, Input, message, Modal, Table, Upload } from "antd";
 import { FaImage, FaPen, FaTrash } from "react-icons/fa";
-import { use } from "react";
 
 const ManageCategory = () => {
   const [form] = Form.useForm();
@@ -20,6 +19,7 @@ const ManageCategory = () => {
   const [profilePic, setProfilePic] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
+  const [selecetedCat, setSelectedCat] = useState("");
 
   const [createCategory] = useCreateCategoryMutation();
   const [deleteCategory] = useDeleteCategoryMutation({ categoryId });
@@ -34,6 +34,20 @@ const ManageCategory = () => {
     return false;
   };
 
+
+useEffect(() => {
+  if (selecetedCat && form) {
+    form.setFieldsValue({
+      name: selecetedCat.name || "",
+    });
+
+    if (selecetedCat.category_image) {
+      setPreviewImage(selecetedCat.category_image);
+    }
+  }
+}, [selecetedCat, form]);
+
+
   //   console.log("profilePic", profilePic);
 
   const handleDelete = async (_id) => {
@@ -41,7 +55,7 @@ const ManageCategory = () => {
     setCategoryId(_id);
     try {
       if (window.confirm("Are you sure you want to delete this category?")) {
-        await deleteCategory({_id:categoryId}).unwrap();
+        await deleteCategory({ _id: categoryId }).unwrap();
         message.success("Category deleted successfully!");
       }
     } catch (error) {
@@ -58,11 +72,11 @@ const ManageCategory = () => {
     setIsAddModalOpen(false);
   };
 
-  const handleEdit = async (_id) => {
-    console.log(_id);
-    setCategoryId(_id);
-
+  const handleEdit = async (record) => {
+    console.log(record?._id);
+    setCategoryId(record?._id);
     setIsEditModalOpen(true);
+    setSelectedCat(record);
   };
   const handleEditModalClose = () => {
     setIsEditModalOpen(false);
@@ -101,7 +115,7 @@ const ManageCategory = () => {
           <div className="flex justify-start items-center gap-5">
             <button className="btn btn-primary">
               <FaPen
-                onClick={() => handleEdit(record?._id)}
+                onClick={() => handleEdit(record)}
                 className="text-primary"
               ></FaPen>
             </button>
@@ -238,6 +252,7 @@ const ManageCategory = () => {
         onCancel={handleEditModalClose}
         title="Add Category"
         footer={null}
+        form={form}
       >
         <Form
           form={form}
@@ -289,7 +304,7 @@ const ManageCategory = () => {
               type="submit"
               className="bg-primary text-white w-full py-3 rounded-md"
             >
-              {  isLoading ? "Updating..." : "Update"}
+              {isLoading ? "Updating..." : "Update"}
             </button>
           </Form.Item>
         </Form>
