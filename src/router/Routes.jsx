@@ -28,10 +28,10 @@ import OrderDetails from "../Pages/ManageOrder/OrderDetails";
 import ManageCategory from "../Pages/ManageCategory/ManageCategory";
 import EditProduct from "../Components/ProductManagement/EditProduct";
 import NonScheduledClass from "../Components/ClassManagement/NonScheduledClass";
-import EditClass from "../Components/ClassManagement/EditClass";
 import PrivateRoute from "./PrivateRoute";
 import ManageBookings from "../Pages/ManageBookings/ManageBookings";
 import ManageUsers from "../Pages/ManageUsers/ManageUsers";
+import EditNonScheduledClass from "../Components/ClassManagement/EditNonScheduledClass";
 
 export const router = createBrowserRouter([
   {
@@ -85,8 +85,12 @@ export const router = createBrowserRouter([
             element: <NonScheduledClass />,
           },
           {
-            path: "/edit-class",
-            element: <EditClass />,
+            path: "/edit-non-scheduled-class",
+            element: <EditNonScheduledClass />,
+          },
+          {
+            path: "/edit-scheduled-class",
+            element: <EditNonScheduledClass />,
           },
           {
             path: "manage-category",

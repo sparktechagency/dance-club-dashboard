@@ -15,7 +15,6 @@ import {
 } from "../../redux/api/features/feedbackApi/feedbackApi";
 import swal from "sweetalert";
 
-
 const Feedback = () => {
   const navigate = useNavigate();
 
@@ -119,7 +118,7 @@ const Feedback = () => {
             }`}
           >
             <IoArrowUndoSharp />
-            {record.status}
+            {record.replyMessage ? "Replied" : "Replay"}
           </p>
           <FaTrashAlt
             onClick={() => handleDelete(record?._id)}

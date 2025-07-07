@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { FaPen, FaTrash } from "react-icons/fa";
@@ -41,6 +42,7 @@ const ManagePackage = () => {
   }, [form, getSInglePackageData]);
 
   const handleAddPackage = () => {
+      form.resetFields();
     setIsAddModalOpen(true);
   };
   const handleAddModalClose = () => {
@@ -72,8 +74,9 @@ const ManagePackage = () => {
     createPackage(data)
       .unwrap()
       .then((res) => {
-        console.log("res", res);
+        // console.log("res", res);
         message.success("Package created successfully!");
+      
         setIsAddModalOpen(false);
       })
       .catch((error) => {
@@ -216,6 +219,7 @@ const ManagePackage = () => {
           name="add-package"
           initialValues={{ remember: false }}
           layout="vertical"
+          form={form}
         >
           <Form.Item
             name="packageType"

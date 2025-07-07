@@ -18,7 +18,20 @@ const OrderApi = baseApi.injectEndpoints({
       }),
       providesTags: TAGS.ORDER_TAG,
     }),
+
+    updateOrderStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/order/change-order-status/${id}`,
+        method: "POST",
+        body: { status },
+      }),
+      invalidatesTags: TAGS.ORDER_TAG,
+    }),
   }),
 });
 
-export const { useNewOrderOnDashboardQuery, useGetSingleOrderQuery } = OrderApi;
+export const {
+  useNewOrderOnDashboardQuery,
+  useGetSingleOrderQuery,
+  useUpdateOrderStatusMutation,
+} = OrderApi;

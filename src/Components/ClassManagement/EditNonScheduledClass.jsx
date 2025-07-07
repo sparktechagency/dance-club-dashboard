@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import {
+  DatePicker,
   Form,
   Input,
   InputNumber,
@@ -10,51 +11,80 @@ import {
 } from "antd";
 import GoBackButton from "../Shared/GobackButton/GoBackButton";
 import { FaImage } from "react-icons/fa";
-import { useState } from "react";
-import { useCraeteClassMutation } from "../../redux/api/features/classApi/classApi";
+import { useEffect, useState } from "react";
+import { useUpdateClassMutation } from "../../redux/api/features/classApi/classApi";
 import { useLocation, useNavigate } from "react-router-dom";
-
-const ClassManagement = () => {
+import dayjs from "dayjs";
+const EditNonScheduledClass = () => {
   const [form] = Form.useForm();
   const [banner, setbanner] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const location = useLocation();
   const nevigate = useNavigate();
-  const [isScheduled, setIsScheduled] = useState(true);
+  const [isScheduled, setIsScheduled] = useState(false);
+
   const TypeOfClass = location.state?.classType;
   if (!TypeOfClass === "Scheduled Class") {
     setIsScheduled(false);
   }
 
-  // console.log("banner", isScheduled);
+  const classData = location.state.classData;
+//   console.log("record:", classData);
+  const _id = classData?._id;
+//   console.log("Id", _id);
+
+  useEffect(() => {
+    if (classData) {
+    
+      if (classData.class_banner) {
+        setPreviewImage(`${classData.class_banner}`);
+      }
+
+      setIsScheduled(classData?.classType === "Non Scheduled Class");
+
+      form.setFieldsValue({
+        title: classData.title,
+        description: classData.description,
+        tokenNeedForBook: classData.tokenNeedForBook,
+        classType: classData.classType,
+        date: classData.date ? dayjs(classData.date) : null,
+        time: classData.time ? dayjs(classData.time, "HH:mm") : null,
+        durationInMinutes: classData.durationInMinutes,
+        totalSeat: classData.totalSeat,
+        location: classData.location,
+        instructorName: classData.instructorName,
+      });
+    }
+  }, [classData, form]);
+
 
   const handleBeforeUpload = (file) => {
     form.setFieldsValue({ class_banner: [file] });
     setbanner(file);
     setPreviewImage(URL.createObjectURL(file));
-    return false; // Prevent auto upload
+    return false;
   };
 
-  const [craeteClass] = useCraeteClassMutation();
+  const [updateClass] = useUpdateClassMutation();
+
   const onFinish = async (values) => {
+    const time = values?.time ? dayjs(values.time).format("HH:mm") : "";
+
     const data = {
       title: values.title,
-      description: values.description,
-      tokenNeedForBook: values.tokenNeedForBook,
-      classType: values.classType,
+      description: values?.description,
+      tokenNeedForBook: values?.tokenNeedForBook,
+      classType: values?.classType,
       isScheduled: isScheduled,
+      date: values.date,
+      time: time,
+      durationInMinutes: values?.durationInMinutes,
       totalSeat: values.totalSeat,
       location: values.location,
       instructorName: values.instructorName,
-      classSchedule: [
-        {
-          day: values.day,
-          time: values.time?.format("HH:mm"),
-          durationInMinutes: values.durationInMinutes,
-        },
-      ],
     };
-    // console.log(data);
+
+    console.log(data);
 
     try {
       if (!banner) {
@@ -66,15 +96,15 @@ const ClassManagement = () => {
       formData.append("data", JSON.stringify(data));
       formData.append("class_banner", banner);
 
-      await craeteClass(formData).unwrap();
-      message.success("Class added successfully!");
+      await updateClass({ _id: _id, data: formData }).unwrap();
+      message.success("Class Updated successfully!");
       form.resetFields();
       setbanner(null);
       setPreviewImage(null);
       nevigate("/manage-class");
     } catch (error) {
       console.log(error);
-      message.error("Failed to create class.");
+      message.error("Failed to Update class.");
     }
   };
 
@@ -90,10 +120,11 @@ const ClassManagement = () => {
 
   return (
     <div>
-      <GoBackButton text={"Add Scheduled class"} />
+      <GoBackButton text={"Edit Non Scheduled class"} />
 
       <div className="mt-5">
         <Form
+          form={form}
           name="add-product"
           initialValues={{ remember: false }}
           onFinish={onFinish}
@@ -104,6 +135,7 @@ const ClassManagement = () => {
               <Form.Item
                 name="class_banner"
                 label={<p className=" text-md">Add Class image</p>}
+                required
               >
                 <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
                   <Upload
@@ -136,9 +168,9 @@ const ClassManagement = () => {
               <Form.Item
                 name="title"
                 label={<p className=" text-md">Class Name</p>}
+                required
               >
                 <Input
-                  required
                   style={{ padding: "6px" }}
                   className=" text-md"
                   placeholder=""
@@ -147,9 +179,9 @@ const ClassManagement = () => {
               <Form.Item
                 name="description"
                 label={<p className=" text-md">Description</p>}
+                required
               >
                 <Input
-                  required
                   style={{ padding: "6px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
@@ -163,7 +195,7 @@ const ClassManagement = () => {
               <Form.Item
                 name="classType"
                 label={<p className=" text-md">class Type</p>}
-                style={{}}
+                required
               >
                 <Select
                   placeholder="Select Class Type"
@@ -179,13 +211,19 @@ const ClassManagement = () => {
             <div className="w-full md:w-[50%]">
               <Form.Item
                 name="totalSeat"
-                label={<p className=" text-md">Total Seat</p>}
-                style={{}}
+                label={<p className="text-md">Total Seat</p>}
+                rules={[
+                  {
+                    required: true,
+                    message: "Total seat must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
                 <InputNumber
-                  required
                   style={{ padding: "3px", width: "100%" }}
-                  className=" text-md"
+                  className="text-md"
                 />
               </Form.Item>
             </div>
@@ -196,10 +234,9 @@ const ClassManagement = () => {
               <Form.Item
                 name="instructorName"
                 label={<p className=" text-md">Instructor Name</p>}
-                style={{}}
+                required
               >
                 <Input
-                  required
                   style={{ padding: "6px" }}
                   className=" text-md"
                   placeholder="Add Instructor Name"
@@ -210,10 +247,9 @@ const ClassManagement = () => {
               <Form.Item
                 name="location"
                 label={<p className=" text-md">location</p>}
-                style={{}}
+                required
               >
                 <Input
-                  required
                   style={{ padding: "6px" }}
                   className=" text-md"
                   placeholder="Add Location"
@@ -227,10 +263,16 @@ const ClassManagement = () => {
               <Form.Item
                 name="tokenNeedForBook"
                 label={<p className=" text-md">Token Need For Booking</p>}
-                style={{}}
+                rules={[
+                  {
+                    required: true,
+                    message: "Token must be at least 1.",
+                    type: "number",
+                    min: 1,
+                  },
+                ]}
               >
                 <InputNumber
-                  required
                   style={{ width: "100%" }}
                   className=" text-md"
                   placeholder=""
@@ -239,19 +281,15 @@ const ClassManagement = () => {
             </div>
             <div className="w-full md:w-[50%]">
               <Form.Item
-                name="day"
-                label={<p className=" text-md">Day</p>}
-                style={{}}
+                name="date"
+                label={<p className=" text-md">Date</p>}
+                required
               >
-                <Select placeholder="Select Day" style={{ width: "100%" }}>
-                  <Select.Option value="Saturday">Saturday</Select.Option>
-                  <Select.Option value="Sunday">Sunday</Select.Option>
-                  <Select.Option value="Monday">Monday</Select.Option>
-                  <Select.Option value="Tuesday">Tuesday</Select.Option>
-                  <Select.Option value="Wednesday">Wednesday</Select.Option>
-                  <Select.Option value="Thursday">Thursday</Select.Option>
-                  <Select.Option value="Friday">Friday</Select.Option>
-                </Select>
+                <DatePicker
+                  style={{ padding: "4px", width: "100%" }}
+                  className=" text-md"
+                  placeholder=""
+                />
               </Form.Item>
             </div>
           </div>
@@ -260,10 +298,9 @@ const ClassManagement = () => {
               <Form.Item
                 name="time"
                 label={<p className=" text-md">Time</p>}
-                style={{}}
+                required
               >
                 <TimePicker
-                  required
                   format="HH:mm"
                   style={{ padding: "6px", width: "100%" }}
                   className=" text-md"
@@ -275,10 +312,9 @@ const ClassManagement = () => {
               <Form.Item
                 name="durationInMinutes"
                 label={<p className=" text-md">Duration</p>}
-                style={{}}
+                required
               >
                 <InputNumber
-                  required
                   style={{ padding: "3px", width: "100%" }}
                   className=" text-md"
                   placeholder=""
@@ -304,4 +340,4 @@ const ClassManagement = () => {
   );
 };
 
-export default ClassManagement;
+export default EditNonScheduledClass;

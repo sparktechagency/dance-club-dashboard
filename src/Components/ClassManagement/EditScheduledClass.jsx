@@ -10,11 +10,11 @@ import {
 } from "antd";
 import GoBackButton from "../Shared/GobackButton/GoBackButton";
 import { FaImage } from "react-icons/fa";
-import { useState } from "react";
-import { useCraeteClassMutation } from "../../redux/api/features/classApi/classApi";
+import { useEffect, useState } from "react";
+import { useUpdateClassMutation } from "../../redux/api/features/classApi/classApi";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const ClassManagement = () => {
+const EditScheduledClass = () => {
   const [form] = Form.useForm();
   const [banner, setbanner] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -25,17 +25,48 @@ const ClassManagement = () => {
   if (!TypeOfClass === "Scheduled Class") {
     setIsScheduled(false);
   }
-
-  // console.log("banner", isScheduled);
+  const classData = location.state.classData;
+  console.log("record:", classData);
+  const _id = classData?._id;
+  console.log("Id", _id);
 
   const handleBeforeUpload = (file) => {
     form.setFieldsValue({ class_banner: [file] });
     setbanner(file);
     setPreviewImage(URL.createObjectURL(file));
-    return false; // Prevent auto upload
+    return false;
   };
 
-  const [craeteClass] = useCraeteClassMutation();
+  const [updateClass] = useUpdateClassMutation();
+
+  useEffect(() => {
+    if (classData) {
+      if (classData.class_banner) {
+        setPreviewImage(`${classData.class_banner}`);
+      }
+
+      setIsScheduled(classData?.classType === "Scheduled Class");
+
+      form.setFieldsValue({
+        title: classData.title,
+        description: classData.description,
+        tokenNeedForBook: classData.tokenNeedForBook,
+        classType: classData.classType,
+        // isScheduled: isScheduled,
+        totalSeat: classData.totalSeat,
+        location: classData.location,
+        instructorName: classData.instructorName,
+        classSchedule: [
+          {
+            day: classData.day,
+            time: classData.time?.format("HH:mm"),
+            durationInMinutes: classData.durationInMinutes,
+          },
+        ],
+      });
+    }
+  }, [classData, form]);
+
   const onFinish = async (values) => {
     const data = {
       title: values.title,
@@ -66,15 +97,15 @@ const ClassManagement = () => {
       formData.append("data", JSON.stringify(data));
       formData.append("class_banner", banner);
 
-      await craeteClass(formData).unwrap();
-      message.success("Class added successfully!");
+      await updateClass({ _id: _id, data: formData }).unwrap();
+      message.success("Class Updated successfully!");
       form.resetFields();
       setbanner(null);
       setPreviewImage(null);
       nevigate("/manage-class");
     } catch (error) {
       console.log(error);
-      message.error("Failed to create class.");
+      message.error("Failed to Updated class.");
     }
   };
 
@@ -90,7 +121,7 @@ const ClassManagement = () => {
 
   return (
     <div>
-      <GoBackButton text={"Add Scheduled class"} />
+      <GoBackButton text={"Edit Scheduled class"} />
 
       <div className="mt-5">
         <Form
@@ -304,4 +335,4 @@ const ClassManagement = () => {
   );
 };
 
-export default ClassManagement;
+export default EditScheduledClass;
