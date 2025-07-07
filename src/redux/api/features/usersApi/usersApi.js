@@ -7,8 +7,17 @@ const UsersApi = baseApi.injectEndpoints({
         url: "/normal-user/get-all-user",
         method: "GET",
       }),
+      providesTags: ["users"],
+    }),
+
+    blockUser: builder.mutation({
+      query: (_id) => ({
+        url: `/user/change-status/${_id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["users"],
     }),
   }),
 });
 
-export const { useGetAllUsersQuery } = UsersApi;
+export const { useGetAllUsersQuery, useBlockUserMutation } = UsersApi;

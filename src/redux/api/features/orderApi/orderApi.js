@@ -20,11 +20,12 @@ const OrderApi = baseApi.injectEndpoints({
     }),
 
     updateOrderStatus: builder.mutation({
-      query: ({ data, _id }) => ({
-        url: `/order/change-order-status/${_id}`,
+      query: ({ id, status }) => ({
+        url: `/order/change-order-status/${id}`,
         method: "POST",
-        body: data,
+        body: { status },
       }),
+      invalidatesTags: TAGS.ORDER_TAG,
     }),
   }),
 });

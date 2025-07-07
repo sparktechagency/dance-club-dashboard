@@ -8,16 +8,40 @@ import {
   Table,
 } from "antd";
 import { useState } from "react";
-import { FaTrash, FaUser } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
-import { useGetAllUsersQuery } from "../../redux/api/features/usersApi/usersApi";
+import {
+  useBlockUserMutation,
+  useGetAllUsersQuery,
+} from "../../redux/api/features/usersApi/usersApi";
+import { MdBlockFlipped } from "react-icons/md";
+import Swal from "sweetalert2";
 
 const ManageUsers = () => {
   const { data: allUsersData } = useGetAllUsersQuery();
-  console.log("allUsersData", allUsersData?.data?.result);
+  const [blockUser] = useBlockUserMutation();
+  // console.log("allUsersData", allUsersData?.data?.result);
 
-  const showDeleteModal = () => {
-    message.success("Delete Admin");
+  const showDeleteModal = (record) => {
+    console.log("_id:", record?.user?._id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, blcok it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        blockUser(record?.user?._id).unwrap();
+        Swal.fire({
+          title: "blocked!",
+          text: "Your file has been blocked.",
+          icon: "success",
+        });
+      }
+    });
   };
 
   // form modal
@@ -105,7 +129,7 @@ const ManageUsers = () => {
         >
           <Space size="middle">
             <button onClick={() => showDeleteModal(record)} className="">
-              <FaTrash className="text-red-500"></FaTrash>
+              <MdBlockFlipped className="text-red-500" />
             </button>
           </Space>
         </ConfigProvider>

@@ -142,9 +142,16 @@ const MAnageOrder = () => {
             onChange={async (value) => {
               try {
                 if (!value) return;
+                console.log(
+                  "Updating status:",
+                  value,
+                  "for order ID:",
+                  record._id
+                ); // Debug log
+
                 await updateOrderStatus({
                   id: record._id,
-                  status: value, // <- sending correct value here
+                  status: value,
                 }).unwrap();
                 message.success("Status updated successfully");
               } catch (err) {
@@ -153,15 +160,15 @@ const MAnageOrder = () => {
               }
             }}
           >
-            <Select.Option value="PENDING">Pending</Select.Option>
+            {/* <Select.Option value="PENDING">Pending</Select.Option> */}
             <Select.Option value="WAITING_FOR_PICK">
               Waiting for Pick
             </Select.Option>
             <Select.Option value="CANCELED">Canceled</Select.Option>
-            <Select.Option value="ACCEPTED">Accepted</Select.Option>
-            <Select.Option value="PICKED">Picked</Select.Option>
+            {/* <Select.Option value="ACCEPTED">Accepted</Select.Option> */}
+            {/* <Select.Option value="PICKED">Picked</Select.Option>
             <Select.Option value="SHIPPED">Shipped</Select.Option>
-            <Select.Option value="DELIVERED">Delivered</Select.Option>
+            <Select.Option value="DELIVERED">Delivered</Select.Option> */}
             <Select.Option value="COMPLETED">Completed</Select.Option>
           </Select>
         );
