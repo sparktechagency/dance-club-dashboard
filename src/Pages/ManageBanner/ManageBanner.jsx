@@ -8,8 +8,7 @@ import {
   useDeleteBannerMutation,
   useGetAllBannerQuery,
 } from "../../redux/api/features/bannerApi/bannerApi";
-import swal from 'sweetalert';
-
+import swal from "sweetalert";
 
 const ManageBanner = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -25,6 +24,7 @@ const ManageBanner = () => {
   const [deleteBanner] = useDeleteBannerMutation();
 
   const showModal = () => {
+    form.resetFields();
     setIsAddModalOpen(true);
   };
   const handleAddModalClose = () => {
@@ -47,7 +47,7 @@ const ManageBanner = () => {
     try {
       formData.append("banner", bannerPic);
       await createBanner(formData).unwrap();
-      form.resetFields();
+      // form.resetFields();
       message.success("Banner added successfully!");
       setIsAddModalOpen(false);
     } catch (error) {
@@ -61,7 +61,6 @@ const ManageBanner = () => {
     return false;
   };
   const handleDelete = (id) => {
-    console.log(id);
     swal({
       title: "Are you sure you want to delete this banner?",
       text: "You won't be able to revert this!",
@@ -110,6 +109,7 @@ const ManageBanner = () => {
         onOk={handleOk}
         onCancel={handleAddModalClose}
         footer={false}
+        form={form}
       >
         <Form
           onFinish={onFinish}

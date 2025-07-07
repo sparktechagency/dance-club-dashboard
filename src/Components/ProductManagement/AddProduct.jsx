@@ -5,13 +5,14 @@ import { FaPlus, FaTimes } from "react-icons/fa";
 import { useCreateProductMutation } from "../../redux/api/features/productApi/productApi";
 import { useGetCategoryForProductQuery } from "../../redux/api/features/categoryApi/categoryApi";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [createProduct] = useCreateProductMutation();
   const { data: getAllCategory } = useGetCategoryForProductQuery();
-
+  const navigate = useNavigate();
   const options = [
     { label: "XS", value: "XS", desc: "XS (Xtra Small)" },
     { label: "S", value: "S", desc: "S (Small)" },
@@ -49,6 +50,7 @@ const AddProduct = () => {
       message.success("Product added successfully!");
       form.resetFields();
       setFileList([]);
+      navigate("/manage-product");
     } catch (error) {
       message.error("Failed to add product.");
     }
