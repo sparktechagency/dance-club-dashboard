@@ -27,7 +27,7 @@ const MAnageOrder = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const { data: newOrderData } = useNewOrderOnDashboardQuery({
+  const { data: newOrderData , refetch} = useNewOrderOnDashboardQuery({
     page: currentPage,
     limit: pageSize,
   });
@@ -154,6 +154,7 @@ const MAnageOrder = () => {
                   status: value,
                 }).unwrap();
                 message.success("Status updated successfully");
+                refetch()
               } catch (err) {
                 console.error("Error updating status", err);
                 message.error("Failed to update status");
