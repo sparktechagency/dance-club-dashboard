@@ -4,7 +4,7 @@ import { baseApi } from "../../baseApi";
 const ClassesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllClasses: builder.query({
-      query: ({ page, limit,searchTerm }) => ({
+      query: ({ page, limit, searchTerm }) => ({
         url: `/class/get-all-class?page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
         method: "GET",
       }),
@@ -20,7 +20,19 @@ const ClassesApi = baseApi.injectEndpoints({
       },
       invalidatesTags: TAGS.CLASS_TAG,
     }),
+
+    updateClass: builder.mutation({
+      query: ({ _id, data }) => ({
+        url: `/class/update-class/${_id}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useGetAllClassesQuery, useCraeteClassMutation } = ClassesApi;
+export const {
+  useGetAllClassesQuery,
+  useCraeteClassMutation,
+  useUpdateClassMutation,
+} = ClassesApi;

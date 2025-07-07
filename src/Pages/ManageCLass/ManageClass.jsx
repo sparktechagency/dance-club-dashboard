@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import {
-  Avatar,
   ConfigProvider,
   Input,
   Pagination,
@@ -12,7 +11,7 @@ import { useState } from "react";
 import { Modal } from "antd";
 import { FaEye } from "react-icons/fa";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit} from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetAllClassesQuery } from "../../redux/api/features/classApi/classApi";
 const ManageClass = () => {
@@ -20,7 +19,6 @@ const ManageClass = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [email, setEmail] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,10 +27,20 @@ const ManageClass = () => {
     limit: pageSize,
     searchTerm,
   });
-  // console.log("allClassesData", allClassesData?.data?.result);
   const classData = allClassesData?.data?.result;
   const [totalItems, setTotalItems] = useState(classData?.length);
 
+  const handleEdit = (record) => {
+    if (record.isScheduled) {
+      navigate("/edit-scheduled-class", {
+        state: { classData: record, classType: "Scheduled Class" },
+      });
+    } else {
+      navigate("/edit-non-scheduled-class", {
+        state: { classData: record, classType: "Non Scheduled Class" },
+      });
+    }
+  };
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -56,9 +64,7 @@ const ManageClass = () => {
   const handleSession = (record) => {
     console.log(record);
   };
-  const handleEdit = (record) => {
-    navigate("/edit-class");
-  };
+
   const hnadleAddClass = () => {
     navigate("/add-class");
   };
@@ -103,26 +109,15 @@ const ManageClass = () => {
       title: "View",
       key: "view",
       render: (_, record) => (
-        <ConfigProvider
-          theme={{
-            components: {
-              Button: {
-                defaultHoverBorderColor: "rgb(47,84,235)",
-                defaultHoverColor: "rgb(47,84,235)",
-                defaultBorderColor: "rgb(47,84,235)",
-              },
-            },
-          }}
-        >
-          <Space size="middle">
-            <button onClick={() => showModal(record)}>
-              <FaEye className="text-2xl"></FaEye>
-            </button>
-            <button onClick={() => handleEdit(record)}>
-              <AiOutlineEdit className="text-2xl" />
-            </button>
-          </Space>
-        </ConfigProvider>
+        <Space size="middle">
+          <button onClick={() => showModal(record)}>
+            <FaEye className="text-2xl text-gray-600 hover:text-black" />
+          </button>
+
+          <button onClick={() => handleEdit(record)}>
+            <AiOutlineEdit className="text-2xl text-blue-600 hover:text-blue-800" />
+          </button>
+        </Space>
       ),
     },
   ];

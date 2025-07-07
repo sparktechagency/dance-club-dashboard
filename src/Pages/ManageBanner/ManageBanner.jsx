@@ -47,8 +47,8 @@ const ManageBanner = () => {
     try {
       formData.append("banner", bannerPic);
       await createBanner(formData).unwrap();
-      message.success("Banner added successfully!");
       form.resetFields();
+      message.success("Banner added successfully!");
       setIsAddModalOpen(false);
     } catch (error) {
       console.log(error);

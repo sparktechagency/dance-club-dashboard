@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useCraeteClassMutation } from "../../redux/api/features/classApi/classApi";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const ClassManagement = () => {
+const EditScheduledClass = () => {
   const [form] = Form.useForm();
   const [banner, setbanner] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -90,7 +90,7 @@ const ClassManagement = () => {
 
   return (
     <div>
-      <GoBackButton text={"Add Scheduled class"} />
+      <GoBackButton text={"Edit Scheduled class"} />
 
       <div className="mt-5">
         <Form
@@ -304,4 +304,4 @@ const ClassManagement = () => {
   );
 };
 
-export default ClassManagement;
+export default EditScheduledClass;
