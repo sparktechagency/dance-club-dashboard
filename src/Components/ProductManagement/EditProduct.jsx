@@ -26,6 +26,7 @@ const EditProduct = () => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const productId = location?.state?._id;
+  console.log("product id:", productId);
   const { data: getAllCategory } = useGetCategoryForProductQuery();
   const { data: getSingleProduct, isLoading } =
     useGetSingleProductQuery(productId);
@@ -56,7 +57,7 @@ const EditProduct = () => {
       form.setFieldsValue({
         title: getSingleProduct.data.name,
         price: getSingleProduct.data.price,
-        category: getSingleProduct.data.category?.name,
+     category: getSingleProduct.data.category?._id,
         stock: getSingleProduct.data.stock,
         description: getSingleProduct.data.description,
         size: getSingleProduct.data.size,
