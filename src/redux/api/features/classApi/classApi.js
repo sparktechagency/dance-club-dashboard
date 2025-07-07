@@ -27,6 +27,7 @@ const ClassesApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
+         invalidatesTags: TAGS.CLASS_TAG,
     }),
   }),
 });

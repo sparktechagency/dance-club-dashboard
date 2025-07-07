@@ -29,18 +29,18 @@ const EditNonScheduledClass = () => {
   }
 
   const classData = location.state.classData;
-  console.log("record:", classData);
+//   console.log("record:", classData);
   const _id = classData?._id;
-  console.log("Id", _id);
+//   console.log("Id", _id);
 
   useEffect(() => {
     if (classData) {
-      // Set default banner preview if existing
+    
       if (classData.class_banner) {
         setPreviewImage(`${classData.class_banner}`);
       }
 
-      setIsScheduled(classData?.classType === "Scheduled Class");
+      setIsScheduled(classData?.classType === "Non Scheduled Class");
 
       form.setFieldsValue({
         title: classData.title,
@@ -57,13 +57,12 @@ const EditNonScheduledClass = () => {
     }
   }, [classData, form]);
 
-  // console.log("banner", isScheduled);
 
   const handleBeforeUpload = (file) => {
     form.setFieldsValue({ class_banner: [file] });
     setbanner(file);
     setPreviewImage(URL.createObjectURL(file));
-    return false; // Prevent auto upload
+    return false;
   };
 
   const [updateClass] = useUpdateClassMutation();
