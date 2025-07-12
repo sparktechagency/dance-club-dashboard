@@ -27,15 +27,15 @@ const EditNonScheduledClass = () => {
   if (!TypeOfClass === "Scheduled Class") {
     setIsScheduled(false);
   }
+  const refetch = location.state.refetch;
 
   const classData = location.state.classData;
-//   console.log("record:", classData);
+  //   console.log("record:", classData);
   const _id = classData?._id;
-//   console.log("Id", _id);
+  //   console.log("Id", _id);
 
   useEffect(() => {
     if (classData) {
-    
       if (classData.class_banner) {
         setPreviewImage(`${classData.class_banner}`);
       }
@@ -56,7 +56,6 @@ const EditNonScheduledClass = () => {
       });
     }
   }, [classData, form]);
-
 
   const handleBeforeUpload = (file) => {
     form.setFieldsValue({ class_banner: [file] });
@@ -97,11 +96,12 @@ const EditNonScheduledClass = () => {
       formData.append("class_banner", banner);
 
       await updateClass({ _id: _id, data: formData }).unwrap();
-      message.success("Class Updated successfully!");
+      if (refetch) await refetch();
       form.resetFields();
       setbanner(null);
       setPreviewImage(null);
       nevigate("/manage-class");
+      message.success("Class Updated successfully!");
     } catch (error) {
       console.log(error);
       message.error("Failed to Update class.");

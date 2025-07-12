@@ -1,17 +1,10 @@
 /* eslint-disable no-unused-vars */
-import {
-  ConfigProvider,
-  Input,
-  Pagination,
-  Select,
-  Space,
-  Table,
-} from "antd";
+import { ConfigProvider, Input, Pagination, Select, Space, Table } from "antd";
 import { useState } from "react";
 import { Modal } from "antd";
 import { FaEye } from "react-icons/fa";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
-import { AiOutlineEdit} from "react-icons/ai";
+import { AiOutlineEdit } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetAllClassesQuery } from "../../redux/api/features/classApi/classApi";
 const ManageClass = () => {
@@ -22,7 +15,11 @@ const ManageClass = () => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const { data: allClassesData, isLoading } = useGetAllClassesQuery({
+  const {
+    data: allClassesData,
+    isLoading,
+    refetch,
+  } = useGetAllClassesQuery({
     page: currentPage,
     limit: pageSize,
     searchTerm,
@@ -44,6 +41,7 @@ const ManageClass = () => {
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
+    refetch();
   };
 
   const showModal = (record) => {
