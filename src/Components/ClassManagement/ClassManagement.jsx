@@ -35,7 +35,7 @@ const ClassManagement = () => {
     return false; // Prevent auto upload
   };
 
-  const [craeteClass] = useCraeteClassMutation();
+  const [craeteClass, { isLoading, refetch }] = useCraeteClassMutation();
   const onFinish = async (values) => {
     const data = {
       title: values.title,
@@ -67,11 +67,12 @@ const ClassManagement = () => {
       formData.append("class_banner", banner);
 
       await craeteClass(formData).unwrap();
-      message.success("Class added successfully!");
       form.resetFields();
       setbanner(null);
       setPreviewImage(null);
       nevigate("/manage-class");
+      message.success("Class added successfully!");
+      refetch();
     } catch (error) {
       console.log(error);
       message.error("Failed to create class.");

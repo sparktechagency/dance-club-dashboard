@@ -8,17 +8,15 @@ const ClassesApi = baseApi.injectEndpoints({
         url: `/class/get-all-class?page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
         method: "GET",
       }),
-      providesTags: TAGS.CLASS_TAG,
+      providesTags: [TAGS.CLASS_TAG],
     }),
     craeteClass: builder.mutation({
-      query: (data) => {
-        return {
-          url: `/class/create-class`,
-          method: "POST",
-          body: data,
-        };
-      },
-      invalidatesTags: TAGS.CLASS_TAG,
+      query: (data) => ({
+        url: `/class/create-class`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [TAGS.CLASS_TAG],
     }),
 
     updateClass: builder.mutation({
@@ -27,7 +25,7 @@ const ClassesApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
-         invalidatesTags: TAGS.CLASS_TAG,
+      invalidatesTags: [TAGS.CLASS_TAG],
     }),
   }),
 });
