@@ -103,10 +103,10 @@ const ManageUsers = () => {
         return (
           <p
             className={`${
-              item?.user?.isBlocked === true ? "text-green-500" : "text-red-500"
+              item?.user?.isBlocked === true ? " text-red-500" : "text-green-500"
             }`}
           >
-            {item?.user?.isBlocked === true ? "Active" : "Blocked"}
+            {item?.user?.isBlocked === true ? " Blocked" : "Active"}
           </p>
         );
       },

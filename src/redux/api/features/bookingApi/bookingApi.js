@@ -7,6 +7,7 @@ const BookingAPi = baseApi.injectEndpoints({
         url: `/class-book/all-bookings?limit=${limit}&page=${page}&searchTerm=${searchTerm}`,
         method: "GET",
       }),
+      providesTags:["bookings"]
     }),
   }),
 });
