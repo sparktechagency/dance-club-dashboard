@@ -8,7 +8,7 @@ const OrderApi = baseApi.injectEndpoints({
         url: `/order/all-orders?page=${page}&limit=${limit}`,
         method: "GET",
       }),
-      providesTags: TAGS.ORDER_TAG,
+      providesTags: [TAGS.ORDER_TAG],
     }),
 
     getSingleOrder: builder.query({
@@ -16,7 +16,7 @@ const OrderApi = baseApi.injectEndpoints({
         url: `/order/single-order/${_id}`,
         method: "GET",
       }),
-      providesTags: TAGS.ORDER_TAG,
+      providesTags: [TAGS.ORDER_TAG],
     }),
 
     updateOrderStatus: builder.mutation({
@@ -25,7 +25,7 @@ const OrderApi = baseApi.injectEndpoints({
         method: "POST",
         body: { status },
       }),
-      invalidatesTags: TAGS.ORDER_TAG,
+      invalidatesTags: [TAGS.ORDER_TAG],
     }),
   }),
 });
