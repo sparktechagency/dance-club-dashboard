@@ -22,7 +22,7 @@ import {
   useEditCouponMutation,
   useGetCouponQuery,
 } from "../../redux/api/features/couponApi/couponApi";
-
+import dayjs from 'dayjs';
 import swal from "sweetalert";
 
 const ManageCoupon = () => {
@@ -51,10 +51,25 @@ const ManageCoupon = () => {
     setPageSize(pageSize);
   };
 
-  const showModal = (record) => {
+
+
+const showModal = (record = null) => {
+  if (record) {
     setSelectedUser(record);
-    setIsModalOpen(true);
-  };
+    form.setFieldsValue({
+      code: Number(record.code),
+      startDate: dayjs(record.startDate),
+      endDate: dayjs(record.endDate),
+      discountPercentage: Number(record.discountPercentage),
+    });
+  } else {
+    setSelectedUser(null);
+    form.resetFields();
+  }
+
+  setIsModalOpen(true);
+};
+
 
   const handleCancel = (record) => {
     setIsModalOpen(false);
@@ -228,7 +243,7 @@ const ManageCoupon = () => {
         {selectedUser && (
           <div className="">
             <Form
-            form={form}
+              form={form}
               name="add-coupon"
               initialValues={{ remember: false }}
               onFinish={handleAddCoupon}

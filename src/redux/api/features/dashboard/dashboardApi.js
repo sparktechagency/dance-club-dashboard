@@ -8,7 +8,7 @@ const dashboardApi = baseApi.injectEndpoints({
         url: "/meta/get-dashboard-meta-data",
         method: "GET",
       }),
-      providesTags: TAGS.ANALYTICS_TAG,
+      providesTags: [TAGS.ANALYTICS_TAG],
     }),
 
     getUserChartData: builder.query({
@@ -17,6 +17,7 @@ const dashboardApi = baseApi.injectEndpoints({
         method: "GET",
         params,
       }),
+      providesTags: [TAGS.ANALYTICS_TAG],
     }),
 
     getErnanings: builder.query({
@@ -25,8 +26,13 @@ const dashboardApi = baseApi.injectEndpoints({
         method: "GET",
         params,
       }),
+      providesTags: [TAGS.ANALYTICS_TAG],
     }),
   }),
 });
 
-export const { useGetAnalyticsQuery, useGetUserChartDataQuery,useGetErnaningsQuery } = dashboardApi;
+export const {
+  useGetAnalyticsQuery,
+  useGetUserChartDataQuery,
+  useGetErnaningsQuery,
+} = dashboardApi;
