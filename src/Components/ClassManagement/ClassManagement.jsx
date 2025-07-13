@@ -75,7 +75,7 @@ const ClassManagement = () => {
       refetch();
     } catch (error) {
       console.log(error);
-      message.error("Failed to create class.");
+      message.error(error.data.message);
     }
   };
 
