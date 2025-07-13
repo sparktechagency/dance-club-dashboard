@@ -79,13 +79,14 @@ const ManageCoupon = () => {
     };
     try {
       await createCoupon(data).unwrap();
-      message.success("Coupon created successfully!");
-      setAddCouponModal(false);
       form.resetFields();
+      setAddCouponModal(false);
+      message.success("Coupon created successfully!");
     } catch (error) {
       console.log(error);
     }
   };
+
   const onEditFinish = async (values) => {
     const data = {
       code: Number(values.code),
@@ -95,9 +96,9 @@ const ManageCoupon = () => {
     };
     try {
       await editCoupon({ _id: selectedUser._id, data }).unwrap();
-      message.success("Coupon Updated successfully!");
       setAddCouponModal(false);
       form.resetFields();
+      message.success("Coupon Updated successfully!");
     } catch (error) {
       console.log(error);
     }
@@ -227,6 +228,7 @@ const ManageCoupon = () => {
         {selectedUser && (
           <div className="">
             <Form
+            form={form}
               name="add-coupon"
               initialValues={{ remember: false }}
               onFinish={handleAddCoupon}
@@ -321,6 +323,7 @@ const ManageCoupon = () => {
               initialValues={{ remember: false }}
               onFinish={onEditFinish}
               layout="vertical"
+              form={form}
             >
               <Form.Item
                 name="code"

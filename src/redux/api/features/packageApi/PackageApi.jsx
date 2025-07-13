@@ -3,8 +3,8 @@ import { baseApi } from "../../baseApi";
 const packageApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllPackage: builder.query({
-      query: () => ({
-        url: "/package/get-all-packages",
+      query: ({page,limit}) => ({
+        url: `/package/get-all-packages?page=${page}&limit=${limit}`,
         method: "GET",
       }),
       providesTags: ["Package"],

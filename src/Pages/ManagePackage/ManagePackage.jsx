@@ -2,7 +2,15 @@
 import { useEffect, useState } from "react";
 import GoBackButton from "../../Components/Shared/GobackButton/GoBackButton";
 import { FaPen, FaTrash } from "react-icons/fa";
-import { Form, InputNumber, message, Modal, Select, Table } from "antd";
+import {
+  Form,
+  InputNumber,
+  message,
+  Modal,
+  Pagination,
+  Select,
+  Table,
+} from "antd";
 import {
   useCreatePackageMutation,
   useDeletePackageMutation,
@@ -17,9 +25,15 @@ const ManagePackage = () => {
   const [form] = Form.useForm();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const [packageId, setPackageId] = useState("");
   // console.log("packageId", packageId);
-  const { data: packageData } = useGetAllPackageQuery();
+  const { data: packageData } = useGetAllPackageQuery({
+    page: currentPage,
+    limit: pageSize,
+  });
   const [createPackage] = useCreatePackageMutation();
   const { data: getSInglePackageData } = useGetSInglePackageQuery(packageId, {
     skip: !packageId || packageId.length !== 24,
@@ -42,7 +56,7 @@ const ManagePackage = () => {
   }, [form, getSInglePackageData]);
 
   const handleAddPackage = () => {
-      form.resetFields();
+    form.resetFields();
     setIsAddModalOpen(true);
   };
   const handleAddModalClose = () => {
@@ -76,7 +90,7 @@ const ManagePackage = () => {
       .then((res) => {
         // console.log("res", res);
         message.success("Package created successfully!");
-      
+
         setIsAddModalOpen(false);
       })
       .catch((error) => {
@@ -121,7 +135,10 @@ const ManagePackage = () => {
       }
     }
   };
-
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
   const columns = [
     {
       title: "Token No",
@@ -207,6 +224,14 @@ const ManagePackage = () => {
         />
       </div>
 
+      <div className="mt-10 flex justify-center items-center">
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={packageData?.data?.meta?.total}
+          onChange={handlePageChange}
+        ></Pagination>
+      </div>
       <Modal
         title="Add New Package"
         open={isAddModalOpen}

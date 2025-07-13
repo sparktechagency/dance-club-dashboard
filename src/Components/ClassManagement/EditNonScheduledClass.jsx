@@ -86,10 +86,10 @@ const EditNonScheduledClass = () => {
     console.log(data);
 
     try {
-      if (!banner) {
-        message.error("Please upload a class banner image.");
-        return;
-      }
+      // if (!banner) {
+      //   message.error("Please upload a class banner image.");
+      //   return;
+      // }
 
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
@@ -135,7 +135,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="class_banner"
                 label={<p className=" text-md">Add Class image</p>}
-                required
+          
               >
                 <div className="border border-dashed border-secondary p-5 flex justify-center items-center h-40">
                   <Upload
@@ -168,7 +168,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="title"
                 label={<p className=" text-md">Class Name</p>}
-                required
+             
               >
                 <Input
                   style={{ padding: "6px" }}
@@ -179,7 +179,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="description"
                 label={<p className=" text-md">Description</p>}
-                required
+               
               >
                 <Input
                   style={{ padding: "6px", width: "100%" }}
@@ -195,7 +195,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="classType"
                 label={<p className=" text-md">class Type</p>}
-                required
+               
               >
                 <Select
                   placeholder="Select Class Type"
@@ -214,7 +214,7 @@ const EditNonScheduledClass = () => {
                 label={<p className="text-md">Total Seat</p>}
                 rules={[
                   {
-                    required: true,
+               
                     message: "Total seat must be at least 1.",
                     type: "number",
                     min: 1,
@@ -234,7 +234,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="instructorName"
                 label={<p className=" text-md">Instructor Name</p>}
-                required
+         
               >
                 <Input
                   style={{ padding: "6px" }}
@@ -247,7 +247,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="location"
                 label={<p className=" text-md">location</p>}
-                required
+            
               >
                 <Input
                   style={{ padding: "6px" }}
@@ -265,7 +265,7 @@ const EditNonScheduledClass = () => {
                 label={<p className=" text-md">Token Need For Booking</p>}
                 rules={[
                   {
-                    required: true,
+                  
                     message: "Token must be at least 1.",
                     type: "number",
                     min: 1,
@@ -283,7 +283,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="date"
                 label={<p className=" text-md">Date</p>}
-                required
+               
               >
                 <DatePicker
                   style={{ padding: "4px", width: "100%" }}
@@ -298,7 +298,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="time"
                 label={<p className=" text-md">Time</p>}
-                required
+          
               >
                 <TimePicker
                   format="HH:mm"
@@ -312,7 +312,7 @@ const EditNonScheduledClass = () => {
               <Form.Item
                 name="durationInMinutes"
                 label={<p className=" text-md">Duration</p>}
-                required
+           
               >
                 <InputNumber
                   style={{ padding: "3px", width: "100%" }}
